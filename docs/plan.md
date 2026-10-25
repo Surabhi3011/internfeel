@@ -54,7 +54,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 
 | Topic | Decision |
 | --- | --- |
-| Platform | Fresh WordPress 7.0 on PHP 8.5, hosted on the existing VaporHost cPanel plan; custom theme and plugin; no page builder |
+| Platform | Fresh WordPress 7.1 (7.1.3 or newer) on PHP 8.5, hosted on the existing VaporHost cPanel plan; custom theme and plugin; no page builder. Changed from 7.0 on 26 October 2026: 7.1.3 is the current release and WordPress.org lists 7.0.x as outdated |
 | Build | Entirely through Claude Code; **public** GitHub repo `Surabhi3011/internfeel` (the plan has no SSH, so cPanel can only pull a public repo); no secrets or private details in it |
 | Deadline | Relaunch Monday 9 November 2026 |
 | Budget | Free service tiers until there is traffic |

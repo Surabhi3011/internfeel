@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "https://wordpress.org/wordpress-7.1.3.zip",
+	"phpVersion": "8.5",
+	"themes": [ "./wp-content/themes/internfeel" ],
+	"plugins": [
+		"./wp-content/plugins/internfeel-core",
+		"https://downloads.wordpress.org/plugin/litespeed-cache.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/wordfence.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/two-factor.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/wordpress-seo.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/nextend-facebook-connect.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/cookie-law-info.latest-stable.zip",
+		"https://downloads.wordpress.org/plugin/updraftplus.latest-stable.zip"
+	],
+	"mappings": {
+		"wp-content/mu-plugins/internfeel-hardening.php": "./wp-content/mu-plugins/internfeel-hardening.php"
+	},
+	"config": {
+		"WP_ENVIRONMENT_TYPE": "local",
+		"DISALLOW_FILE_EDIT": true,
+		"AUTOMATIC_UPDATER_DISABLED": true,
+		"IF_PRIVATE_DIR": "/tmp/internfeel-private",
+		"IF_MAIL_FROM": "no-reply@internfeel.com",
+		"IF_MAIL_FROM_NAME": "InternFeel",
+		"IF_ADSENSE_CLIENT": ""
+	},
+	"lifecycleScripts": {
+		"afterStart": "npx wp-env run cli wp theme activate internfeel && npx wp-env run cli wp rewrite structure /%postname%/ --hard"
+	}
+}

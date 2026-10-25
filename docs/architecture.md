@@ -4,7 +4,7 @@
 **Owners:** Surabhi Gupta, Arjit Raj
 **Related:** [plan.md](plan.md) (scope, schedule, decisions) · [development.md](development.md) (how to build, test and deploy)
 
-InternFeel is a fresh WordPress 7.0 site on PHP 8.5, hosted on the existing VaporHost cPanel plan. All custom behaviour lives in two pieces of code kept in GitHub: a custom theme for every page visitors and students see, and one plugin, `internfeel-core`, for accounts, submissions, verification, invites, badges, certificates and moderation. Nothing from the old WordPress install is reused except its exported content.
+InternFeel is a fresh WordPress 7.1 site on PHP 8.5, hosted on the existing VaporHost cPanel plan. All custom behaviour lives in two pieces of code kept in GitHub: a custom theme for every page visitors and students see, and one plugin, `internfeel-core`, for accounts, submissions, verification, invites, badges, certificates and moderation. Nothing from the old WordPress install is reused except its exported content.
 
 ---
 
@@ -15,7 +15,7 @@ InternFeel is a fresh WordPress 7.0 site on PHP 8.5, hosted on the existing Vapo
 | Next.js + Supabase on Vercel | Rejected: Vercel's free plan forbids sites that show ads, and it adds three new services to run. |
 | Next.js on Cloudflare Workers | Rejected: the team prefers to stay on the hosting already paid for. |
 | Node.js on VaporHost | Not possible: the cPanel plan has no "Setup Node.js App". |
-| **Fresh WordPress on VaporHost** | **Chosen.** PHP 8.5 is available and fully supported by WordPress 7.0. Users, roles, comments, the admin panel, media and SEO come built in. |
+| **Fresh WordPress on VaporHost** | **Chosen.** PHP 8.5 is available and fully supported by WordPress 7.1. Users, roles, comments, the admin panel, media and SEO come built in. |
 
 The cost of this choice is that security becomes our job, which is covered in section 9.
 
@@ -451,3 +451,4 @@ The old install was probably compromised, so the new site starts clean and stays
 | 25 Oct 2026 | Public GitHub repo | The hosting plan has no SSH access, so cPanel can only pull a public repo; secrets and private details are kept out of it |
 | 25 Oct 2026 | No CAPTCHA at launch | Deferred by the team; rate limits and a honeypot cover simple bots until Turnstile is added |
 | 25 Oct 2026 | Email-and-password or Google sign-in, no email verification, no notification emails | Updates are shown on the dashboard; no Resend account needed. The password reset is the only email, through cPanel mail |
+| 26 Oct 2026 | WordPress 7.1 instead of 7.0 | 7.1.3 is the current release and WordPress.org lists 7.0.x as outdated; a fresh install should start on the supported branch. Replaces the 7.0 version in the 25 Oct platform decision |

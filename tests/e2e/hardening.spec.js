@@ -16,9 +16,17 @@ test( 'home page loads with security headers and noindex outside production', as
 	expect( headers[ 'x-pingback' ] ).toBeUndefined();
 } );
 
-test( 'author enumeration through ?author=1 goes to the home page', async ( { page, baseURL } ) => {
-	await page.goto( '/?author=1' );
-	expect( page.url() ).toBe( new URL( '/', baseURL ).href );
+// WordPress would normally redirect ?author=1 to /author/{login}/. Our mu-plugin redirects home, but where
+// Wordfence is active (wp-env, staging, production) its own author-scan block answers first with a 404.
+// Either way the login must never appear.
+test( 'author enumeration through ?author=1 does not reveal a username', async ( { request, baseURL } ) => {
+	const response = await request.get( '/?author=1', { maxRedirects: 0 } );
+	expect( [ 301, 302, 404 ] ).toContain( response.status() );
+
+	if ( response.status() !== 404 ) {
+		expect( response.headers().location ).toBe( new URL( '/', baseURL ).href );
+	}
+	expect( await response.text() ).not.toContain( '/author/' );
 } );
 
 test( 'the users REST route is closed to visitors', async ( { request } ) => {

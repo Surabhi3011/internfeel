@@ -1,0 +1,40 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "InternFeel local",
+		"description": "Free plugins from architecture.md 3.3, the InternFeel theme and plugin. Everything is activated with WP-CLI, and the theme and internfeel-core go first: Playground's own activate steps fail on Nextend Social Login, and fail on anything after a plugin that redirects wp-admin to a welcome screen. All of these activate fine on PHP 8.5 through WP-CLI. LiteSpeed Cache and Wordfence are installed but stay inactive: they are server-level tools (page cache and firewall) with nothing to do in Playground.",
+		"author": "InternFeel"
+	},
+	"landingPage": "/",
+	"preferredVersions": {
+		"php": "8.5",
+		"wp": "7.1"
+	},
+	"features": {
+		"networking": true
+	},
+	"steps": [
+		{
+			"step": "defineWpConfigConsts",
+			"consts": {
+				"WP_ENVIRONMENT_TYPE": "local",
+				"DISALLOW_FILE_EDIT": true,
+				"AUTOMATIC_UPDATER_DISABLED": true,
+				"IF_PRIVATE_DIR": "/internfeel-private",
+				"IF_MAIL_FROM": "no-reply@internfeel.com",
+				"IF_MAIL_FROM_NAME": "InternFeel",
+				"IF_ADSENSE_CLIENT": ""
+			}
+		},
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "litespeed-cache" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "wordfence" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "two-factor" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "wordpress-seo" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "nextend-facebook-connect" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "cookie-law-info" }, "options": { "activate": false } },
+		{ "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "updraftplus" }, "options": { "activate": false } },
+		{ "step": "wp-cli", "command": "wp theme activate internfeel" },
+		{ "step": "wp-cli", "command": "wp plugin activate internfeel-core" },
+		{ "step": "wp-cli", "command": "wp plugin activate two-factor wordpress-seo nextend-facebook-connect cookie-law-info updraftplus" }
+	]
+}

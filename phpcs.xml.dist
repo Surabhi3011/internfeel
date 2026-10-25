@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="InternFeel">
+	<description>WordPress Coding Standards for InternFeel's own code.</description>
+
+	<file>wp-content/themes/internfeel</file>
+	<file>wp-content/plugins/internfeel-core</file>
+	<file>wp-content/mu-plugins/internfeel-hardening.php</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="cache" value=".phpcs-cache"/>
+	<arg name="parallel" value="8"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<config name="minimum_wp_version" value="7.1"/>
+	<config name="testVersion" value="8.3-"/>
+
+	<rule ref="WordPress"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="internfeel"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		Our prefix is if_ (development.md section 2), but WPCS 3 refuses prefixes shorter than
+		4 characters (ShortPrefixPassed), so it cannot check it. Plugin code is namespaced under
+		InternFeel\; theme functions, hooks, options and meta keys use if_ by hand and in review.
+	-->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<severity>0</severity>
+	</rule>
+
+	<!-- The plugin's src/ uses PSR-4 file names (Schema.php), not class-schema.php. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>wp-content/plugins/internfeel-core/src/*</exclude-pattern>
+	</rule>
+</ruleset>

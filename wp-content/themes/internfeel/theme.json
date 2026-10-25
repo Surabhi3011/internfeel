@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/wp/7.1/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": false,
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{ "slug": "teal", "name": "Teal", "color": "#339999" },
+				{ "slug": "teal-700", "name": "Teal (text)", "color": "#297777" },
+				{ "slug": "charcoal", "name": "Charcoal", "color": "#3a3839" },
+				{ "slug": "ink", "name": "Ink", "color": "#1d1c1c" },
+				{ "slug": "canvas", "name": "Canvas", "color": "#f8f7f7" },
+				{ "slug": "surface", "name": "Surface", "color": "#ffffff" }
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"defaultFontSizes": false
+		},
+		"layout": {
+			"contentSize": "45rem",
+			"wideSize": "72rem"
+		}
+	}
+}

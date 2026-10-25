@@ -1,0 +1,201 @@
+/*
+Theme Name:        InternFeel
+Theme URI:         https://internfeel.com
+Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
+Author:            InternFeel
+Version:           0.1.0
+Requires at least: 7.1
+Tested up to:      7.1
+Requires PHP:      8.3
+License:           Proprietary
+Text Domain:       internfeel
+*/
+
+/*
+ * Design tokens. Brand colours are taken from the logo (uploads/2024/03/InternFeel-Logo.png).
+ * --if-teal (#339999) is only 3.4:1 on white, so use it for large text, borders and decoration.
+ * Body text, links and buttons use --if-teal-700 (#297777, 5.3:1) to meet WCAG 2.2 AA.
+ */
+:root {
+	/* Colour */
+	--if-teal: #339999;
+	--if-teal-700: #297777;
+	--if-teal-800: #1f5c5c;
+	--if-teal-50: #eef7f7;
+	--if-charcoal: #3a3839;
+	--if-ink: #1d1c1c;
+	--if-muted: #5f5c5d;
+	--if-line: #dedbdc;
+	--if-surface: #ffffff;
+	--if-canvas: #f8f7f7;
+	--if-focus: #1f5c5c;
+	--if-danger: #b3261e;
+
+	/* Type */
+	--if-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--if-text-sm: 0.875rem;
+	--if-text-base: 1rem;
+	--if-text-lg: 1.125rem;
+	--if-text-xl: 1.375rem;
+	--if-text-2xl: 1.75rem;
+	--if-text-3xl: 2.25rem;
+	--if-leading: 1.6;
+
+	/* Space (4px scale) */
+	--if-space-1: 0.25rem;
+	--if-space-2: 0.5rem;
+	--if-space-3: 0.75rem;
+	--if-space-4: 1rem;
+	--if-space-6: 1.5rem;
+	--if-space-8: 2rem;
+	--if-space-12: 3rem;
+
+	/* Shape and layout */
+	--if-radius: 0.5rem;
+	--if-radius-pill: 999px;
+	--if-content: 72rem;
+	--if-header-h: 72px;
+	--if-header-h-compact: 56px;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: var(--if-font-sans);
+	font-size: var(--if-text-base);
+	line-height: var(--if-leading);
+	color: var(--if-ink);
+	background: var(--if-canvas);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+a {
+	color: var(--if-teal-700);
+}
+
+a:hover {
+	color: var(--if-teal-800);
+}
+
+:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link:focus {
+	position: fixed;
+	top: var(--if-space-2);
+	left: var(--if-space-2);
+	z-index: 100;
+	width: auto;
+	height: auto;
+	padding: var(--if-space-2) var(--if-space-4);
+	clip: auto;
+	background: var(--if-surface);
+}
+
+.if-container {
+	width: 100%;
+	max-width: var(--if-content);
+	margin-inline: auto;
+	padding-inline: var(--if-space-4);
+}
+
+/* Header: fixed, shrinks to 56px once the page scrolls (plan.md 5.3). */
+.if-header {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background: var(--if-surface);
+	border-bottom: 1px solid var(--if-line);
+}
+
+.if-header__inner {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-4);
+	height: var(--if-header-h);
+	transition: height 0.15s ease;
+}
+
+.if-header.is-compact .if-header__inner {
+	height: var(--if-header-h-compact);
+}
+
+.if-header__logo img {
+	display: block;
+	width: auto;
+	height: 36px;
+}
+
+.if-header__actions {
+	display: flex;
+	gap: var(--if-space-2);
+	margin-inline-start: auto;
+}
+
+.if-button {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: var(--if-space-2) var(--if-space-4);
+	border: 2px solid var(--if-teal-700);
+	border-radius: var(--if-radius-pill);
+	font-weight: 600;
+	text-decoration: none;
+	color: var(--if-teal-700);
+	background: var(--if-surface);
+}
+
+.if-button--primary {
+	color: var(--if-surface);
+	background: var(--if-teal-700);
+}
+
+.if-button--primary:hover {
+	color: var(--if-surface);
+	background: var(--if-teal-800);
+	border-color: var(--if-teal-800);
+}
+
+.if-main {
+	padding-block: var(--if-space-8);
+}
+
+.if-footer {
+	padding-block: var(--if-space-8);
+	color: var(--if-surface);
+	background: var(--if-charcoal);
+}
+
+.if-footer a {
+	color: var(--if-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		transition: none !important;
+		animation: none !important;
+	}
+}

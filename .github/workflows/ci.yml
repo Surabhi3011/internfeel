@@ -1,0 +1,119 @@
+# Continuous integration (docs/development.md section 7).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Public-repo check (no emails, /home/ paths or keys)
+        run: bash tools/check-public.sh
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer
+          coverage: none
+
+      - name: Install dev tools
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: php -l (PHP 8.5)
+        run: composer run syntax
+
+      - name: PHPCS (WordPress Coding Standards)
+        run: vendor/bin/phpcs
+
+      - name: PHPStan (level 6)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+  unit:
+    name: unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Start wp-env (WordPress 7.1, PHP 8.5)
+        run: npx wp-env start
+
+      - name: Environment check
+        run: |
+          npx wp-env run cli php -v
+          npx wp-env run cli wp core version
+          npx wp-env run cli wp theme list
+          npx wp-env run cli wp plugin list
+
+      - name: PHPUnit
+        run: |
+          if ! ls tests/phpunit/*.php >/dev/null 2>&1; then
+            echo "::notice::No PHPUnit tests yet; the first ones arrive with the data model."
+            exit 0
+          fi
+          echo "::error::PHPUnit tests exist but the runner is not wired up yet."
+          exit 1
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx wp-env start
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-report
+          path: playwright-report/
+          retention-days: 7
+
+  a11y:
+    name: a11y
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx wp-env start
+      - run: npm run test:a11y
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: a11y-report
+          path: playwright-report/
+          retention-days: 7

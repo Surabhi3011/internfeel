@@ -1,0 +1,57 @@
+# THIS REPO IS PUBLIC. Private details, the old site's export and backups are never committed
+# (development.md section 1).
+docs-private/
+tools/export/*.zip
+tools/export/*.tar
+tools/export/internfeel-content-export.md
+old-site-backup/
+holding-page/
+
+# Secrets and environment config
+wp-config.php
+.env*
+
+# WordPress core, third-party plugins and uploads: only our own code is tracked
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/xmlrpc.php
+/license.txt
+/readme.html
+/wp-content/*
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/internfeel/
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/internfeel-core/
+!/wp-content/mu-plugins/
+/wp-content/mu-plugins/*
+!/wp-content/mu-plugins/internfeel-hardening.php
+
+# Database dumps, proofs and certificates
+*.sql
+*.sql.gz
+internfeel-private/
+internfeel-private-staging/
+
+# Dev tooling (the plugin's own vendor/ IS committed; only the root one is ignored)
+/vendor/
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.phpunit.result.cache
+.phpcs-cache
+/wp-env-home/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log

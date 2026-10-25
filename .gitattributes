@@ -1,0 +1,9 @@
+# LF everywhere, so files match what the Linux server and CI check out.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.webp binary
+*.woff2 binary
+*.pdf binary

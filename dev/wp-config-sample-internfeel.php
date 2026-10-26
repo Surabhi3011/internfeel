@@ -18,6 +18,9 @@ define( 'DISALLOW_FILE_EDIT', true );
 define( 'IF_MAIL_FROM', 'no-reply@internfeel.com' );
 define( 'IF_MAIL_FROM_NAME', 'InternFeel' );
 
+// Newsletter sign-up form URL from the email service (still to be chosen). Unset hides the band.
+// define( 'IF_NEWSLETTER_ENDPOINT', 'https://newsletter.example.com/subscribe' );
+
 // Cloudflare Turnstile, after launch. Leave both unset until then and the forms skip the check.
 // define( 'IF_TURNSTILE_SITE_KEY', '0x0000000000000000000000' );
 // define( 'IF_TURNSTILE_SECRET', '0x0000000000000000000000000000000000' );

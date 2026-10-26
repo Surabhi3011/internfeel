@@ -53,7 +53,7 @@ final class Profile {
 			return false;
 		}
 
-		return '' !== trim( (string) $user->first_name )
+		return '' !== self::meta( $user_id, 'full_name' )
 			&& '' !== self::meta( $user_id, 'college' )
 			&& '' !== self::meta( $user_id, 'course' )
 			&& (int) self::meta( $user_id, 'graduation_year' ) >= self::MIN_GRADUATION_YEAR
@@ -77,9 +77,9 @@ final class Profile {
 		return array(
 			'id'               => $user->ID,
 			'email'            => $user->user_email,
-			'first_name'       => (string) $user->first_name,
-			'last_name'        => (string) $user->last_name,
-			'display_name'     => $user->display_name,
+			'full_name'        => self::meta( $user_id, 'full_name' ),
+			// Empty when the student left it blank and their full name is shown instead.
+			'display_name'     => $user->display_name === self::meta( $user_id, 'full_name' ) ? '' : $user->display_name,
 			'college'          => self::meta( $user_id, 'college' ),
 			'course'           => self::meta( $user_id, 'course' ),
 			'graduation_year'  => (int) self::meta( $user_id, 'graduation_year' ),
@@ -97,16 +97,15 @@ final class Profile {
 	 * @return true|\WP_Error
 	 */
 	public static function save( int $user_id, array $input ): true|\WP_Error {
-		$first   = self::text( $input, 'first_name' );
-		$last    = self::text( $input, 'last_name' );
+		$full    = self::text( $input, 'full_name' );
 		$display = self::text( $input, 'display_name', 60 );
 		$college = self::text( $input, 'college' );
 		$course  = self::text( $input, 'course' );
 		$year    = is_numeric( $input['graduation_year'] ?? null ) ? (int) $input['graduation_year'] : 0;
 		$max     = (int) gmdate( 'Y' ) + 8;
 
-		if ( '' === $first ) {
-			return Rest::error( 'if_required', __( 'Enter your first name.', 'internfeel' ), 400, 'first_name' );
+		if ( '' === $full ) {
+			return Rest::error( 'if_required', __( 'Enter your full name. It is printed on your certificates.', 'internfeel' ), 400, 'full_name' );
 		}
 		if ( '' === $college ) {
 			return Rest::error( 'if_required', __( 'Enter your college or university.', 'internfeel' ), 400, 'college' );
@@ -138,15 +137,18 @@ final class Profile {
 			}
 		}
 
+		// A blank display name shows the full name (sign-off decision, 26 October 2026).
 		if ( '' === $display ) {
-			$display = '' === $last ? $first : $first . ' ' . mb_substr( $last, 0, 1 ) . '.';
+			$display = $full;
 		}
 
+		// WordPress's own first and last name fields, for wp-admin only; the full name is the record.
+		$parts  = explode( ' ', $full, 2 );
 		$result = wp_update_user(
 			array(
 				'ID'           => $user_id,
-				'first_name'   => $first,
-				'last_name'    => $last,
+				'first_name'   => $parts[0],
+				'last_name'    => $parts[1] ?? '',
 				'display_name' => $display,
 				'nickname'     => $display,
 			)
@@ -155,6 +157,7 @@ final class Profile {
 			return Rest::error( 'if_profile_failed', __( 'Your profile could not be saved. Please try again.', 'internfeel' ), 500 );
 		}
 
+		update_user_meta( $user_id, Fields::PREFIX . 'full_name', $full );
 		update_user_meta( $user_id, Fields::PREFIX . 'college', $college );
 		update_user_meta( $user_id, Fields::PREFIX . 'course', $course );
 		update_user_meta( $user_id, Fields::PREFIX . 'graduation_year', $year );

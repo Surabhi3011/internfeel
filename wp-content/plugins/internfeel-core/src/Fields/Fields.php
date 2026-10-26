@@ -225,6 +225,11 @@ final class Fields implements Module {
 	 * @var array<string, array{type: string, public: bool, enum?: list<string>, min?: int, max?: int, format?: string}>
 	 */
 	private const USER_META = array(
+		// Printed on certificates, even for anonymous experiences.
+		'full_name'           => array(
+			'type'   => 'string',
+			'public' => false,
+		),
 		'college'             => array(
 			'type'   => 'string',
 			'public' => false,

@@ -19,19 +19,18 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Create account' } ).click();
 
-	await expect( page.getByRole( 'heading', { name: 'Tell us about you' } ) ).toBeVisible();
+	await expect( page.getByRole( 'heading', { name: 'Tell us a little about you' } ) ).toBeVisible();
 	await expect( page ).toHaveURL( /step=profile/ );
 
-	await page.getByRole( 'button', { name: 'Save and continue' } ).click();
-	await expect( page.getByLabel( 'First name' ) ).toBeFocused();
+	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
+	await expect( page.getByLabel( 'Full name' ) ).toBeFocused();
 
-	await page.getByLabel( 'First name' ).fill( 'Priya' );
-	await page.getByLabel( 'Last name (optional)' ).fill( 'Sharma' );
-	await page.getByLabel( 'College or university' ).fill( 'IIT Bombay' );
-	await page.getByLabel( 'Course', { exact: true } ).fill( 'BTech Computer Science' );
+	await page.getByLabel( 'Full name' ).fill( 'Priya Sharma' );
+	await page.getByLabel( 'College' ).fill( 'IIT Bombay' );
+	await page.getByLabel( 'Course' ).fill( 'BTech Computer Science' );
 	await page.getByLabel( 'Graduation year' ).fill( '2027' );
-	await page.getByRole( 'radio', { name: 'No' } ).check();
-	await page.getByRole( 'button', { name: 'Save and continue' } ).click();
+	await page.getByText( 'No', { exact: true } ).click();
+	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
 
 	// The profile page already shows "Log out", so wait until the save has moved us on.
 	await expect( page ).not.toHaveURL( /step=profile/ );
@@ -42,7 +41,7 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await expect( page ).not.toHaveURL( /wp-admin/ );
 
 	await page.getByRole( 'link', { name: 'Log out' } ).click();
-	await expect( page.getByRole( 'link', { name: 'Log in' } ) ).toBeVisible();
+	await expect( page.getByRole( 'banner' ).getByRole( 'link', { name: 'Log in' } ) ).toBeVisible();
 
 	await page.goto( '/login/' );
 	await page.getByLabel( 'Email' ).fill( email );

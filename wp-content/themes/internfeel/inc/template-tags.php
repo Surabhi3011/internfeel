@@ -40,23 +40,95 @@ function if_honeypot_field(): void {
 }
 
 /**
- * Print the "Continue with Google" button from Nextend Social Login, when it is set up.
+ * Print the Sign up / Log in switch: two links styled as the segment control, the current page marked.
+ *
+ * @param string $current Either "signup" or "login".
  */
-function if_google_button(): void {
-	if ( ! shortcode_exists( 'nextend_social_login' ) ) {
+function if_auth_switch( string $current ): void {
+	$pages = array(
+		'signup' => __( 'Sign up', 'internfeel' ),
+		'login'  => __( 'Log in', 'internfeel' ),
+	);
+	?>
+	<nav class="if-segment" aria-label="<?php esc_attr_e( 'Sign up or log in', 'internfeel' ); ?>">
+		<?php foreach ( $pages as $slug => $label ) : ?>
+			<a href="<?php echo esc_url( home_url( "/{$slug}/" ) ); ?>"<?php echo $slug === $current ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $label ); ?></a>
+		<?php endforeach; ?>
+	</nav>
+	<?php
+}
+
+/**
+ * Print "Continue with Google" (a full-width outline button) and the divider, when Nextend Social
+ * Login's Google provider is set up. Its shortcode renders nothing until it is, which is the check;
+ * the button itself uses Nextend's documented log-in URL so it matches the design system.
+ *
+ * @param string $redirect Where to land after signing in.
+ */
+function if_google_button( string $redirect = '' ): void {
+	if ( ! shortcode_exists( 'nextend_social_login' ) || '' === trim( do_shortcode( '[nextend_social_login provider="google"]' ) ) ) {
 		return;
 	}
 
-	$button = do_shortcode( '[nextend_social_login provider="google"]' );
-	if ( '' === trim( $button ) ) {
-		return;
+	$args = array( 'loginSocial' => 'google' );
+	if ( '' !== $redirect ) {
+		$args['redirect'] = rawurlencode( $redirect );
 	}
 	?>
-	<div class="if-auth__social">
-		<?php echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup from Nextend Social Login's own shortcode. ?>
-		<p class="if-auth__or"><span><?php esc_html_e( 'or', 'internfeel' ); ?></span></p>
-	</div>
+	<a class="if-btn if-btn--block" href="<?php echo esc_url( add_query_arg( $args, wp_login_url() ) ); ?>"><?php esc_html_e( 'Continue with Google', 'internfeel' ); ?></a>
+	<div class="if-auth__or"><?php esc_html_e( 'or with your email', 'internfeel' ); ?></div>
 	<?php
+}
+
+/**
+ * Print the footer's social links. None are shown until their profile URLs are set through the
+ * if_social_links filter, so the footer never links to a page that does not exist.
+ */
+function if_social_links(): void {
+	$icons = array(
+		'linkedin'  => array( __( 'InternFeel on LinkedIn', 'internfeel' ), '<rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-4a2.5 2.5 0 0 1 5 0v4M11 10v7"/>' ),
+		'instagram' => array( __( 'InternFeel on Instagram', 'internfeel' ), '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/>' ),
+		'facebook'  => array( __( 'InternFeel on Facebook', 'internfeel' ), '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>' ),
+		'threads'   => array( __( 'InternFeel on Threads', 'internfeel' ), '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>' ),
+	);
+
+	/**
+	 * Footer social profile URLs, keyed linkedin, instagram, facebook and threads.
+	 *
+	 * @param array<string, string> $urls Profile URLs.
+	 */
+	$urls = (array) apply_filters( 'if_social_links', array() );
+	$urls = array_filter( array_intersect_key( $urls, $icons ) );
+	if ( array() === $urls ) {
+		return;
+	}
+
+	$svg = array(
+		'rect'   => array(
+			'x'      => true,
+			'y'      => true,
+			'width'  => true,
+			'height' => true,
+			'rx'     => true,
+		),
+		'path'   => array( 'd' => true ),
+		'circle' => array(
+			'cx' => true,
+			'cy' => true,
+			'r'  => true,
+		),
+	);
+
+	echo '<div class="if-social">';
+	foreach ( $urls as $network => $url ) {
+		printf(
+			'<a href="%1$s" aria-label="%2$s"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true">%3$s</svg></a>',
+			esc_url( (string) $url ),
+			esc_attr( $icons[ $network ][0] ),
+			wp_kses( $icons[ $network ][1], $svg )
+		);
+	}
+	echo '</div>';
 }
 
 /**

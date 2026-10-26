@@ -156,8 +156,7 @@ class AuthTest extends WP_UnitTestCase {
 		$this->assertFalse( Profile::is_complete( $id ) );
 
 		$fields  = array(
-			'first_name'      => 'Priya',
-			'last_name'       => 'Sharma',
+			'full_name'       => 'Priya Sharma',
 			'course'          => 'BTech Computer Science',
 			'graduation_year' => 2027,
 			'is_under_18'     => '0',
@@ -173,7 +172,10 @@ class AuthTest extends WP_UnitTestCase {
 		$this->assertSame( 200, rest_do_request( $complete )->get_status() );
 
 		$this->assertTrue( Profile::is_complete( $id ) );
-		$this->assertSame( 'Priya S.', get_userdata( $id )->display_name );
+		// A blank display name shows the full name (sign-off decision, 26 October 2026).
+		$this->assertSame( 'Priya Sharma', get_userdata( $id )->display_name );
+		$this->assertSame( 'Priya Sharma', Profile::get( $id )['full_name'] );
+		$this->assertSame( '', Profile::get( $id )['display_name'] );
 		$this->assertFalse( Profile::get( $id )['is_under_18'] );
 	}
 
@@ -184,7 +186,7 @@ class AuthTest extends WP_UnitTestCase {
 		$request = new WP_REST_Request( 'POST', '/internfeel/v1/me' );
 		$request->set_body_params(
 			array(
-				'first_name'      => 'Priya',
+				'full_name'       => 'Priya Sharma',
 				'college'         => 'IIT Bombay',
 				'course'          => 'BTech',
 				'graduation_year' => 2027,
@@ -206,5 +208,26 @@ class AuthTest extends WP_UnitTestCase {
 
 	public function test_password_reset_email_comes_from_no_reply(): void {
 		$this->assertSame( constant( 'IF_MAIL_FROM' ), apply_filters( 'wp_mail_from', 'wordpress@localhost' ) );
+	}
+
+	public function test_a_chosen_display_name_is_kept(): void {
+		$id = self::factory()->user->create( array( 'role' => Roles::STUDENT ) );
+		wp_set_current_user( $id );
+
+		$request = new WP_REST_Request( 'POST', '/internfeel/v1/me' );
+		$request->set_body_params(
+			array(
+				'full_name'       => 'Priya Sharma',
+				'display_name'    => 'Priya from Pune',
+				'college'         => 'IIT Bombay',
+				'course'          => 'BTech',
+				'graduation_year' => 2027,
+				'is_under_18'     => '0',
+			)
+		);
+		rest_do_request( $request );
+
+		$this->assertSame( 'Priya from Pune', get_userdata( $id )->display_name );
+		$this->assertSame( 'Priya from Pune', Profile::get( $id )['display_name'] );
 	}
 }

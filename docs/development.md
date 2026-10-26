@@ -151,6 +151,7 @@ Each environment's `wp-config.php` sets these constants. They are listed, with f
 | `IF_MAIL_FROM`, `IF_MAIL_FROM_NAME` | Sender of the password-reset email: `no-reply@internfeel.com`, `InternFeel` (sent through cPanel mail) |
 | `IF_TURNSTILE_SITE_KEY`, `IF_TURNSTILE_SECRET` | Cloudflare Turnstile, after launch; leave unset until then and the forms skip the check |
 | `IF_ADSENSE_CLIENT` | `ca-pub-…`; empty on staging so no ads show |
+| `IF_NEWSLETTER_ENDPOINT` | Form URL of the newsletter service (not chosen yet); the newsletter band is hidden until it is set |
 | `IF_GA4_ID` | Production only |
 
 Google sign-in keys are stored in Nextend Social Login's own settings in wp-admin. Each environment gets its own OAuth redirect URI.

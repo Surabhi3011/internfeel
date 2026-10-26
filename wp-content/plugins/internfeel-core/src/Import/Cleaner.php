@@ -7,6 +7,9 @@
 
 declare(strict_types=1);
 
+// PHP's DOM classes name their properties in camelCase (parentNode, textContent, ...); they cannot be renamed.
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
 namespace InternFeel\Import;
 
 defined( 'ABSPATH' ) || exit;
@@ -173,7 +176,7 @@ final class Cleaner {
 				$link->setAttribute( 'href', $rewritten );
 				// Links whose text spells out the old address show the new one instead.
 				$text = trim( (string) $link->textContent );
-				if ( $text === $href || $text === trim( $href ) ) {
+				if ( trim( $href ) === $text ) {
 					$link->textContent = $rewritten;
 				}
 			} elseif ( 1 === preg_match( '#^https?://#i', $href ) ) {

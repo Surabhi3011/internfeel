@@ -27,47 +27,47 @@ final class Mapping {
 	 */
 	private const CATEGORIES = array(
 		// What kind of post it is.
-		'interviews'           => array( 'kind' => 'experience' ),
-		'national-internships' => array(
+		'interviews'                     => array( 'kind' => 'experience' ),
+		'national-internships'           => array(
 			'kind'    => 'experience',
 			'country' => 'India',
 		),
-		'international-internships' => array( 'kind' => 'experience' ),
-		'research-interviews'       => array(
+		'international-internships'      => array( 'kind' => 'experience' ),
+		'research-interviews'            => array(
 			'kind' => 'experience',
 			'type' => 'research',
 		),
-		'anonymous-interviews' => array(
+		'anonymous-interviews'           => array(
 			'kind'      => 'experience',
 			'anonymous' => true,
 		),
-		'short-interviews'      => array( 'kind' => 'experience' ),
-		'internship-narrative'  => array( 'kind' => 'experience' ),
-		'internship-guide'      => array( 'kind' => 'article' ),
-		'blog'                  => array( 'kind' => 'article' ),
+		'short-interviews'               => array( 'kind' => 'experience' ),
+		'internship-narrative'           => array( 'kind' => 'experience' ),
+		'internship-guide'               => array( 'kind' => 'article' ),
+		'blog'                           => array( 'kind' => 'article' ),
 
 		// Internship type.
-		'research-internships'  => array( 'type' => 'research' ),
-		'summer-fellowship'     => array( 'type' => 'research' ),
-		'institutes'            => array( 'type' => 'research' ),
-		'companies'             => array( 'type' => 'industry' ),
-		'industrial-internship' => array( 'type' => 'industry' ),
-		'marketing-internship'  => array(
+		'research-internships'           => array( 'type' => 'research' ),
+		'summer-fellowship'              => array( 'type' => 'research' ),
+		'institutes'                     => array( 'type' => 'research' ),
+		'companies'                      => array( 'type' => 'industry' ),
+		'industrial-internship'          => array( 'type' => 'industry' ),
+		'marketing-internship'           => array(
 			'type'  => 'industry',
 			'field' => 'Marketing',
 		),
-		'operations-internship' => array(
+		'operations-internship'          => array(
 			'type'  => 'industry',
 			'field' => 'Management',
 		),
-		'legal-internship' => array( 'field' => 'Law' ),
-		'government'       => array( 'type' => 'government' ),
-		'social-sector'    => array( 'type' => 'ngo' ),
-		'virtual'          => array(
+		'legal-internship'               => array( 'field' => 'Law' ),
+		'government'                     => array( 'type' => 'government' ),
+		'social-sector'                  => array( 'type' => 'ngo' ),
+		'virtual'                        => array(
 			'type' => 'virtual',
 			'mode' => 'remote',
 		),
-		'virtual-internships' => array(
+		'virtual-internships'            => array(
 			'type' => 'virtual',
 			'mode' => 'remote',
 		),
@@ -77,49 +77,49 @@ final class Mapping {
 		),
 
 		// Field of study.
-		'engineering'                  => array( 'field' => 'Engineering' ),
-		'b-tech'                       => array( 'field' => 'Engineering' ),
-		'computer-science'             => array( 'field' => 'Computer Science' ),
-		'electrical-engineering'       => array( 'field' => 'Electrical Engineering' ),
-		'civil-engineering'            => array( 'field' => 'Civil Engineering' ),
-		'marine-and-ocean-engineering' => array( 'field' => 'Marine and Ocean Engineering' ),
-		'law'                          => array( 'field' => 'Law' ),
-		'ara'                          => array( 'field' => 'Law' ),
-		'management'                   => array( 'field' => 'Management' ),
-		'economics'                    => array( 'field' => 'Economics' ),
-		'commerce'                     => array( 'field' => 'Commerce' ),
-		'biotechnology'                => array( 'field' => 'Biotechnology' ),
-		'fashion'                      => array( 'field' => 'Fashion' ),
-		'politics'                     => array( 'field' => 'Political Science' ),
-		'digital-marketing'            => array( 'field' => 'Marketing' ),
-		'pr'                           => array( 'field' => 'Marketing' ),
-		'content-writing'              => array( 'field' => 'Content Writing' ),
-		'graphic-designing'            => array( 'field' => 'Design' ),
+		'engineering'                    => array( 'field' => 'Engineering' ),
+		'b-tech'                         => array( 'field' => 'Engineering' ),
+		'computer-science'               => array( 'field' => 'Computer Science' ),
+		'electrical-engineering'         => array( 'field' => 'Electrical Engineering' ),
+		'civil-engineering'              => array( 'field' => 'Civil Engineering' ),
+		'marine-and-ocean-engineering'   => array( 'field' => 'Marine and Ocean Engineering' ),
+		'law'                            => array( 'field' => 'Law' ),
+		'ara'                            => array( 'field' => 'Law' ),
+		'management'                     => array( 'field' => 'Management' ),
+		'economics'                      => array( 'field' => 'Economics' ),
+		'commerce'                       => array( 'field' => 'Commerce' ),
+		'biotechnology'                  => array( 'field' => 'Biotechnology' ),
+		'fashion'                        => array( 'field' => 'Fashion' ),
+		'politics'                       => array( 'field' => 'Political Science' ),
+		'digital-marketing'              => array( 'field' => 'Marketing' ),
+		'pr'                             => array( 'field' => 'Marketing' ),
+		'content-writing'                => array( 'field' => 'Content Writing' ),
+		'graphic-designing'              => array( 'field' => 'Design' ),
 
 		// Location. Continents (asia, europe, africa) are too broad to set a country.
-		'usa'                          => array( 'country' => 'United States' ),
-		'canada'                       => array( 'country' => 'Canada' ),
-		'france'                       => array( 'country' => 'France' ),
-		'germany'                      => array( 'country' => 'Germany' ),
-		'denmark'                      => array( 'country' => 'Denmark' ),
-		'italy'                        => array( 'country' => 'Italy' ),
-		'hong-kong'                    => array( 'country' => 'Hong Kong' ),
+		'usa'                            => array( 'country' => 'United States' ),
+		'canada'                         => array( 'country' => 'Canada' ),
+		'france'                         => array( 'country' => 'France' ),
+		'germany'                        => array( 'country' => 'Germany' ),
+		'denmark'                        => array( 'country' => 'Denmark' ),
+		'italy'                          => array( 'country' => 'Italy' ),
+		'hong-kong'                      => array( 'country' => 'Hong Kong' ),
 
 		// Organisations named by a category. "iit" is left out: it does not say which IIT.
-		'iisc'                         => array(
+		'iisc'                           => array(
 			'organisation' => 'Indian Institute of Science',
 			'country'      => 'India',
 		),
-		'rbi' => array(
+		'rbi'                            => array(
 			'organisation' => 'Reserve Bank of India',
 			'type'         => 'government',
 			'country'      => 'India',
 		),
-		'google' => array(
+		'google'                         => array(
 			'organisation' => 'Google',
 			'type'         => 'industry',
 		),
-		'nift' => array(
+		'nift'                           => array(
 			'organisation' => 'National Institute of Fashion Technology',
 			'field'        => 'Fashion',
 			'country'      => 'India',

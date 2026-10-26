@@ -35,8 +35,9 @@ final class Command {
 	 *
 	 *     wp internfeel import --dir=/path/to/content --dry-run --report=report.csv
 	 *
-	 * @param list<string>          $args       Positional arguments (none).
+	 * @param string[]              $args       Positional arguments (none).
 	 * @param array<string, string> $assoc_args Options.
+	 * @phpstan-param list<string> $args
 	 */
 	public function __invoke( array $args, array $assoc_args ): void {
 		unset( $args );

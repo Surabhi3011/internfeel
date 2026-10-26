@@ -3,7 +3,11 @@ import AxeBuilder from '@axe-core/playwright';
 
 // WCAG 2.2 AA checks with axe (docs/development.md section 7). Experience, submit and dashboard
 // pages are added here as they are built.
-const pages = [ { name: 'home', path: '/' } ];
+const pages = [
+	{ name: 'home', path: '/' },
+	{ name: 'sign-up', path: '/signup/' },
+	{ name: 'log-in', path: '/login/' },
+];
 
 for ( const { name, path } of pages ) {
 	test( `${ name } has no serious accessibility issues @a11y`, async ( { page } ) => {

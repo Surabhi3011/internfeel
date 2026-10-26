@@ -82,6 +82,14 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Migration | Posts, comments and photos come across; Surabhi reviews every migrated experience |
 | Beta testers | Students lined up for 5–7 November |
 | Analytics | GA4 (free) |
+| Design | Approved at Gate 1 on 26 October 2026: the InternFeel design system and page designs in `docs/approved-designs/`, which replace the earlier mock-ups |
+| Fonts | Schibsted Grotesk (headings), Atkinson Hyperlegible Next (reading text), IBM Plex Mono (numbers and codes), all self-hosted under the SIL Open Font License; no requests to Google |
+| Footer | On the light teal tint, never charcoal, because the logo has no reversed version |
+| Verified count | Shown on the home page trust strip from launch, starting at 0 |
+| Migrated view counts | Migrated experiences start at 0 views; there is no historical view data |
+| Display name | Free text the student types; left blank, the full name is shown (no auto-generated "First L."). The full name is always printed on certificates |
+| Newsletter | Sign-up band above the footer on every page, posting to a configurable endpoint (`IF_NEWSLETTER_ENDPOINT`); email service still open (section 10) |
+| Story questions | Seven standard questions in step 2 of the submission form; the first four are required until Surabhi confirms (section 10) |
 
 ## 5. Feature specifications
 
@@ -305,3 +313,5 @@ gantt
 2. **Legal details** for the policies: the business's postal address, its legal form (for example sole proprietorship, LLP or private limited), and which person is the grievance officer.
 3. **Sponsored-ad pricing:** to discuss later.
 4. **Past contributors:** whether to invite original interviewees to claim their experiences; decide later.
+5. **Required story questions (Surabhi):** which of the seven standard questions are required, and any minimum length. Until confirmed, the first four are required.
+6. **Newsletter email service (before 5 November):** a free-tier service for the sign-up band. The band stays hidden until its form URL is set as `IF_NEWSLETTER_ENDPOINT` in `wp-config.php`.

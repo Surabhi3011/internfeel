@@ -129,6 +129,10 @@ npx wp-env stop
 - wp-env 11 also has an experimental Docker-free mode, `wp-env start --runtime=playground`. We use `npm run playground` instead, because it supports mounts and blueprints.
 - **WordPress version:** 7.1.3 is pinned, the current release on 26 October 2026. The brief said 7.0, but WordPress.org lists the newest 7.0 release (7.0.7) as "outdated", so we moved to 7.1 on day 1 (plan.md section 4). When a 7.1.x security release comes out, bump the pin in `.wp-env.json`; Playground's `--wp=7.1` picks up the newest 7.1.x by itself.
 
+**Unit and integration tests (PHPUnit):** `composer install`, then `npm run test:unit`. PHPUnit 9.6 and the PHPUnit Polyfills come from the repo's Composer dev tools. They run inside the wp-env `cli` container, which provides the WordPress test suite at `WP_TESTS_DIR`; the repo is mapped into the container as `internfeel-dev` for this. **The test suite reinstalls WordPress in the wp-env database, so it resets your local wp-env site.** CI runs it in its own job.
+
+**Rate limits on local sites** are ten times the real ones, because every test run comes from the same address. Staging and production use the real limits.
+
 ### 3.3 Seed data
 
 `tools/seed` creates 2 admins, 10 students (including one under 18), 20 organisations and programmes, and 30 experiences across all statuses, verification states and referral cases. Run it on local and staging only, never on production.
@@ -147,6 +151,7 @@ Each environment's `wp-config.php` sets these constants. They are listed, with f
 | `IF_MAIL_FROM`, `IF_MAIL_FROM_NAME` | Sender of the password-reset email: `no-reply@internfeel.com`, `InternFeel` (sent through cPanel mail) |
 | `IF_TURNSTILE_SITE_KEY`, `IF_TURNSTILE_SECRET` | Cloudflare Turnstile, after launch; leave unset until then and the forms skip the check |
 | `IF_ADSENSE_CLIENT` | `ca-pub-…`; empty on staging so no ads show |
+| `IF_NEWSLETTER_ENDPOINT` | Form URL of the newsletter service (not chosen yet); the newsletter band is hidden until it is set |
 | `IF_GA4_ID` | Production only |
 
 Google sign-in keys are stored in Nextend Social Login's own settings in wp-admin. Each environment gets its own OAuth redirect URI.
@@ -180,6 +185,14 @@ Done on day 1 with Surabhi's cPanel access.
 7. **Free plugins:** install LiteSpeed Cache, Wordfence, Two-Factor, Yoast SEO, Nextend Social Login, CookieYes and UpdraftPlus. Simple Cloudflare Turnstile is added after launch.
 8. **Email:** create the `contact@internfeel.com` (public) and `no-reply@internfeel.com` mailboxes. In cPanel → **Email Deliverability**, fix anything flagged for internfeel.com (SPF and DKIM). DNS is managed in the VaporHost cPanel Zone Editor, so Email Deliverability can apply the records directly.
 9. **Git:** connect the repository (section 6).
+
+### 5.1 Lessons from setting up staging (26 October 2026)
+
+Staging went live on day 1 (WordPress 7.1.3 on PHP 8.5, the InternFeel theme and InternFeel Core active, deployed from `staging` through cPanel Git). These are the snags to avoid next time, including on production.
+
+1. **Softaculous installer:** leave **In Directory** empty, so WordPress goes straight into the domain's document root, and untick every bundled plugin. Softaculous adds Loginizer and CookieAdmin by default; we use Wordfence and CookieYes instead.
+2. **PHP version gets reset:** after any WordPress reinstall or Directory Privacy change, re-apply PHP 8.5 (`ea-php85`) in **MultiPHP Manager**. Both rewrite the site's `.htaccess` and drop the PHP handler lines, so the site falls back to the server's default PHP, and the theme reports an incompatible PHP version.
+3. **First deploy:** cPanel deploys only work once `.cpanel.yml` is on the branch being deployed. Merge the deploy setup into `staging` (or `main`) before the first clone, then clone, switch the checked-out branch, **Update from Remote** and **Deploy HEAD Commit**.
 
 ---
 
@@ -251,7 +264,7 @@ Merging into `main` needs all four jobs green and Surabhi's approval.
 
 ## 8. Database changes
 
-- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `plugins_loaded`, it runs any pending upgrade steps, written with `dbDelta` and in order.
+- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `init` (after the content types are registered, so rewrite rules can be flushed), it runs any pending upgrade steps, written with `dbDelta` and in order.
 - **Additive only:** add tables and columns, and never rename or drop them in the same release. A later release removes unused columns once nothing reads them.
 - **Meta changes** run as batched upgrade steps that are safe to run twice.
 - **Before a production deploy that includes an upgrade step:** run an UpdraftPlus database backup.

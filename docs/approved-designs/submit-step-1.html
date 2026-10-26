@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit, step 1 · InternFeel approved design</title>
+<link rel="stylesheet" href="system/tokens.css">
+<link rel="stylesheet" href="system/bundle.css">
+<style>
+body{margin:0}
+a{color:#297777}a:hover{color:#1f5c5c}
+.pg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pg-wrap{max-width:var(--if-content);margin-inline:auto;padding-inline:var(--if-space-4)}
+.pg-narrow{display:none}
+.pg-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start}
+.pg-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pg-money{display:flex;align-items:center;border:1px solid var(--if-line-strong);border-radius:var(--if-radius);background:var(--if-surface)}
+.pg-money span{padding:0 4px 0 14px;font-weight:700;color:var(--if-muted)}
+.pg-money input{border:0 !important;outline-offset:2px}
+.pg-hsearch{max-width:220px;padding:3px 3px 3px 14px}
+.pg-hsearch input{font-size:15px;line-height:22px}
+@media (max-width:1000px){.pg-layout{grid-template-columns:1fr}.pg-hsearch{display:none}}
+@media (max-width:640px){
+.pg-wide{display:none}.pg-narrow{display:inline-flex}
+.pg-two{grid-template-columns:1fr}
+.heading-1.pg-title{font-size:28px;line-height:34px}
+.pg-stepper li span{font-size:0}
+.pg-stepper li[aria-current="step"] span{font-size:13px}
+.pg-actions{flex-direction:column-reverse;align-items:stretch}
+}
+@media (max-width:1000px){.if-bell.pg-narrow{display:inline-grid}}
+</style>
+</head>
+<body>
+<div style="background: var(--if-canvas); color: var(--if-ink); font-family: var(--font-body); min-height: 100vh">
+
+<header class="if-header"><div class="if-header__inner">
+<a class="if-header__logo" href="home.html"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"></a>
+<nav class="if-nav" aria-label="Main"><a href="home.html#browse">Experiences</a><a href="home.html#browse">Programmes</a><a href="home.html#lists">Listicles</a><a href="home.html#how">About</a></nav>
+<div class="if-header__actions">
+<form class="if-search pg-hsearch" role="search" action="home.html"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><label class="pg-sr" for="hdr-q-s">Search experiences</label><input id="hdr-q-s" type="search" placeholder="Search"></form>
+<button class="if-bell" type="button" aria-label="Notifications, 3 unread"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg><span class="if-bell__count">3</span></button>
+<a class="pg-wide" href="dashboard.html" aria-label="Your dashboard" style="text-decoration: none; border-radius: 50%"><span class="if-avatar">RM</span></a>
+<button class="if-bell pg-narrow" type="button" aria-label="Menu"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+</div></header>
+
+<main class="pg-wrap" style="padding-top: 32px; padding-bottom: 72px; display: grid; gap: 28px">
+<div style="display: grid; gap: 8px; max-width: 46rem">
+<a class="small" href="dashboard.html">‹ Back to your dashboard</a>
+<h1 class="heading-1 pg-title" style="margin: 0">Share your internship experience</h1>
+<p style="margin: 0; color: var(--if-muted)">Takes about 20 minutes. Your draft saves every 10 seconds, so you can stop and come back.</p>
+</div>
+
+<ol class="if-stepper pg-stepper" aria-label="Progress" style="max-width: 46rem">
+<li aria-current="step"><span>Where and what</span></li>
+<li><span>Your story</span></li>
+<li><span>Ratings and advice</span></li>
+<li><span>Review and submit</span></li>
+</ol>
+
+<div class="pg-layout">
+<form style="display: grid; gap: 24px; min-width: 0; padding: 32px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface)" action="#">
+<div style="display: grid; gap: 4px"><h2 class="heading-2" style="margin: 0">Where and what</h2><p class="small" style="margin: 0; color: var(--if-muted)">Fields marked <span style="color: var(--if-danger)">*</span> are required.</p></div>
+
+<div class="if-field">
+<label for="f-org">Organisation <span class="if-req">*</span></label>
+<input id="f-org" type="text" value="Indian Institute of Science" autocomplete="off">
+<span class="if-field__help">Pick from the list or add a new one.</span>
+</div>
+
+<div class="if-field">
+<label for="f-prog">Programme or role</label>
+<input id="f-prog" type="text" value="IAS Summer Research Fellowship">
+<span class="if-field__help">Optional. The fellowship, scheme or job title, if it had one.</span>
+</div>
+
+<fieldset class="if-field" style="border: 0; margin: 0; padding: 0">
+<legend style="margin-bottom: 6px">Type <span class="if-req">*</span></legend>
+<div class="if-chips">
+<button class="if-chip" type="button" aria-pressed="true">Research</button>
+<button class="if-chip" type="button" aria-pressed="false">Industry</button>
+<button class="if-chip" type="button" aria-pressed="false">Government</button>
+<button class="if-chip" type="button" aria-pressed="false">NGO</button>
+<button class="if-chip" type="button" aria-pressed="false">Virtual</button>
+</div>
+</fieldset>
+
+<div class="pg-two">
+<div class="if-field">
+<label for="f-field">Field <span class="if-req">*</span></label>
+<input id="f-field" type="text" value="Ecology">
+</div>
+<fieldset class="if-field" style="border: 0; margin: 0; padding: 0">
+<legend style="margin-bottom: 6px">Mode <span class="if-req">*</span></legend>
+<div class="if-segment">
+<label><input type="radio" name="mode" checked><span>On-site</span></label>
+<label><input type="radio" name="mode"><span>Remote</span></label>
+<label><input type="radio" name="mode"><span>Hybrid</span></label>
+</div>
+</fieldset>
+</div>
+
+<div class="pg-two">
+<div class="if-field">
+<label for="f-city">City <span class="if-req">*</span></label>
+<input id="f-city" type="text" value="Bengaluru">
+</div>
+<div class="if-field">
+<label for="f-country">Country <span class="if-req">*</span></label>
+<input id="f-country" type="text" value="India">
+</div>
+</div>
+
+<div class="pg-two">
+<div class="if-field">
+<label for="f-start">Start month <span class="if-req">*</span></label>
+<input id="f-start" type="month" value="2026-05">
+</div>
+<div class="if-field is-error">
+<label for="f-weeks">Duration in weeks <span class="if-req">*</span></label>
+<input id="f-weeks" type="number" value="0" aria-invalid="true" aria-describedby="f-weeks-err">
+<span class="if-field__error" id="f-weeks-err">Enter a duration between 1 and 104 weeks.</span>
+</div>
+</div>
+
+<div class="pg-two">
+<fieldset class="if-field" style="border: 0; margin: 0; padding: 0">
+<legend style="margin-bottom: 6px">Paid or unpaid <span class="if-req">*</span></legend>
+<div class="if-segment">
+<label><input type="radio" name="paid" checked><span>Paid</span></label>
+<label><input type="radio" name="paid"><span>Unpaid</span></label>
+</div>
+</fieldset>
+<div class="if-field">
+<label for="f-stipend">Stipend a month</label>
+<div class="pg-money"><span aria-hidden="true">₹</span><input id="f-stipend" type="number" value="12500"></div>
+<span class="if-field__help">Optional. Cards show it as a band: under ₹10k, ₹10k–25k or above ₹25k.</span>
+</div>
+</div>
+
+<fieldset class="if-field" style="border: 0; margin: 0; padding: 0">
+<legend style="margin-bottom: 6px">How hard was it to get in? <span class="if-req">*</span></legend>
+<div class="if-segment">
+<label><input type="radio" name="hard"><span>1</span></label>
+<label><input type="radio" name="hard"><span>2</span></label>
+<label><input type="radio" name="hard"><span>3</span></label>
+<label><input type="radio" name="hard" checked><span>4</span></label>
+<label><input type="radio" name="hard"><span>5</span></label>
+</div>
+<span class="if-field__help">1 is open to most applicants, 5 is very competitive.</span>
+</fieldset>
+
+<div class="pg-actions" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 20px; border-top: 1px solid var(--if-line)">
+<span class="small" style="color: var(--if-muted)">Draft saved 10 seconds ago</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button class="if-btn if-btn--ghost" type="button">Save and exit</button>
+<button class="if-btn if-btn--primary" type="submit">Next: your story<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+</div>
+</form>
+
+<aside style="display: grid; gap: 20px; min-width: 0">
+<section style="padding: 24px; border-radius: var(--if-radius); background: var(--if-surface-tint); display: grid; gap: 12px">
+<h2 class="heading-3" style="margin: 0">Before you start</h2>
+<ul style="margin: 0; padding-left: 20px; display: grid; gap: 10px">
+<li>Keep your offer letter or certificate handy. You can add it as proof in step 4, or later from your dashboard.</li>
+<li>Write the way you'd tell a junior: dates, money, the tools you used.</li>
+<li>Posting anonymously hides only your name, photo and LinkedIn. Your college, course and the details stay visible.</li>
+<li>We review every experience within 24 hours. Your certificate is ready as soon as it's published.</li>
+</ul>
+</section>
+<section style="padding: 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 12px">
+<h2 class="heading-3" style="margin: 0">The questions in step 2</h2>
+<ol class="small" style="margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--if-ink)">
+<li>Tell us about yourself. Where and what are you studying?</li>
+<li>How did you apply, and what were the stipend, duration and place?</li>
+<li>How competitive was the selection, and what helped you get in?</li>
+<li>What work did you do during the internship?</li>
+<li>What was good about the experience, and what was hard?</li>
+<li>What are your key takeaways?</li>
+<li>Has it changed what you want to do next?</li>
+</ol>
+</section>
+</aside>
+</div>
+</main>
+
+<footer class="if-footer"><div class="if-footer__inner">
+<div class="if-footer__cols">
+<div><h2>Explore</h2><ul><li><a href="home.html#browse">Experiences</a></li><li><a href="home.html#browse">Programmes</a></li><li><a href="home.html#lists">Listicles</a></li><li><a href="home.html#browse">Verified experiences</a></li></ul></div>
+<div><h2>Contribute</h2><ul><li><a href="submit-step-1.html">Submit experience</a></li><li><a href="dashboard.html">Invite friends</a></li><li><a href="certificate.html">Contributor certificate</a></li><li><a href="#">Content guidelines</a></li></ul></div>
+<div><h2>Company</h2><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Advertise with us</a></li><li><a href="#">Report a problem</a></li></ul></div>
+<div><h2>Legal</h2><ul><li><a href="#">Privacy policy</a></li><li><a href="#">Terms of use</a></li><li><a href="#">Cookie settings</a></li><li><a href="#">Verify a certificate</a></li></ul></div>
+</div>
+<div class="if-footer__base">
+<div class="if-footer__brand"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"><a href="mailto:contact@internfeel.com">contact@internfeel.com</a></div>
+<div class="if-social">
+<a href="#" aria-label="InternFeel on LinkedIn"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-4a2.5 2.5 0 0 1 5 0v4M11 10v7"/></svg></a>
+<a href="#" aria-label="InternFeel on Instagram"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/></svg></a>
+<a href="#" aria-label="InternFeel on Facebook"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+<a href="#" aria-label="InternFeel on Threads"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></a>
+</div>
+<span>© 2026 InternFeel</span>
+</div>
+</div></footer>
+
+</div>
+</body>
+</html>

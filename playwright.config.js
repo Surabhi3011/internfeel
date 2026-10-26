@@ -6,6 +6,9 @@ export default defineConfig( {
 	fullyParallel: false,
 	forbidOnly: !! process.env.CI,
 	retries: process.env.CI ? 1 : 0,
+	// Every request takes seconds on Playground (WebAssembly PHP), so allow for it locally.
+	timeout: 90_000,
+	expect: { timeout: 15_000 },
 	reporter: process.env.CI ? [ [ 'github' ], [ 'html', { open: 'never' } ] ] : 'list',
 	use: {
 		baseURL: process.env.WP_BASE_URL || 'http://localhost:8888',

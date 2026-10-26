@@ -13,7 +13,8 @@
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
 		"test:e2e": "playwright test --grep-invert @a11y",
-		"test:a11y": "playwright test --grep @a11y"
+		"test:a11y": "playwright test --grep @a11y",
+		"test:unit": "wp-env run cli --env-cwd=internfeel-dev vendor/bin/phpunit"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "4.14.0",

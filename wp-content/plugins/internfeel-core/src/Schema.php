@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace InternFeel;
 
+use InternFeel\Auth\Roles;
+use InternFeel\Content\Pages;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -22,7 +25,8 @@ final class Schema {
 	public const OPTION = 'if_db_version';
 
 	/**
-	 * Run every step newer than the stored version. Called on activation and on plugins_loaded.
+	 * Run every step newer than the stored version. Called on activation and on init (after the
+	 * content types are registered, so rewrite rules can be flushed).
 	 */
 	public static function upgrade(): void {
 		$current = (int) get_option( self::OPTION, 0 );
@@ -40,11 +44,70 @@ final class Schema {
 	}
 
 	/**
-	 * Upgrade steps keyed by schema version. The moderation log table arrives with the data model on day 2.
+	 * The current schema version, for tests and diagnostics.
+	 *
+	 * @return int
+	 */
+	public static function latest(): int {
+		return (int) max( array_keys( self::steps() ) );
+	}
+
+	/**
+	 * Upgrade steps keyed by schema version.
 	 *
 	 * @return array<int, callable(): void>
 	 */
 	private static function steps(): array {
-		return array();
+		return array(
+			// Day 2: data model, roles, archive user, sign-up and log-in pages, /slug/ permalinks.
+			1 => static function (): void {
+				self::create_moderation_log();
+				Roles::install();
+				Pages::ensure( 'signup', __( 'Sign up', 'internfeel' ) );
+				Pages::ensure( 'login', __( 'Log in', 'internfeel' ) );
+				self::use_slug_permalinks();
+			},
+		);
+	}
+
+	/**
+	 * The moderation log: every admin decision and every reader report (architecture.md 4.5).
+	 */
+	private static function create_moderation_log(): void {
+		global $wpdb;
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		$table   = $wpdb->prefix . 'if_moderation_log';
+		$collate = $wpdb->get_charset_collate();
+
+		// dbDelta needs this exact layout: one column per line and two spaces after PRIMARY KEY.
+		dbDelta(
+			"CREATE TABLE {$table} (
+id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+actor_id bigint(20) unsigned NOT NULL,
+target_type varchar(20) NOT NULL,
+target_id bigint(20) unsigned NOT NULL,
+action varchar(40) NOT NULL,
+reason varchar(255) NULL,
+note text NULL,
+created_at datetime NOT NULL,
+PRIMARY KEY  (id),
+KEY target (target_type,target_id),
+KEY actor (actor_id,action)
+) {$collate};"
+		);
+	}
+
+	/**
+	 * Experiences keep the old site's /slug/ URLs (plan.md section 4), so posts use /%postname%/.
+	 */
+	private static function use_slug_permalinks(): void {
+		global $wp_rewrite;
+
+		if ( '/%postname%/' !== get_option( 'permalink_structure' ) ) {
+			$wp_rewrite->set_permalink_structure( '/%postname%/' );
+		}
+		flush_rewrite_rules( false );
 	}
 }

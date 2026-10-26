@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'IF_THEME_VERSION', '0.1.0' );
+define( 'IF_THEME_VERSION', '0.2.0' );
 
 require_once __DIR__ . '/inc/template-tags.php';
 
@@ -32,10 +32,47 @@ function if_theme_setup(): void {
 add_action( 'after_setup_theme', 'if_theme_setup' );
 
 /**
- * Enqueue the stylesheet and the front-end ES module. No jQuery, no build step.
+ * Enqueue the design system (fonts, tokens, components), the theme layer and the front-end ES module.
+ * No jQuery, no build step.
  */
 function if_theme_assets(): void {
-	wp_enqueue_style( 'internfeel', get_stylesheet_uri(), array(), IF_THEME_VERSION );
+	wp_enqueue_style( 'internfeel-fonts', get_theme_file_uri( 'assets/css/fonts.css' ), array(), IF_THEME_VERSION );
+	wp_enqueue_style( 'internfeel-tokens', get_theme_file_uri( 'assets/css/tokens.css' ), array( 'internfeel-fonts' ), IF_THEME_VERSION );
+	wp_enqueue_style( 'internfeel-components', get_theme_file_uri( 'assets/css/components.css' ), array( 'internfeel-tokens' ), IF_THEME_VERSION );
+	wp_enqueue_style( 'internfeel', get_stylesheet_uri(), array( 'internfeel-components' ), IF_THEME_VERSION );
 	wp_enqueue_script_module( 'internfeel-main', get_theme_file_uri( 'assets/js/main.js' ), array(), IF_THEME_VERSION );
+
+	if ( is_page( array( 'signup', 'login' ) ) ) {
+		wp_enqueue_script_module( 'internfeel-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), IF_THEME_VERSION );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'if_theme_assets' );
+
+/**
+ * Preload the reading font on every page, and the hero's heading weight on the home page only.
+ */
+function if_theme_preload_fonts(): void {
+	$fonts = array( 'atkinson-hyperlegible-next-400' );
+	if ( is_front_page() ) {
+		$fonts[] = 'schibsted-grotesk-800';
+	}
+
+	foreach ( $fonts as $font ) {
+		printf(
+			'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+			esc_url( get_theme_file_uri( "assets/fonts/{$font}.woff2" ) )
+		);
+	}
+}
+add_action( 'wp_head', 'if_theme_preload_fonts', 1 );
+
+/**
+ * Favicon from the mark, until a site icon is set in wp-admin.
+ */
+function if_theme_favicon(): void {
+	if ( has_site_icon() ) {
+		return;
+	}
+	printf( '<link rel="icon" href="%s" type="image/png">' . "\n", esc_url( get_theme_file_uri( 'assets/img/if-mark.png' ) ) );
+}
+add_action( 'wp_head', 'if_theme_favicon' );

@@ -43,5 +43,5 @@ spl_autoload_register(
 	}
 );
 
-register_activation_hook( __FILE__, array( Schema::class, 'upgrade' ) );
+register_activation_hook( __FILE__, array( Plugin::class, 'activate' ) );
 add_action( 'plugins_loaded', array( Plugin::class, 'boot' ) );

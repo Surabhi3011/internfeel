@@ -3,7 +3,7 @@ Theme Name:        InternFeel
 Theme URI:         https://internfeel.com
 Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
 Author:            InternFeel
-Version:           0.1.0
+Version:           0.2.0
 Requires at least: 7.1
 Tested up to:      7.1
 Requires PHP:      8.3
@@ -12,83 +12,14 @@ Text Domain:       internfeel
 */
 
 /*
- * Design tokens. Brand colours are taken from the logo (uploads/2024/03/InternFeel-Logo.png).
- * --if-teal (#339999) is only 3.4:1 on white, so use it for large text, borders and decoration.
- * Body text, links and buttons use --if-teal-700 (#297777, 5.3:1) to meet WCAG 2.2 AA.
+ * Theme layer. Loads after assets/css/fonts.css, tokens.css and components.css (the approved design
+ * system in docs/approved-designs/system/). Only rules the components do not cover live here; every
+ * value comes from the tokens. Page-level helpers from the mock-ups (pg-*) become if-* rules here.
  */
-:root {
-	/* Colour */
-	--if-teal: #339999;
-	--if-teal-700: #297777;
-	--if-teal-800: #1f5c5c;
-	--if-teal-50: #eef7f7;
-	--if-charcoal: #3a3839;
-	--if-ink: #1d1c1c;
-	--if-muted: #5f5c5d;
-	--if-line: #dedbdc;
-	--if-surface: #ffffff;
-	--if-canvas: #f8f7f7;
-	--if-focus: #1f5c5c;
-	--if-danger: #b3261e;
-
-	/* Type */
-	--if-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-	--if-text-sm: 0.875rem;
-	--if-text-base: 1rem;
-	--if-text-lg: 1.125rem;
-	--if-text-xl: 1.375rem;
-	--if-text-2xl: 1.75rem;
-	--if-text-3xl: 2.25rem;
-	--if-leading: 1.6;
-
-	/* Space (4px scale) */
-	--if-space-1: 0.25rem;
-	--if-space-2: 0.5rem;
-	--if-space-3: 0.75rem;
-	--if-space-4: 1rem;
-	--if-space-6: 1.5rem;
-	--if-space-8: 2rem;
-	--if-space-12: 3rem;
-
-	/* Shape and layout */
-	--if-radius: 0.5rem;
-	--if-radius-pill: 999px;
-	--if-content: 72rem;
-	--if-header-h: 72px;
-	--if-header-h-compact: 56px;
-}
-
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-
-body {
-	margin: 0;
-	font-family: var(--if-font-sans);
-	font-size: var(--if-text-base);
-	line-height: var(--if-leading);
-	color: var(--if-ink);
-	background: var(--if-canvas);
-}
 
 img {
 	max-width: 100%;
 	height: auto;
-}
-
-a {
-	color: var(--if-teal-700);
-}
-
-a:hover {
-	color: var(--if-teal-800);
-}
-
-:focus-visible {
-	outline: 3px solid var(--if-focus);
-	outline-offset: 2px;
 }
 
 .screen-reader-text {
@@ -122,20 +53,12 @@ a:hover {
 	padding-inline: var(--if-space-4);
 }
 
-/* Header: fixed, shrinks to 56px once the page scrolls (plan.md 5.3). */
-.if-header {
-	position: sticky;
-	top: 0;
-	z-index: 50;
-	background: var(--if-surface);
-	border-bottom: 1px solid var(--if-line);
+.if-main {
+	padding-block: var(--if-space-12) 72px;
 }
 
+/* Header: shrinks from 72 to 56 px once the page scrolls (assets/js/main.js). */
 .if-header__inner {
-	display: flex;
-	align-items: center;
-	gap: var(--if-space-4);
-	height: var(--if-header-h);
 	transition: height 0.15s ease;
 }
 
@@ -143,59 +66,214 @@ a:hover {
 	height: var(--if-header-h-compact);
 }
 
-.if-header__logo img {
-	display: block;
-	width: auto;
-	height: 36px;
+/* Phone and wide-only pieces (the mock-ups' pg-narrow and pg-wide). */
+.if-show-mobile {
+	display: none;
 }
 
-.if-header__actions {
-	display: flex;
+@media (max-width: 640px) {
+	.if-hide-mobile {
+		display: none;
+	}
+
+	.if-show-mobile {
+		display: inline;
+	}
+
+	.if-header__logo img {
+		height: 28px;
+	}
+
+	.if-header__inner {
+		gap: var(--if-space-3);
+	}
+}
+
+/* ---------- Sign-up, log-in and first sign-in (docs/approved-designs/signup.html) ---------- */
+
+.if-auth {
+	display: grid;
+	gap: var(--if-space-8);
+	max-width: 36rem;
+}
+
+.if-auth__intro {
+	display: grid;
 	gap: var(--if-space-2);
-	margin-inline-start: auto;
 }
 
-.if-button {
+.if-auth__intro h1,
+.if-auth__intro p {
+	margin: 0;
+}
+
+.if-auth__intro p {
+	color: var(--if-muted);
+}
+
+.if-auth__card {
+	display: grid;
+	gap: 20px;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-auth__card h2 {
+	margin: 0;
+}
+
+.if-auth__head {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-auth__head .label,
+.if-auth__fine-print {
+	margin: 0;
+	color: var(--if-muted);
+}
+
+.if-auth__or {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+	font-size: 14px;
+	color: var(--if-muted);
+}
+
+.if-auth__or::before,
+.if-auth__or::after {
+	flex: 1;
+	height: 1px;
+	content: "";
+	background: var(--if-line);
+}
+
+.if-form {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+.if-form__two {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--if-space-4);
+}
+
+.if-btn--block {
+	width: 100%;
+}
+
+/* The fieldset reset the mock-up does inline. */
+fieldset.if-field {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+fieldset.if-field legend {
+	margin-bottom: 6px;
+}
+
+/* A single checkbox with its label, outside the full-width .if-field inputs. */
+.if-check {
 	display: inline-flex;
 	align-items: center;
+	gap: var(--if-space-2);
 	min-height: 44px;
-	padding: var(--if-space-2) var(--if-space-4);
-	border: 2px solid var(--if-teal-700);
-	border-radius: var(--if-radius-pill);
-	font-weight: 600;
-	text-decoration: none;
-	color: var(--if-teal-700);
-	background: var(--if-surface);
+	justify-self: start;
+	cursor: pointer;
 }
 
-.if-button--primary {
-	color: var(--if-surface);
+.if-check input {
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	accent-color: var(--if-teal-700);
+}
+
+/* Form-level status box: styled like a field error (README: "keep a form-level status box"). */
+.if-form__status:empty {
+	display: none;
+}
+
+/* The Sign up / Log in switch is a pair of links styled as the segment control. */
+.if-segment a {
+	padding: 6px 16px;
+	font-weight: 700;
+	color: var(--if-ink);
+	text-decoration: none;
+	border-radius: var(--if-radius-pill);
+}
+
+.if-segment a[aria-current="page"] {
+	color: var(--if-on-teal);
 	background: var(--if-teal-700);
 }
 
-.if-button--primary:hover {
-	color: var(--if-surface);
-	background: var(--if-teal-800);
-	border-color: var(--if-teal-800);
+.if-segment a:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
 }
 
-.if-main {
-	padding-block: var(--if-space-8);
+/* Honeypot: off-screen rather than display:none, which some bots detect. */
+.if-honeypot {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }
 
-.if-footer {
-	padding-block: var(--if-space-8);
-	color: var(--if-surface);
-	background: var(--if-charcoal);
-}
-
-.if-footer a {
-	color: var(--if-surface);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	* {
-		transition: none !important;
-		animation: none !important;
+@media (max-width: 640px) {
+	.if-form__two {
+		grid-template-columns: 1fr;
 	}
+
+	.if-auth__card {
+		padding: 20px;
+	}
+}
+
+/* ---------- Newsletter band, above the footer on every page ---------- */
+
+.if-newsletter {
+	padding-block: var(--if-space-8);
+	background: var(--if-surface);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-newsletter__inner {
+	display: grid;
+	gap: var(--if-space-4);
+	align-items: end;
+}
+
+@media (min-width: 900px) {
+	.if-newsletter__inner {
+		grid-template-columns: 1fr minmax(0, 28rem);
+	}
+}
+
+.if-newsletter h2,
+.if-newsletter p {
+	margin: 0;
+}
+
+.if-newsletter p {
+	color: var(--if-muted);
+}
+
+.if-newsletter form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+	align-items: end;
+}
+
+.if-newsletter .if-field {
+	flex: 1;
+	min-width: 14rem;
 }

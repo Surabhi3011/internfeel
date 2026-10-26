@@ -181,6 +181,14 @@ Done on day 1 with Surabhi's cPanel access.
 8. **Email:** create the `contact@internfeel.com` (public) and `no-reply@internfeel.com` mailboxes. In cPanel → **Email Deliverability**, fix anything flagged for internfeel.com (SPF and DKIM). DNS is managed in the VaporHost cPanel Zone Editor, so Email Deliverability can apply the records directly.
 9. **Git:** connect the repository (section 6).
 
+### 5.1 Lessons from setting up staging (26 October 2026)
+
+Staging went live on day 1 (WordPress 7.1.3 on PHP 8.5, the InternFeel theme and InternFeel Core active, deployed from `staging` through cPanel Git). These are the snags to avoid next time, including on production.
+
+1. **Softaculous installer:** leave **In Directory** empty, so WordPress goes straight into the domain's document root, and untick every bundled plugin. Softaculous adds Loginizer and CookieAdmin by default; we use Wordfence and CookieYes instead.
+2. **PHP version gets reset:** after any WordPress reinstall or Directory Privacy change, re-apply PHP 8.5 (`ea-php85`) in **MultiPHP Manager**. Both rewrite the site's `.htaccess` and drop the PHP handler lines, so the site falls back to the server's default PHP, and the theme reports an incompatible PHP version.
+3. **First deploy:** cPanel deploys only work once `.cpanel.yml` is on the branch being deployed. Merge the deploy setup into `staging` (or `main`) before the first clone, then clone, switch the checked-out branch, **Update from Remote** and **Deploy HEAD Commit**.
+
 ---
 
 ## 6. Deployment through cPanel Git Version Control

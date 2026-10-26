@@ -54,7 +54,7 @@ class ContentTest extends WP_UnitTestCase {
 
 		$meta = rest_do_request( new WP_REST_Request( 'GET', "/wp/v2/posts/{$post}" ) )->get_data()['meta'];
 
-		$this->assertArrayHasKey( '_if_paid', $meta );
+		$this->assertArrayHasKey( '_if_paid', $meta, 'REST meta keys: ' . implode( ', ', array_keys( (array) $meta ) ) );
 		foreach ( Fields::private_post_keys() as $key ) {
 			$this->assertArrayNotHasKey( $key, $meta );
 		}

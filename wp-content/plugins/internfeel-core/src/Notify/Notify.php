@@ -238,6 +238,6 @@ final class Notify implements Module {
 	 */
 	private static function save( int $user_id, array $items ): void {
 		// update_user_meta() unslashes its value, which would strip JSON's escapes, so slash it first.
-		update_user_meta( $user_id, self::META, wp_slash( (string) wp_json_encode( array_values( $items ) ) ) );
+		update_user_meta( $user_id, self::META, wp_slash( (string) wp_json_encode( $items ) ) );
 	}
 }

@@ -14,6 +14,16 @@ use InternFeel\Fields\Fields;
  */
 class ContentTest extends WP_UnitTestCase {
 
+	/**
+	 * The test framework unregisters all meta keys after each test, so register ours again.
+	 */
+	public function set_up(): void {
+		parent::set_up();
+		if ( ! registered_meta_key_exists( 'post', '_if_paid', 'post' ) ) {
+			Fields::register_meta();
+		}
+	}
+
 	public function test_posts_are_called_experiences(): void {
 		$this->assertSame( 'Experiences', get_post_type_object( 'post' )->labels->name );
 	}

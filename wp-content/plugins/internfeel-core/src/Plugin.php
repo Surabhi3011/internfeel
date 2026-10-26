@@ -48,6 +48,7 @@ final class Plugin {
 			Fields\Fields::class,
 			Auth\Auth::class,
 			Notify\Notify::class,
+			Import\Import::class,
 		);
 	}
 }

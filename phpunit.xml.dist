@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- Integration tests against the WordPress test suite that wp-env provides. Run with: npm run test:unit -->
+<phpunit
+	bootstrap="tests/phpunit/bootstrap.php"
+	colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	convertDeprecationsToExceptions="false"
+>
+	<testsuites>
+		<testsuite name="internfeel">
+			<directory suffix="Test.php">tests/phpunit</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

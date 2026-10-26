@@ -46,6 +46,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # PHPUnit 9.6 and the PHPUnit Polyfills come from the repo's Composer dev tools; they run inside
+      # the wp-env cli container, which also provides the WordPress test suite (WP_TESTS_DIR).
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer
+          coverage: none
+
+      - name: Install dev tools
+        run: composer install --no-interaction --no-progress --prefer-dist
+
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
@@ -64,13 +75,7 @@ jobs:
           npx wp-env run cli wp plugin list
 
       - name: PHPUnit
-        run: |
-          if ! ls tests/phpunit/*.php >/dev/null 2>&1; then
-            echo "::notice::No PHPUnit tests yet; the first ones arrive with the data model."
-            exit 0
-          fi
-          echo "::error::PHPUnit tests exist but the runner is not wired up yet."
-          exit 1
+        run: npm run test:unit
 
   e2e:
     name: e2e

@@ -29,7 +29,9 @@ The hosting plan has no SSH, so cPanel can only pull a public repo over HTTPS. A
 - `wp-content/themes/internfeel/`: classic PHP theme for every public page and the student dashboard. Presentation only.
 - `wp-content/plugins/internfeel-core/`: all behaviour. Namespace `InternFeel\`, PSR-4 from `src/` (one folder per module: `src/Auth/`, `src/Invites/`, ...). Each module implements `InternFeel\Module` and is listed in `Plugin::modules()`. Runtime Composer packages (Dompdf, QR) are **committed** in the plugin's own `vendor/`, because the server has no Composer.
 - `wp-content/mu-plugins/internfeel-hardening.php`: the Hardening module from architecture.md 3.2. It is a must-use plugin so it can't be switched off.
-- Schema changes go through `InternFeel\Schema::steps()`. They are additive only and safe to run twice. The version is stored in `if_db_version`.
+- Schema changes go through `InternFeel\Schema::steps()`, which runs on `init`. Steps are additive only and safe to run twice. The version is stored in `if_db_version`.
+- REST routes live under `internfeel/v1` (`InternFeel\Support\Rest::NS`). Public forms (sign-up, log-in) check a same-origin request, the `if_auth` nonce, a honeypot field named `website` and a rate limit (`InternFeel\Support\RateLimit`). Signed-in routes use `Rest::require_login` plus the `wp_rest` nonce.
+- Theme pages with forms or personal details call `if_no_page_cache()` so LiteSpeed never caches them.
 - `tools/seed/` holds sample data (local and staging only). `tests/phpunit/` and `tests/e2e/` hold tests; tag accessibility tests `@a11y`.
 
 ## Conventions (development.md section 2)
@@ -63,6 +65,7 @@ npx wp-env start      # Docker, http://localhost:8888 (admin / password); what C
 npm run test:e2e
 npm run test:a11y
 composer install && composer lint && composer analyse   # needs PHP 8.3+ and Composer
+npm run test:unit     # PHPUnit inside wp-env; RESETS the wp-env database
 ```
 
 Playground runs on SQLite, so anything database-specific (the moderation log, atomic view counts) must also pass on wp-env or staging.

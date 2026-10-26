@@ -36,7 +36,16 @@ defined( 'ABSPATH' ) || exit;
 		?>
 
 		<div class="if-header__actions">
-			<a class="if-button if-button--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit experience', 'internfeel' ); ?></a>
+			<a class="if-button if-button--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
+				<span class="if-hide-mobile"><?php esc_html_e( 'Submit experience', 'internfeel' ); ?></span>
+				<span class="if-show-mobile"><?php esc_html_e( 'Submit', 'internfeel' ); ?></span>
+			</a>
+			<?php if ( is_user_logged_in() ) : ?>
+				<a class="if-header__link" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Log out', 'internfeel' ); ?></a>
+			<?php else : ?>
+				<a class="if-header__link" href="<?php echo esc_url( home_url( '/login/' ) ); ?>"><?php esc_html_e( 'Log in', 'internfeel' ); ?></a>
+				<a class="if-button if-hide-mobile" href="<?php echo esc_url( home_url( '/signup/' ) ); ?>"><?php esc_html_e( 'Sign up', 'internfeel' ); ?></a>
+			<?php endif; ?>
 		</div>
 	</div>
 </header>

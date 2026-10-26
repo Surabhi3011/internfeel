@@ -129,6 +129,10 @@ npx wp-env stop
 - wp-env 11 also has an experimental Docker-free mode, `wp-env start --runtime=playground`. We use `npm run playground` instead, because it supports mounts and blueprints.
 - **WordPress version:** 7.1.3 is pinned, the current release on 26 October 2026. The brief said 7.0, but WordPress.org lists the newest 7.0 release (7.0.7) as "outdated", so we moved to 7.1 on day 1 (plan.md section 4). When a 7.1.x security release comes out, bump the pin in `.wp-env.json`; Playground's `--wp=7.1` picks up the newest 7.1.x by itself.
 
+**Unit and integration tests (PHPUnit):** `composer install`, then `npm run test:unit`. PHPUnit 9.6 and the PHPUnit Polyfills come from the repo's Composer dev tools. They run inside the wp-env `cli` container, which provides the WordPress test suite at `WP_TESTS_DIR`; the repo is mapped into the container as `internfeel-dev` for this. **The test suite reinstalls WordPress in the wp-env database, so it resets your local wp-env site.** CI runs it in its own job.
+
+**Rate limits on local sites** are ten times the real ones, because every test run comes from the same address. Staging and production use the real limits.
+
 ### 3.3 Seed data
 
 `tools/seed` creates 2 admins, 10 students (including one under 18), 20 organisations and programmes, and 30 experiences across all statuses, verification states and referral cases. Run it on local and staging only, never on production.
@@ -259,7 +263,7 @@ Merging into `main` needs all four jobs green and Surabhi's approval.
 
 ## 8. Database changes
 
-- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `plugins_loaded`, it runs any pending upgrade steps, written with `dbDelta` and in order.
+- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `init` (after the content types are registered, so rewrite rules can be flushed), it runs any pending upgrade steps, written with `dbDelta` and in order.
 - **Additive only:** add tables and columns, and never rename or drop them in the same release. A later release removes unused columns once nothing reads them.
 - **Meta changes** run as batched upgrade steps that are safe to run twice.
 - **Before a production deploy that includes an upgrade step:** run an UpdraftPlus database backup.

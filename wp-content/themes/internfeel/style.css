@@ -162,7 +162,9 @@ a:hover {
 	padding: var(--if-space-2) var(--if-space-4);
 	border: 2px solid var(--if-teal-700);
 	border-radius: var(--if-radius-pill);
+	font: inherit;
 	font-weight: 600;
+	cursor: pointer;
 	text-decoration: none;
 	color: var(--if-teal-700);
 	background: var(--if-surface);
@@ -179,8 +181,183 @@ a:hover {
 	border-color: var(--if-teal-800);
 }
 
+.if-header__link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding-inline: var(--if-space-2);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.if-button--block {
+	justify-content: center;
+	width: 100%;
+}
+
+.if-button:disabled {
+	cursor: progress;
+	opacity: 0.7;
+}
+
+.if-show-mobile {
+	display: none;
+}
+
+@media (max-width: 599px) {
+	.if-hide-mobile {
+		display: none;
+	}
+
+	.if-show-mobile {
+		display: inline;
+	}
+
+	.if-header__logo img {
+		height: 28px;
+	}
+
+	.if-header__inner,
+	.if-header__actions {
+		gap: var(--if-space-2);
+	}
+}
+
 .if-main {
 	padding-block: var(--if-space-8);
+}
+
+/* Sign-up, log-in and profile forms. */
+.if-auth {
+	max-width: 30rem;
+}
+
+.if-auth h1 {
+	margin-block: 0 var(--if-space-2);
+	font-size: var(--if-text-2xl);
+	line-height: 1.25;
+}
+
+.if-auth__lead {
+	margin-block: 0 var(--if-space-6);
+	color: var(--if-muted);
+}
+
+.if-auth__switch,
+.if-auth__fine-print {
+	margin-block: var(--if-space-6) 0;
+}
+
+.if-auth__fine-print {
+	font-size: var(--if-text-sm);
+	color: var(--if-muted);
+}
+
+.if-auth__or {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+	margin-block: var(--if-space-4);
+	color: var(--if-muted);
+}
+
+.if-auth__or::before,
+.if-auth__or::after {
+	flex: 1;
+	height: 1px;
+	content: "";
+	background: var(--if-line);
+}
+
+.if-form {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+.if-form__row {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+@media (min-width: 600px) {
+	.if-form__row {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.if-field {
+	display: grid;
+	gap: var(--if-space-1);
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.if-field label,
+.if-field legend {
+	font-weight: 600;
+}
+
+.if-field input[type="text"],
+.if-field input[type="email"],
+.if-field input[type="password"],
+.if-field input[type="number"],
+.if-field input[type="url"] {
+	width: 100%;
+	min-height: 44px;
+	padding: var(--if-space-2) var(--if-space-3);
+	font: inherit;
+	color: var(--if-ink);
+	background: var(--if-surface);
+	border: 1px solid var(--if-muted);
+	border-radius: var(--if-radius);
+}
+
+.if-field input[aria-invalid="true"] {
+	border: 2px solid var(--if-danger);
+}
+
+.if-field--choice label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--if-space-2);
+	min-height: 44px;
+	margin-inline-end: var(--if-space-4);
+	font-weight: 400;
+}
+
+.if-field--choice input {
+	width: 1.25rem;
+	height: 1.25rem;
+	accent-color: var(--if-teal-700);
+}
+
+.if-field__hint {
+	margin: 0;
+	font-size: var(--if-text-sm);
+	color: var(--if-muted);
+}
+
+.if-form__status:empty {
+	display: none;
+}
+
+.if-form__status {
+	margin: 0;
+	padding: var(--if-space-3);
+	color: var(--if-danger);
+	background: #fdecea;
+	border-radius: var(--if-radius);
+}
+
+/* Honeypot: off-screen rather than display:none, which some bots detect. */
+.if-honeypot {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }
 
 .if-footer {

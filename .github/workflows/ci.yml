@@ -95,8 +95,9 @@ jobs:
           cache: npm
 
       - run: npm ci
-      # The browser is cached between runs. The install also pulls Linux packages, which has hung on
-      # slow mirrors, so each attempt is capped at 5 minutes and retried up to three times.
+      # Browser only, cached between runs. No --with-deps: the runner image already has Chromium's
+      # libraries, and the extra fonts that apt pulled hung on slow mirrors and left apt holding its
+      # lock, so retries could never succeed. Without apt, a timed-out attempt can be retried cleanly.
       - name: Playwright version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -110,7 +111,7 @@ jobs:
         timeout-minutes: 16
         run: |
           for attempt in 1 2 3; do
-            timeout 300 npx playwright install --with-deps chromium && exit 0
+            timeout 300 npx playwright install chromium && exit 0
             echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
           done
           exit 1
@@ -138,8 +139,9 @@ jobs:
           cache: npm
 
       - run: npm ci
-      # The browser is cached between runs. The install also pulls Linux packages, which has hung on
-      # slow mirrors, so each attempt is capped at 5 minutes and retried up to three times.
+      # Browser only, cached between runs. No --with-deps: the runner image already has Chromium's
+      # libraries, and the extra fonts that apt pulled hung on slow mirrors and left apt holding its
+      # lock, so retries could never succeed. Without apt, a timed-out attempt can be retried cleanly.
       - name: Playwright version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -153,7 +155,7 @@ jobs:
         timeout-minutes: 16
         run: |
           for attempt in 1 2 3; do
-            timeout 300 npx playwright install --with-deps chromium && exit 0
+            timeout 300 npx playwright install chromium && exit 0
             echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
           done
           exit 1

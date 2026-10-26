@@ -216,6 +216,12 @@ final class Fields implements Module {
 			'type'   => 'integer',
 			'public' => true,
 		),
+		// What the importer took the old post to be: an experience, or an article to decide on.
+		'import_kind'            => array(
+			'type'   => 'string',
+			'public' => false,
+			'enum'   => array( 'experience', 'article' ),
+		),
 	);
 
 	/**

@@ -292,6 +292,17 @@ The export (25 October 2026) is the zip `internfeel-export-content.zip` plus `in
 
 Run the import on staging first. Once the check passes, run it on production.
 
+### 9.1 The importer as built (day 2)
+
+- **Where:** Tools → InternFeel import (administrators). Upload `posts.json`, `categories.json`, `comments.json` and `media.json`; they are stored in `IF_PRIVATE_DIR/import/`. The page shows the category mapping, then **Dry run** (writes nothing, shows a report row per post) and **Import** (batches of 20 through `POST internfeel/v1/import/batch`). Locally, the same runs from WP-CLI: `wp internfeel import --dir=<content folder> --dry-run --report=report.csv`.
+- **Status:** experiences arrive as **Pending review**, never published by the import. Posts that are guides or opinion pieces rather than internship experiences (filed only under "Internship Guide" or "Blog") arrive as **drafts** with `_if_import_kind = article`, for Surabhi to keep, rewrite or delete.
+- **Every migrated experience** keeps its original slug, title and dates; is owned by InternFeel Archive; has `view_count` 0 and `verification_status` "not_submitted" (never Verified); and records `legacy_wp_id`, `legacy_student_name` (when the title clearly names the student) and `legacy_published_year`.
+- **Mapping:** the old flat categories fill type, mode, field, country and (for IISc, RBI, Google and NIFT only) organisation. Fields and organisations are created as `if_master` terms. Anything the categories don't say stays empty for the review; nothing is guessed. Stipend and duration are only in the free-text answers, so the review fills them in. "rate … out of 10" lines become the 1–5 overall rating.
+- **Cleaning:** inline styles, old classes and `data-*` attributes, formatting wrappers, H1s (to H2), dead Facebook and Flipkart embeds, images hosted elsewhere, and the old plugins' shortcodes (Shortcodes Ultimate buttons and spacers, popups, coupons; boxes and social lockers are unwrapped so their text stays). YouTube embeds become links that WordPress embeds again. Old-site links, image sources and written-out addresses are rewritten to **the importing site's own address**, so they work on staging as well as production.
+- **Re-running** skips every post whose `legacy_wp_id` exists, and attachments and comments are matched by their old IDs, so nothing is duplicated.
+- **Local dry run on the real export (26 October 2026):** 216 to import (206 experiences, 10 articles), 2 skipped. Type found for 129, country for 134, field for 69, organisation for 9, student name for 120, rating for 11. A full import on a throwaway local site then gave: 216 of 218 original slugs kept (the two skipped), 178 featured images from 169 attachments, 4 comments, and no inline styles, iframes or old-site URLs left; a second run imported nothing.
+- **For the review:** some titles already contain "�" in the export (characters lost on the old site); several bodies start with an old "Readers Please Note" notice about a Facebook group.
+
 ---
 
 ## 10. Testing before each release

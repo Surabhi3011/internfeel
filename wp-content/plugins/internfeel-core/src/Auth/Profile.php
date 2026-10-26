@@ -72,14 +72,16 @@ final class Profile {
 			return array();
 		}
 
-		$under_18 = self::meta( $user_id, 'is_under_18' );
+		$under_18  = self::meta( $user_id, 'is_under_18' );
+		$full_name = self::meta( $user_id, 'full_name' );
 
 		return array(
 			'id'               => $user->ID,
 			'email'            => $user->user_email,
-			'full_name'        => self::meta( $user_id, 'full_name' ),
-			// Empty when the student left it blank and their full name is shown instead.
-			'display_name'     => self::meta( $user_id, 'full_name' ) === $user->display_name ? '' : $user->display_name,
+			'full_name'        => $full_name,
+			// Empty until the student chooses one: before the profile is saved the account holds only a
+			// placeholder name, and afterwards a blank choice means the full name is shown instead.
+			'display_name'     => '' === $full_name || $full_name === $user->display_name ? '' : $user->display_name,
 			'college'          => self::meta( $user_id, 'college' ),
 			'course'           => self::meta( $user_id, 'course' ),
 			'graduation_year'  => (int) self::meta( $user_id, 'graduation_year' ),

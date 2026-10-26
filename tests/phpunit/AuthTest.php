@@ -230,4 +230,11 @@ class AuthTest extends WP_UnitTestCase {
 		$this->assertSame( 'Priya from Pune', get_userdata( $id )->display_name );
 		$this->assertSame( 'Priya from Pune', Profile::get( $id )['display_name'] );
 	}
+
+	public function test_a_new_account_starts_with_a_blank_display_name(): void {
+		$this->post( 'auth/signup', array( 'email' => 'fresh@example.com', 'password' => 'long enough' ) );
+		$user = get_user_by( 'email', 'fresh@example.com' );
+
+		$this->assertSame( '', Profile::get( $user->ID )['display_name'], 'The profile form must not show the placeholder name.' );
+	}
 }

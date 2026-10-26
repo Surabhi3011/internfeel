@@ -16,6 +16,8 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
@@ -43,6 +45,8 @@ jobs:
   unit:
     name: unit
     runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
 
@@ -80,6 +84,8 @@ jobs:
   e2e:
     name: e2e
     runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
 
@@ -89,7 +95,25 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # The browser is cached between runs. The install also pulls Linux packages, which has hung on
+      # slow mirrors, so each attempt is capped at 5 minutes and retried up to three times.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium for Playwright
+        timeout-minutes: 16
+        run: |
+          for attempt in 1 2 3; do
+            timeout 300 npx playwright install --with-deps chromium && exit 0
+            echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
+          done
+          exit 1
       - run: npx wp-env start
       - run: npm run test:e2e
 
@@ -103,6 +127,8 @@ jobs:
   a11y:
     name: a11y
     runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
 
@@ -112,7 +138,25 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # The browser is cached between runs. The install also pulls Linux packages, which has hung on
+      # slow mirrors, so each attempt is capped at 5 minutes and retried up to three times.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium for Playwright
+        timeout-minutes: 16
+        run: |
+          for attempt in 1 2 3; do
+            timeout 300 npx playwright install --with-deps chromium && exit 0
+            echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
+          done
+          exit 1
       - run: npx wp-env start
       - run: npm run test:a11y
 

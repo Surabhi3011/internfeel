@@ -296,7 +296,7 @@ final class Importer {
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
 				'meta_key'       => Fields::PREFIX . 'legacy_media_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- one-off import lookup.
-				'meta_value'     => $media_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-off import lookup.
+				'meta_value'     => (string) $media_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-off import lookup.
 			)
 		);
 
@@ -469,7 +469,7 @@ final class Importer {
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
 				'meta_key'       => Fields::PREFIX . 'legacy_wp_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- one-off import lookup.
-				'meta_value'     => $legacy_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-off import lookup.
+				'meta_value'     => (string) $legacy_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-off import lookup.
 			)
 		);
 

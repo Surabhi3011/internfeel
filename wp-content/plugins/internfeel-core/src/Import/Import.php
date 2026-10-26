@@ -159,7 +159,8 @@ final class Import implements Module {
 			return Rest::error( 'if_import_source', $source->get_error_message(), 400 );
 		}
 
-		$importer = new Importer( $source, rest_sanitize_boolean( $request->get_param( 'dry_run' ) ) );
+		$dry_run  = $request->get_param( 'dry_run' );
+		$importer = new Importer( $source, is_bool( $dry_run ) ? $dry_run : rest_sanitize_boolean( (string) $dry_run ) );
 
 		return new \WP_REST_Response( $importer->batch( (int) $request->get_param( 'offset' ) ), 200 );
 	}

@@ -1,4 +1,7 @@
 parameters:
+	# WP-CLI classes for the import command (php-stubs/wp-cli-stubs).
+	scanFiles:
+		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
 	level: 6
 	paths:
 		- wp-content/themes/internfeel

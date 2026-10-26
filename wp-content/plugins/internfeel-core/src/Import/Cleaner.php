@@ -224,7 +224,7 @@ final class Cleaner {
 	 */
 	private static function attributes( \DOMDocument $dom ): void {
 		foreach ( iterator_to_array( $dom->getElementsByTagName( '*' ) ) as $element ) {
-			if ( ! $element instanceof \DOMElement || 'if-root' === $element->getAttribute( 'id' ) ) {
+			if ( 'if-root' === $element->getAttribute( 'id' ) ) {
 				continue;
 			}
 			foreach ( self::DROP_ATTRIBUTES as $attribute ) {
@@ -247,7 +247,7 @@ final class Cleaner {
 	private static function unwrap( \DOMDocument $dom ): void {
 		foreach ( self::UNWRAP as $tag ) {
 			foreach ( iterator_to_array( $dom->getElementsByTagName( $tag ) ) as $node ) {
-				if ( $node instanceof \DOMElement && 'if-root' === $node->getAttribute( 'id' ) ) {
+				if ( 'if-root' === $node->getAttribute( 'id' ) ) {
 					continue;
 				}
 				$parent = $node->parentNode;

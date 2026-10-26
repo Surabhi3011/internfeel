@@ -35,7 +35,8 @@ final class Http {
 	 * submitting our form (login CSRF). Requests with neither Origin nor Referer are not from a browser
 	 * page and carry no visitor's cookies, so they are allowed; rate limits still apply to them.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The REST request.
+	 * @param \WP_REST_Request $request The REST request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return bool
 	 */
 	public static function is_same_origin( \WP_REST_Request $request ): bool {

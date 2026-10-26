@@ -137,8 +137,9 @@ final class Notify implements Module {
 	/**
 	 * Mark notifications as read: the given IDs, or all of them.
 	 *
-	 * @param int          $user_id User ID.
-	 * @param list<string> $ids     Notification IDs; empty means all.
+	 * @param int      $user_id User ID.
+	 * @param string[] $ids     Notification IDs; empty means all.
+	 * @phpstan-param list<string> $ids
 	 */
 	public static function mark_read( int $user_id, array $ids = array() ): void {
 		$items   = self::all( $user_id );
@@ -214,7 +215,8 @@ final class Notify implements Module {
 	/**
 	 * POST me/notifications/read: opening the list marks everything read, or only the given IDs.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return \WP_REST_Response
 	 */
 	public static function rest_mark_read( \WP_REST_Request $request ): \WP_REST_Response {
@@ -230,8 +232,9 @@ final class Notify implements Module {
 	/**
 	 * Store the list.
 	 *
-	 * @param int        $user_id User ID.
-	 * @param list<Item> $items   Notifications, newest first.
+	 * @param int   $user_id User ID.
+	 * @param array $items   Notifications, newest first.
+	 * @phpstan-param list<Item> $items
 	 */
 	private static function save( int $user_id, array $items ): void {
 		// update_user_meta() unslashes its value, which would strip JSON's escapes, so slash it first.

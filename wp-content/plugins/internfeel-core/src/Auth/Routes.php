@@ -76,7 +76,8 @@ final class Routes {
 	/**
 	 * Permission check for the sign-up and log-in forms: same-origin request and a valid form nonce.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return bool|\WP_Error
 	 */
 	public static function check_form( \WP_REST_Request $request ): bool|\WP_Error {
@@ -95,7 +96,8 @@ final class Routes {
 	/**
 	 * Create a student account and sign it in. There is no email verification step (plan.md section 4).
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function signup( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
@@ -146,7 +148,8 @@ final class Routes {
 	 * Sign a student in with email (or username) and password. Admins use wp-login.php, where
 	 * two-step sign-in applies.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function login( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
@@ -197,7 +200,8 @@ final class Routes {
 	/**
 	 * Save the signed-in user's profile.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function update_me( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
@@ -239,7 +243,8 @@ final class Routes {
 	/**
 	 * Whether the hidden honeypot field was filled in, which only bots do.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return bool
 	 */
 	private static function is_bot( \WP_REST_Request $request ): bool {
@@ -249,8 +254,9 @@ final class Routes {
 	/**
 	 * A request parameter as a string.
 	 *
-	 * @param \WP_REST_Request<array<string, mixed>> $request The request.
-	 * @param string                                 $name    Parameter name.
+	 * @param \WP_REST_Request $request The request.
+	 * @param string           $name    Parameter name.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
 	 * @return string
 	 */
 	private static function param( \WP_REST_Request $request, string $name ): string {

@@ -64,6 +64,8 @@ test( 'a student fills in all four steps, adds proof and submits for review', as
 	await page.getByRole( 'checkbox' ).check();
 	await page.getByRole( 'button', { name: 'Submit for review' } ).click();
 	await expect( page.getByRole( 'heading', { name: 'Submitted for review' } ) ).toBeVisible();
+	// The form's tips no longer apply once it is submitted.
+	await expect( page.getByRole( 'heading', { name: 'Before you start' } ) ).toBeHidden();
 } );
 
 test( 'signed-out visitors are sent to log in first', async ( { page } ) => {

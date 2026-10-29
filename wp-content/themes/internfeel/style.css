@@ -329,8 +329,15 @@ fieldset.if-field legend {
 
 .if-submit__step[hidden],
 .if-submit__card[hidden],
-.if-submit__done[hidden] {
+.if-submit__done[hidden],
+.if-submit__aside[hidden],
+.if-submit__stepper[hidden] {
 	display: none;
+}
+
+/* After submitting, the confirmation uses the full width; the tips no longer apply. */
+.if-submit__layout.is-done {
+	grid-template-columns: minmax(0, 46rem);
 }
 
 .if-submit__head {

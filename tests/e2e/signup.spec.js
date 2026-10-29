@@ -1,14 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { rejectCookies } from './helpers.js';
 
 // plan.md 5.1 "Done when": a new student signs up and completes their profile; sign-out works; the
 // same account can log back in. Each project (desktop, mobile) uses its own address.
 
-test.beforeEach( async ( { page } ) => {
-	// The CookieYes banner can cover form buttons on small screens; answer it as a privacy-minded visitor would.
-	await page.addLocatorHandler( page.getByRole( 'button', { name: 'Reject All' } ), async ( button ) => {
-		await button.click();
-	} );
-} );
+test.beforeEach( async ( { page } ) => rejectCookies( page ) );
 
 test( 'a student signs up, completes their profile, logs out and logs back in', async ( { page }, testInfo ) => {
 	const email = `student.${ testInfo.project.name }.${ Date.now() }@example.com`;

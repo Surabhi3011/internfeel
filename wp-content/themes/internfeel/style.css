@@ -277,3 +277,258 @@ fieldset.if-field legend {
 	flex: 1;
 	min-width: 14rem;
 }
+
+/* ---------- Submission form (docs/approved-designs/submit-step-1.html) ---------- */
+
+.if-submit {
+	display: grid;
+	gap: 28px;
+}
+
+.if-submit__intro {
+	display: grid;
+	gap: var(--if-space-2);
+	max-width: 46rem;
+}
+
+.if-submit__intro h1,
+.if-submit__intro p {
+	margin: 0;
+}
+
+.if-submit__intro p {
+	color: var(--if-muted);
+}
+
+.if-submit__stepper {
+	max-width: 46rem;
+}
+
+.if-submit__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 340px;
+	gap: var(--if-space-12);
+	align-items: start;
+}
+
+.if-submit__card,
+.if-submit__done {
+	display: grid;
+	gap: var(--if-space-6);
+	min-width: 0;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__step {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+.if-submit__step[hidden],
+.if-submit__card[hidden],
+.if-submit__done[hidden] {
+	display: none;
+}
+
+.if-submit__head {
+	display: grid;
+	gap: var(--if-space-1);
+}
+
+.if-submit__head h2,
+.if-submit__head p,
+.if-submit__done h2,
+.if-submit__done p {
+	margin: 0;
+}
+
+.if-submit__head p {
+	color: var(--if-muted);
+}
+
+.if-submit__head h2:focus,
+.if-submit__done h2:focus {
+	outline: none;
+}
+
+.if-submit__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-3);
+	padding-top: 20px;
+	border-top: 1px solid var(--if-line);
+}
+
+.if-submit__actions .small {
+	color: var(--if-muted);
+}
+
+.if-submit__buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+}
+
+.if-submit__aside {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+
+.if-submit__tip,
+.if-submit__questions {
+	display: grid;
+	gap: var(--if-space-3);
+	padding: var(--if-space-6);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__tip {
+	background: var(--if-surface-tint);
+}
+
+.if-submit__questions {
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+}
+
+.if-submit__tip h2,
+.if-submit__questions h2 {
+	margin: 0;
+}
+
+.if-submit__tip ul,
+.if-submit__questions ol {
+	display: grid;
+	gap: 10px;
+	margin: 0;
+	padding-left: 20px;
+}
+
+/* Rupee prefix on the stipend field. */
+.if-money {
+	display: flex;
+	align-items: center;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-money span {
+	padding: 0 4px 0 14px;
+	font-weight: 700;
+	color: var(--if-muted);
+}
+
+.if-field .if-money input {
+	border: 0;
+}
+
+/* Type chips are radio buttons styled as the chips in the design. */
+.if-chip input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.if-chip {
+	position: relative;
+}
+
+.if-chip:has(input:checked) {
+	font-weight: 700;
+	color: var(--if-teal-800);
+	background: var(--if-surface-tint);
+	border-color: var(--if-teal-700);
+}
+
+.if-chip:has(input:focus-visible) {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-proofs {
+	display: grid;
+	gap: var(--if-space-2);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-proofs:empty {
+	display: none;
+}
+
+.if-proofs li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-3);
+	padding: var(--if-space-2) var(--if-space-3);
+	background: var(--if-canvas);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__preview {
+	display: grid;
+	gap: var(--if-space-4);
+	padding-top: var(--if-space-6);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-submit__preview > h3 {
+	margin: 0;
+}
+
+.if-submit__preview [data-if-preview] {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+@media (max-width: 1000px) {
+	.if-submit__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-submit__title {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	/* On phones only the current step's name shows. */
+	.if-submit__stepper li span {
+		font-size: 0;
+	}
+
+	.if-submit__stepper li[aria-current="step"] span {
+		font-size: 13px;
+	}
+
+	.if-submit__card,
+	.if-submit__done {
+		padding: 20px;
+	}
+
+	.if-submit__actions {
+		flex-direction: column-reverse;
+		align-items: stretch;
+	}
+
+	/* Buttons stack full width, Next on top. */
+	.if-submit__buttons {
+		flex-direction: column-reverse;
+	}
+
+	.if-submit__buttons .if-btn {
+		width: 100%;
+	}
+}

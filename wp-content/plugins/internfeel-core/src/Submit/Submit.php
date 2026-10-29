@@ -193,7 +193,8 @@ final class Submit implements Module {
 		$author = (int) get_post_field( 'post_author', $post_id );
 
 		// The referrer is set once, at the first submission, and never changes (architecture.md 5.1).
-		if ( '' === (string) get_post_meta( $post_id, Fields::PREFIX . 'referrer_user_id', true ) ) {
+		// metadata_exists(), because the registered default (0) makes "never set" read as 0.
+		if ( ! metadata_exists( 'post', $post_id, Fields::PREFIX . 'referrer_user_id' ) ) {
 			$referrer = (int) get_user_meta( $author, Fields::PREFIX . 'referred_by_user_id', true );
 			update_post_meta( $post_id, Fields::PREFIX . 'referrer_user_id', $referrer );
 		}

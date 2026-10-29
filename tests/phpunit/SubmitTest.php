@@ -160,7 +160,7 @@ class SubmitTest extends WP_UnitTestCase {
 		$new = $this->draft( array( 'organisation' => 'Brand New Startup' ) );
 		$this->assertSame( '0', get_post_meta( $new, '_if_organisation_term', true ) );
 		$this->assertSame( 'Brand New Startup', get_post_meta( $new, '_if_organisation_suggestion', true ) );
-		$this->assertFalse( term_exists( 'Brand New Startup', Content::TAXONOMY ), 'Students never create master-list entries.' );
+		$this->assertEmpty( term_exists( 'Brand New Startup', Content::TAXONOMY ), 'Students never create master-list entries.' );
 	}
 
 	public function test_proof_accepts_real_images_and_marks_the_experience_pending(): void {

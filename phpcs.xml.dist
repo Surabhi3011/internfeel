@@ -38,6 +38,16 @@
 		<severity>0</severity>
 	</rule>
 
+	<!-- InternFeel's own capabilities (architecture.md 4.1). -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="if_submit"/>
+				<element value="if_moderate"/>
+			</property>
+		</properties>
+	</rule>
+
 	<!-- The plugin's src/ uses PSR-4 file names (Schema.php), not class-schema.php. -->
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>wp-content/plugins/internfeel-core/src/*</exclude-pattern>

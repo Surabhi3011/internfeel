@@ -34,190 +34,205 @@ final class Fields implements Module {
 	 */
 	private const POST_META = array(
 		// Where and what.
-		'organisation_term'      => array(
+		'organisation_term'       => array(
 			'type'   => 'integer',
 			'public' => true,
 		),
-		'programme_term'         => array(
+		'programme_term'          => array(
 			'type'   => 'integer',
 			'public' => true,
 		),
-		'field_term'             => array(
+		'field_term'              => array(
 			'type'   => 'integer',
 			'public' => true,
 		),
-		'type'                   => array(
+		'type'                    => array(
 			'type'   => 'string',
 			'public' => true,
 			'enum'   => array( 'research', 'industry', 'government', 'ngo', 'virtual' ),
 		),
-		'mode'                   => array(
+		'mode'                    => array(
 			'type'   => 'string',
 			'public' => true,
 			'enum'   => array( 'on-site', 'remote', 'hybrid' ),
 		),
-		'city'                   => array(
+		'city'                    => array(
 			'type'   => 'string',
 			'public' => true,
 		),
-		'country'                => array(
+		'country'                 => array(
 			'type'   => 'string',
 			'public' => true,
 		),
-		'start_month'            => array(
+		'start_month'             => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'month',
 		),
-		'duration_weeks'         => array(
+		'duration_weeks'          => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 104,
 		),
 		// Money.
-		'paid'                   => array(
-			'type'   => 'boolean',
+		// "1" paid, "0" unpaid, empty not answered yet (a boolean would store unpaid as empty).
+		'paid'                    => array(
+			'type'   => 'string',
 			'public' => true,
+			'enum'   => array( '1', '0' ),
 		),
-		'stipend_amount_inr'     => array(
+		'stipend_amount_inr'      => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 		),
-		'selection_difficulty'   => array(
+		'selection_difficulty'    => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 5,
 		),
 		// Story.
-		'story'                  => array(
+		'story'                   => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'json',
 		),
-		'advice'                 => array(
+		'advice'                  => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'textarea',
 		),
 		// Ratings (1 to 5; 0 means not rated yet).
-		'rating_overall'         => array(
+		'rating_overall'          => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 5,
 		),
-		'rating_learning'        => array(
+		'rating_learning'         => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 5,
 		),
-		'rating_mentorship'      => array(
+		'rating_mentorship'       => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 5,
 		),
-		'rating_culture'         => array(
+		'rating_culture'          => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 			'max'    => 5,
 		),
 		// Identity.
-		'is_anonymous'           => array(
+		'is_anonymous'            => array(
 			'type'   => 'boolean',
 			'public' => true,
 		),
 		// Referral (shown as a credit line by the theme, never as raw IDs).
-		'referrer_user_id'       => array(
+		'referrer_user_id'        => array(
 			'type'   => 'integer',
 			'public' => false,
 		),
-		'invite_code'            => array(
+		'invite_code'             => array(
 			'type'   => 'string',
 			'public' => false,
 		),
 		// Counters.
-		'view_count'             => array(
+		'view_count'              => array(
 			'type'   => 'integer',
 			'public' => true,
 			'min'    => 0,
 		),
-		'report_count'           => array(
+		'report_count'            => array(
 			'type'   => 'integer',
 			'public' => false,
 			'min'    => 0,
 		),
-		'flagged'                => array(
+		'flagged'                 => array(
 			'type'   => 'boolean',
 			'public' => false,
 		),
 		// Verification (private, except the status shown as the Verified badge).
-		'proof_files'            => array(
+		'proof_files'             => array(
 			'type'   => 'string',
 			'public' => false,
 			'format' => 'json',
 		),
-		'verification_status'    => array(
+		'verification_status'     => array(
 			'type'   => 'string',
 			'public' => true,
 			'enum'   => array( 'not_submitted', 'pending', 'verified', 'rejected' ),
 		),
-		'verified_by'            => array(
+		'verified_by'             => array(
 			'type'   => 'integer',
 			'public' => false,
 		),
-		'verified_at'            => array(
+		'verified_at'             => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'datetime',
 		),
-		'verification_note'      => array(
+		'verification_note'       => array(
 			'type'   => 'string',
 			'public' => false,
 			'format' => 'textarea',
 		),
 		// Certificate.
-		'certificate_no'         => array(
+		'certificate_no'          => array(
 			'type'   => 'string',
 			'public' => true,
 		),
-		'certificate_issued_at'  => array(
+		'certificate_issued_at'   => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'datetime',
 		),
-		'certificate_revoked_at' => array(
+		'certificate_revoked_at'  => array(
 			'type'   => 'string',
 			'public' => true,
 			'format' => 'datetime',
 		),
 		// Editing.
-		'edit_count'             => array(
+		'edit_count'              => array(
 			'type'   => 'integer',
 			'public' => false,
 			'min'    => 0,
 			'max'    => 1,
 		),
 		// Legacy (migrated posts).
-		'legacy_wp_id'           => array(
+		'legacy_wp_id'            => array(
 			'type'   => 'integer',
 			'public' => false,
 		),
-		'legacy_student_name'    => array(
+		'legacy_student_name'     => array(
 			'type'   => 'string',
 			'public' => true,
 		),
-		'legacy_published_year'  => array(
+		'legacy_published_year'   => array(
 			'type'   => 'integer',
 			'public' => true,
 		),
+		// Names a student typed that are not on the master list yet; an admin adds or matches them.
+		'organisation_suggestion' => array(
+			'type'   => 'string',
+			'public' => false,
+		),
+		'programme_suggestion'    => array(
+			'type'   => 'string',
+			'public' => false,
+		),
+		'field_suggestion'        => array(
+			'type'   => 'string',
+			'public' => false,
+		),
 		// What the importer took the old post to be: an experience, or an article to decide on.
-		'import_kind'            => array(
+		'import_kind'             => array(
 			'type'   => 'string',
 			'public' => false,
 			'enum'   => array( 'experience', 'article' ),

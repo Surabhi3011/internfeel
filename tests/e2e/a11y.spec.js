@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { rejectCookies, signUpStudent } from './helpers.js';
 
 // WCAG 2.2 AA checks with axe (docs/development.md section 7). Experience, submit and dashboard
 // pages are added here as they are built.
@@ -21,3 +22,17 @@ for ( const { name, path } of pages ) {
 		expect( serious, JSON.stringify( serious, null, 2 ) ).toEqual( [] );
 	} );
 }
+
+test( 'submission form has no serious accessibility issues @a11y', async ( { page }, testInfo ) => {
+	await rejectCookies( page );
+	await signUpStudent( page, `a11y-${ testInfo.project.name }` );
+	await page.goto( '/submit/' );
+
+	const results = await new AxeBuilder( { page } )
+		.withTags( [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa' ] )
+		.analyze();
+	const serious = results.violations.filter( ( v ) => [ 'serious', 'critical' ].includes( v.impact ) );
+
+	expect( serious, JSON.stringify( serious, null, 2 ) ).toEqual( [] );
+} );
+

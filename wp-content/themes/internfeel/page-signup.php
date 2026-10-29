@@ -39,7 +39,7 @@ get_header();
 				<?php if_auth_switch( 'signup' ); ?>
 				<?php if_google_button( home_url( '/signup/' ) ); ?>
 
-				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/auth/signup' ) ); ?>" data-if-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>">
+				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/auth/signup' ) ); ?>">
 					<input type="hidden" name="_if_nonce" value="<?php echo esc_attr( wp_create_nonce( 'if_auth' ) ); ?>">
 					<?php if_honeypot_field(); ?>
 

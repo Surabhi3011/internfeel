@@ -45,6 +45,9 @@ function if_theme_assets(): void {
 	if ( is_page( array( 'signup', 'login' ) ) ) {
 		wp_enqueue_script_module( 'internfeel-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), IF_THEME_VERSION );
 	}
+	if ( is_page( 'submit' ) ) {
+		wp_enqueue_script_module( 'internfeel-submit', get_theme_file_uri( 'assets/js/submit.js' ), array(), IF_THEME_VERSION );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'if_theme_assets' );
 

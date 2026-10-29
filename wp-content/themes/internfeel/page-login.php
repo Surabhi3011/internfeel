@@ -31,7 +31,7 @@ get_header();
 				<?php if_auth_switch( 'login' ); ?>
 				<?php if_google_button( $if_redirect_to ); ?>
 
-				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/auth/login' ) ); ?>" data-if-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>">
+				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/auth/login' ) ); ?>">
 					<input type="hidden" name="_if_nonce" value="<?php echo esc_attr( wp_create_nonce( 'if_auth' ) ); ?>">
 					<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $if_redirect_to ); ?>">
 					<?php if_honeypot_field(); ?>

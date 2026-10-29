@@ -49,6 +49,8 @@ final class Plugin {
 			Auth\Auth::class,
 			Notify\Notify::class,
 			Import\Import::class,
+			Submit\Submit::class,
+			Verify\Verify::class,
 		);
 	}
 }

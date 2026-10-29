@@ -67,6 +67,10 @@ final class Schema {
 				Pages::ensure( 'login', __( 'Log in', 'internfeel' ) );
 				self::use_slug_permalinks();
 			},
+			// Day 4: the submission form's page.
+			2 => static function (): void {
+				Pages::ensure( 'submit', __( 'Share your internship experience', 'internfeel' ) );
+			},
 		);
 	}
 

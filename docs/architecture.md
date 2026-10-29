@@ -184,7 +184,7 @@ Post meta (prefix `_if_`; the leading underscore hides it from the custom-fields
 | Group | Keys |
 | --- | --- |
 | Where and what | `organisation_term`, `programme_term`, `field_term` (if_master term IDs), `type` (research, industry, government, NGO, virtual), `mode` (on-site, remote, hybrid), `city`, `country`, `start_month` (YYYY-MM), `duration_weeks` |
-| Money | `paid` (required, bool), `stipend_amount_inr` (optional, monthly), `selection_difficulty` (1–5) |
+| Money | `paid` (required; stored as "1" paid or "0" unpaid, empty until answered), `stipend_amount_inr` (optional, monthly), `selection_difficulty` (1–5) |
 | Story | `story` (JSON keyed by the standard questions), `advice` |
 | Ratings (required) | `rating_overall`, `rating_learning`, `rating_mentorship`, `rating_culture` (1–5) |
 | Identity | `is_anonymous` (hides name, photo and LinkedIn only) |
@@ -193,7 +193,8 @@ Post meta (prefix `_if_`; the leading underscore hides it from the custom-fields
 | Verification (private) | `proof_files` (JSON list of private file names), `verification_status` (not_submitted, pending, verified, rejected), `verified_by`, `verified_at`, `verification_note` |
 | Certificate | `certificate_no`, `certificate_issued_at`, `certificate_revoked_at` |
 | Editing | `edit_count` (max 1 after publishing) |
-| Legacy | `legacy_wp_id`, `legacy_student_name`, `legacy_published_year` |
+| Suggestions (private) | `organisation_suggestion`, `programme_suggestion`, `field_suggestion`: names a student typed that are not on the master list yet; an admin adds or matches them |
+| Legacy | `legacy_wp_id`, `legacy_student_name`, `legacy_published_year`, `import_kind` (experience or article) |
 
 **Private meta never leaves the server.** `proof_files`, `verification_note` and `verified_by` are registered with `show_in_rest => false`, and the theme never prints them.
 

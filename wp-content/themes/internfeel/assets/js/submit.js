@@ -69,11 +69,20 @@ if ( form ) {
 			}
 			return;
 		}
-		const result = await run( () => save( true ) );
+		const result = await run( async () => {
+			const data = await save( true );
+			// Only the server saying "pending" means it really went to review.
+			if ( data.status !== 'pending' ) {
+				throw failure( 'Your experience was saved but not sent for review. Please try again.' );
+			}
+			return data;
+		} );
 		if ( result ) {
 			dirty = false;
 			form.hidden = true;
 			document.querySelector( '[data-if-stepper]' ).hidden = true;
+			document.querySelector( '.if-submit__aside' ).hidden = true;
+			document.querySelector( '.if-submit__layout' ).classList.add( 'is-done' );
 			done.hidden = false;
 			done.querySelector( 'h2' ).focus();
 		}
@@ -179,12 +188,40 @@ if ( form ) {
 			headers[ 'Content-Type' ] = 'application/json';
 		}
 		const base = form.dataset.create.replace( /experiences\/?$/, '' );
-		const response = await fetch( base + path, { method, body, headers, credentials: 'same-origin' } );
-		const data = await response.json().catch( () => ( {} ) );
-		if ( ! response.ok ) {
-			throw Object.assign( new Error( data.message || GENERIC_ERROR ), { data } );
+
+		let response;
+		try {
+			response = await fetch( base + path, { method, body, headers, credentials: 'same-origin' } );
+		} catch {
+			throw failure( 'We could not reach InternFeel. Check your connection. Your draft is saved, so you can try again.' );
+		}
+
+		// Read text first: a reply that is not JSON (an error page, or a PHP warning printed before the
+		// JSON) must never count as success.
+		const text = await response.text();
+		let data = null;
+		try {
+			data = JSON.parse( text );
+		} catch {}
+
+		if ( ! response.ok || ! data || typeof data !== 'object' ) {
+			window.console.error( 'InternFeel request failed:', method, path, response.status, text.slice( 0, 500 ) );
+			throw failure(
+				data?.message || `Something went wrong (error ${ response.status }). Your draft is saved, so try again in a moment.`,
+				data?.data
+			);
 		}
 		return data;
+	}
+
+	/**
+	 * An error in the shape run() expects: { data: { message, data } }.
+	 *
+	 * @param {string} message
+	 * @param {object} details WP_Error data (field, step), if any.
+	 */
+	function failure( message, details = undefined ) {
+		return Object.assign( new Error( message ), { data: { message, data: details } } );
 	}
 
 	/** The form's answers as the REST route expects them. */

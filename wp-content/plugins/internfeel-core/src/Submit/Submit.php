@@ -200,7 +200,7 @@ final class Submit implements Module {
 		}
 
 		// The review queue measures the 24-hour promise from here.
-		update_post_meta( $post_id, Fields::PREFIX . 'submitted_at', gmdate( 'c' ) );
+		update_post_meta( $post_id, Fields::PREFIX . 'submitted_at', current_time( 'mysql', true ) );
 		delete_post_meta( $post_id, Fields::PREFIX . 'moderation_note' );
 
 		wp_update_post(

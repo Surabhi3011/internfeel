@@ -454,7 +454,7 @@ final class Queue {
 	private static function waiting_since( \WP_Post $post, string $tab ): int {
 		$submitted = (string) get_post_meta( $post->ID, Fields::PREFIX . 'submitted_at', true );
 		if ( 'new' === $tab && '' !== $submitted ) {
-			return (int) strtotime( $submitted );
+			return (int) strtotime( $submitted . ' UTC' );
 		}
 
 		return (int) strtotime( $post->post_modified_gmt . ' UTC' );

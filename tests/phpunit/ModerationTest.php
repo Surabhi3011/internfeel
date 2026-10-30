@@ -166,6 +166,7 @@ class ModerationTest extends WP_UnitTestCase {
 		$this->assertSame( 'verified', get_post_meta( $id, '_if_verification_status', true ) );
 		$this->assertSame( (string) $this->admin, get_post_meta( $id, '_if_verified_by', true ) );
 		$this->assertSame( '', get_post_meta( $id, '_if_verification_note', true ) );
+		$this->assertMatchesRegularExpression( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', get_post_meta( $id, '_if_verified_at', true ) );
 		$this->assertSame( array( 'proof_verified', 'proof_rejected' ), $this->types( $this->student ) );
 	}
 

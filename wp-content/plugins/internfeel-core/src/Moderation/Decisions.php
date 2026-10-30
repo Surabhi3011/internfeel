@@ -196,7 +196,7 @@ final class Decisions {
 
 		update_post_meta( $post->ID, Fields::PREFIX . 'verification_status', 'verified' );
 		update_post_meta( $post->ID, Fields::PREFIX . 'verified_by', $actor );
-		update_post_meta( $post->ID, Fields::PREFIX . 'verified_at', gmdate( 'c' ) );
+		update_post_meta( $post->ID, Fields::PREFIX . 'verified_at', current_time( 'mysql', true ) );
 		delete_post_meta( $post->ID, Fields::PREFIX . 'verification_note' );
 		$log = Log::add( $actor, 'proof', $post->ID, 'verify', '', $note );
 

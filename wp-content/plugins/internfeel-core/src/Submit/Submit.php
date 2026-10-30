@@ -14,11 +14,12 @@ use InternFeel\Fields\Fields;
 use InternFeel\Module;
 use InternFeel\Support\RateLimit;
 use InternFeel\Support\Rest;
+use InternFeel\Verify\Proofs;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * POST experiences (new draft), GET and PATCH experiences/{id} (read, save, submit).
+ * POST experiences (new draft), GET, PATCH and DELETE experiences/{id} (read, save, submit, delete a draft).
  */
 final class Submit implements Module {
 
@@ -58,6 +59,11 @@ final class Submit implements Module {
 				array(
 					'methods'             => 'PATCH',
 					'callback'            => array( self::class, 'update' ),
+					'permission_callback' => array( self::class, 'can_edit_draft' ),
+				),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( self::class, 'delete' ),
 					'permission_callback' => array( self::class, 'can_edit_draft' ),
 				),
 			)
@@ -184,6 +190,23 @@ final class Submit implements Module {
 	}
 
 	/**
+	 * Delete a draft and its proof files. Only drafts: can_edit_draft() refuses anything submitted.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 * @phpstan-param \WP_REST_Request<array<string, mixed>> $request
+	 * @return \WP_REST_Response
+	 */
+	public static function delete( \WP_REST_Request $request ): \WP_REST_Response {
+		$post_id = (int) $request->get_param( 'id' );
+		foreach ( Proofs::all( $post_id ) as $proof ) {
+			Proofs::delete( $post_id, $proof['file'] );
+		}
+		wp_delete_post( $post_id, true );
+
+		return new \WP_REST_Response( array( 'deleted' => true ), 200 );
+	}
+
+	/**
 	 * Send a complete draft for review: build its title, story and excerpt, credit the referrer once,
 	 * and move it to Pending review.
 	 *
@@ -242,7 +265,7 @@ final class Submit implements Module {
 				'status'   => get_post_status( $post_id ),
 				'saved_at' => gmdate( 'c' ),
 				'values'   => Form::values( $post_id ),
-				'proofs'   => \InternFeel\Verify\Proofs::list_for( $post_id ),
+				'proofs'   => Proofs::list_for( $post_id ),
 			),
 			$status
 		);

@@ -34,12 +34,12 @@ report() {
 }
 
 # Email addresses. Allowed: the two public business addresses from the brief, git@github.com,
-# GitHub noreply addresses and example domains. package-lock.json and composer.lock are skipped: they
-# hold npm and Composer package authors' public metadata (copied from each package), not ours.
+# GitHub noreply addresses and example domains. Lock files and the plugin's committed vendor/ folder are
+# skipped: they hold npm and Composer package authors' public metadata (copied from each package), not ours.
 report 'email address' \
 	'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' \
 	'contact@internfeel\.com|no-reply@internfeel\.com|git@github\.com|[A-Za-z0-9._%+-]+@users\.noreply\.github\.com|[A-Za-z0-9._%+-]+@example\.(com|org|net)' \
-	'^(package-lock\.json|composer\.lock)$'
+	'(^|/)(package-lock\.json|composer\.lock)$|^wp-content/plugins/internfeel-core/vendor/'
 
 # Home-folder paths. Allowed: the placeholder /home/<cpanel-user> and the bare words "/home/".
 report '/home/ path (use $HOME or /home/<cpanel-user>)' '/home/[A-Za-z0-9._-]+' 'NONE^'

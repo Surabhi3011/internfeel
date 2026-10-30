@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace InternFeel;
 
 use InternFeel\Auth\Roles;
+use InternFeel\Certificates\Certificates;
 use InternFeel\Content\Pages;
 
 defined( 'ABSPATH' ) || exit;
@@ -70,6 +71,12 @@ final class Schema {
 			// Day 4: the submission form's page.
 			2 => static function (): void {
 				Pages::ensure( 'submit', __( 'Share your internship experience', 'internfeel' ) );
+			},
+			// Day 6: the dashboard page, and the /verify/{number}/ rewrite rules for certificates.
+			3 => static function (): void {
+				Pages::ensure( 'dashboard', __( 'Your dashboard', 'internfeel' ) );
+				Certificates::rewrite();
+				flush_rewrite_rules( false );
 			},
 		);
 	}

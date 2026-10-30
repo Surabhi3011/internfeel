@@ -310,6 +310,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **Issued on publish.** Dompdf renders the template with the student's real name, experience title, organisation, date, certificate number (`IF-YYYY-NNNNN`) and a QR code linking to `/verify/IF-YYYY-NNNNN`. Footer: "Issued by InternFeel".
 - **Storage and download:** the PDF is stored in the private folder, and the student downloads it from the dashboard through a permission-checked endpoint.
 - **Removal:** if the experience is removed, the verify page shows "revoked".
+- **As built (day 6):** numbers come from a per-year counter increased in one SQL statement (`if_certificate_seq_YYYY`), so two approvals never share one. Imported experiences get none (no student account). Removing or trashing a published experience revokes it; republishing reinstates the same number. The PDF is rendered on first download from `templates/certificate.php` with Dompdf, using TTF copies of the brand fonts in the plugin's `assets/fonts/` (Dompdf cannot read WOFF2), and a QR code from `chillerlan/php-qrcode` (needs PHP's GD extension). It is kept in the private `certificates/` folder under a name that includes a hash of what it prints, so a changed name or title produces a fresh file. `GET certificates/{id}` downloads it (author or admin); `GET verify/{number}` and `/verify/{number}/` are public. For anonymous experiences both leave out the title and organisation (plan.md section 4).
 
 ### 5.6 View counting
 

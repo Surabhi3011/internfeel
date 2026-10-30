@@ -539,3 +539,392 @@ fieldset.if-field legend {
 		width: 100%;
 	}
 }
+
+/* ---------- Shared helpers ---------- */
+
+.if-muted {
+	color: var(--if-muted);
+}
+
+.if-ink {
+	color: var(--if-ink);
+}
+
+.if-btn.if-danger {
+	color: var(--if-danger);
+}
+
+.if-link {
+	padding: 0;
+	font: inherit;
+	color: var(--if-teal-700);
+	text-decoration: underline;
+	cursor: pointer;
+	background: none;
+	border: 0;
+}
+
+.if-avatar--lg {
+	flex: none;
+	width: 56px;
+	height: 56px;
+	font-size: 20px;
+}
+
+/* ---------- Student dashboard (docs/approved-designs/dashboard.html) ---------- */
+
+.if-dash {
+	display: grid;
+	gap: 28px;
+}
+
+.if-dash__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-4);
+}
+
+.if-dash__who {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-4);
+	min-width: 0;
+}
+
+.if-dash__name {
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+
+.if-dash__title {
+	margin: 0;
+}
+
+.if-dash__byline {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 10px;
+}
+
+.if-dash__counters {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--if-space-4);
+}
+
+.if-dash__counter {
+	display: grid;
+	gap: 2px;
+	padding: 18px 20px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__number {
+	font: 800 32px/38px var(--font-display);
+	font-variant-numeric: tabular-nums;
+}
+
+.if-dash__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	gap: var(--if-space-8);
+	align-items: start;
+}
+
+.if-dash__main,
+.if-dash__panel {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+
+.if-dash__panel[hidden] {
+	display: none;
+}
+
+.if-dash__tabs {
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	border-bottom: 1px solid var(--if-line);
+}
+
+.if-dash__tab {
+	min-height: 44px;
+	padding: 0 var(--if-space-4);
+	font: 700 16px/1 var(--font-body);
+	color: var(--if-muted);
+	white-space: nowrap;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-bottom: 3px solid transparent;
+}
+
+.if-dash__tab[aria-selected="true"] {
+	color: var(--if-ink);
+	border-bottom-color: var(--if-teal);
+}
+
+.if-dash__tab:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: -3px;
+}
+
+.if-dash__item,
+.if-dash__empty {
+	display: grid;
+	gap: var(--if-space-3);
+	padding: 20px 24px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__item h2,
+.if-dash__item p,
+.if-dash__empty p {
+	margin: 0;
+}
+
+.if-dash__item h2 a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.if-dash__item h2 a:hover {
+	text-decoration: underline;
+}
+
+.if-dash__pills,
+.if-dash__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+}
+
+.if-dash__title-block {
+	display: grid;
+	gap: 4px;
+}
+
+.if-dash__counts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 18px;
+	color: var(--if-muted);
+}
+
+.if-dash__actions {
+	padding-top: var(--if-space-3);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-dash__note,
+.if-dash__proof.is-rejected {
+	padding: var(--if-space-4);
+	background: var(--if-danger-soft);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__note strong,
+.if-dash__proof strong {
+	color: var(--if-danger);
+}
+
+.if-dash__proof {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-dash__drop {
+	display: grid;
+	justify-items: start;
+	gap: var(--if-space-2);
+	padding: var(--if-space-4);
+	background: var(--if-canvas);
+	border: 2px dashed var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__drop-title {
+	font-weight: 700;
+}
+
+.if-dash__file {
+	position: relative;
+}
+
+.if-dash__file input {
+	position: absolute;
+	inset: 0;
+	cursor: pointer;
+	opacity: 0;
+}
+
+.if-dash__file:focus-within {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-dash__comment-by {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+	align-items: baseline;
+}
+
+.if-dash__comment p {
+	margin: 0 0 var(--if-space-2);
+}
+
+.if-dash__aside {
+	display: grid;
+	gap: var(--if-space-6);
+	min-width: 0;
+}
+
+.if-dash__updates {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-dash__aside-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--if-space-2);
+}
+
+.if-dash__aside h2 {
+	margin: 0;
+}
+
+.if-dash__invite {
+	display: grid;
+	gap: 14px;
+	padding: var(--if-space-6);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__invite p {
+	margin: 0;
+}
+
+.if-dash__invite > div {
+	display: grid;
+	gap: 4px;
+}
+
+.if-dash__credits {
+	display: flex;
+	align-items: baseline;
+	gap: var(--if-space-2);
+}
+
+.if-dash__credits-number {
+	font: 800 32px/38px var(--font-display);
+	color: var(--if-teal-800);
+}
+
+@media (max-width: 1000px) {
+	.if-dash__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-dash__title {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	.if-dash__counters {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--if-space-3);
+	}
+
+	.if-dash__item,
+	.if-dash__empty {
+		padding: var(--if-space-4);
+	}
+}
+
+/* ---------- Verify a certificate ---------- */
+
+.if-verify {
+	display: grid;
+	gap: var(--if-space-6);
+	max-width: 46rem;
+}
+
+.if-verify h1 {
+	margin: 0;
+}
+
+.if-verify__card {
+	display: grid;
+	gap: var(--if-space-4);
+	justify-items: start;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-verify__card > p {
+	margin: 0;
+}
+
+.if-verify__facts {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: var(--if-space-2) var(--if-space-6);
+	margin: 0;
+}
+
+.if-verify__facts dt {
+	color: var(--if-muted);
+}
+
+.if-verify__facts dd {
+	margin: 0;
+	font-weight: 700;
+}
+
+.if-verify__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+	align-items: end;
+	width: 100%;
+	padding-top: var(--if-space-4);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-verify__form .if-field {
+	flex: 1;
+	min-width: 12rem;
+}
+
+@media (max-width: 640px) {
+	.if-verify__card {
+		padding: 20px;
+	}
+
+	.if-verify__facts {
+		grid-template-columns: 1fr;
+		gap: 2px;
+	}
+
+	.if-verify__facts dd {
+		margin-bottom: var(--if-space-2);
+	}
+}

@@ -142,3 +142,26 @@ function if_the_logo(): void {
 		esc_attr__( 'InternFeel home', 'internfeel' )
 	);
 }
+
+/**
+ * The badge symbols after a name: one per verified experience; above 10, ten symbols and the number
+ * (plan.md 5.1). Prints nothing for 0.
+ *
+ * @param int $count Verified experiences.
+ */
+function if_the_badges( int $count ): void {
+	if ( $count <= 0 ) {
+		return;
+	}
+
+	/* translators: %d: number of verified experiences. */
+	$label = sprintf( _n( '%d verified experience', '%d verified experiences', $count, 'internfeel' ), $count );
+	$icon  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 8l11 5 9-4.1V15h2V8z"/><path d="M5.5 11.3v3.4c0 1.8 2.9 3.3 6.5 3.3s6.5-1.5 6.5-3.3v-3.4L12 14.2z"/></svg>';
+
+	echo '<span class="if-badges" role="img" aria-label="' . esc_attr( $label ) . '">';
+	echo str_repeat( $icon, min( $count, 10 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG markup.
+	if ( $count > 10 ) {
+		echo '<span class="if-badges__more" aria-hidden="true">' . esc_html( number_format_i18n( $count ) ) . '</span>';
+	}
+	echo '</span>';
+}

@@ -61,6 +61,25 @@ final class Log {
 	}
 
 	/**
+	 * Whether someone has already taken an action on a target, such as reporting it.
+	 *
+	 * @param int    $actor_id    User.
+	 * @param string $target_type Target type.
+	 * @param int    $target_id   Target ID.
+	 * @param string $action      Action.
+	 * @return bool
+	 */
+	public static function exists( int $actor_id, string $target_type, int $target_id, string $action ): bool {
+		global $wpdb;
+
+		$table = self::table();
+
+		return null !== $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom table; uses the actor index.
+			$wpdb->prepare( "SELECT id FROM {$table} WHERE actor_id = %d AND action = %s AND target_type = %s AND target_id = %d LIMIT 1", $actor_id, $action, $target_type, $target_id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix.
+		);
+	}
+
+	/**
 	 * Entries about one target, newest first.
 	 *
 	 * @param string $target_type Target type.

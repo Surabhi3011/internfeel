@@ -2,8 +2,7 @@
 /**
  * Experience page, from docs/approved-designs/experience.html: title block, key facts, the story with
  * the ratings sidebar, comments, then more experiences of the same type. Anonymous experiences show
- * "Anonymous" and no photo, LinkedIn or caps (plan.md 5.1). Ad slots arrive on day 11; reporting and
- * comment editing on day 9.
+ * "Anonymous" and no photo, LinkedIn or caps (plan.md 5.1). Ad slots arrive on day 11.
  *
  * @package InternFeel
  */
@@ -306,6 +305,8 @@ get_header();
 					<div class="body-lg"><?php echo wp_kses_post( wpautop( esc_html( (string) $if_v['advice'] ) ) ); ?></div>
 				</aside>
 			<?php endif; ?>
+
+			<p class="small if-muted if-exp__report"><?php esc_html_e( 'Something wrong with this experience?', 'internfeel' ); ?> <?php if_the_report_button( 'experience', $if_id, $if_author, __( 'Report it', 'internfeel' ) ); ?></p>
 		</div>
 
 		<?php if ( $if_overall > 0 || array() !== $if_ratings ) : ?>

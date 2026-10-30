@@ -1701,3 +1701,108 @@ fieldset.if-field legend {
 		padding: 20px;
 	}
 }
+
+/* ---------- Reports, comment editing, listicles ---------- */
+
+.if-dialog {
+	width: min(30rem, 100% - 32px);
+	padding: var(--if-space-6);
+	color: var(--if-ink);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-dialog::backdrop {
+	background: rgb(29 28 28 / 0.45);
+}
+
+.if-dialog h2 {
+	margin: 0;
+}
+
+.if-dialog__reasons {
+	display: grid;
+	gap: 2px;
+}
+
+.if-dialog__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: var(--if-space-2);
+}
+
+.if-exp__report {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--if-space-2);
+	margin: var(--if-space-6) 0 0;
+}
+
+.if-comment__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--if-space-2);
+}
+
+.if-comment__editor {
+	display: grid;
+	gap: var(--if-space-2);
+	margin-top: var(--if-space-2);
+}
+
+.if-comment__editor textarea {
+	width: 100%;
+	padding: 10px 14px;
+	font: inherit;
+	border: 1px solid var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-comment__editor p {
+	margin: 0;
+}
+
+.if-list {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+.if-list h1,
+.if-list > p {
+	margin: 0;
+}
+
+.if-list__intro {
+	max-width: var(--if-reading);
+}
+
+.if-list__intro p {
+	margin: 0 0 var(--if-space-3);
+}
+
+.if-list__all {
+	display: grid;
+	gap: var(--if-space-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-list__item {
+	display: grid;
+	gap: var(--if-space-2);
+	padding: 20px 24px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-list__item h2,
+.if-list__item p {
+	margin: 0;
+}

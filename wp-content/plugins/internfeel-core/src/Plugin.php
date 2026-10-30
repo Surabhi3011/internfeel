@@ -57,6 +57,10 @@ final class Plugin {
 			Search\Search::class,
 			Invites\Invites::class,
 			Invites\Admin::class,
+			Comments\Comments::class,
+			Reports\Reports::class,
+			Reports\Admin::class,
+			Lists\Lists::class,
 		);
 	}
 }

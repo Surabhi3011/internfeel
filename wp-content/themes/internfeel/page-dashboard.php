@@ -282,6 +282,7 @@ get_header();
 						<div class="if-dash__comment"><?php echo wp_kses_post( wpautop( $if_comment->comment_content ) ); ?></div>
 						<div class="if-dash__actions">
 							<a class="if-btn if-btn--ghost if-btn--sm" href="<?php echo esc_url( (string) get_comment_link( $if_comment ) ); ?>"><?php esc_html_e( 'Reply', 'internfeel' ); ?></a>
+							<?php if_the_report_button( 'comment', (int) $if_comment->comment_ID, (int) $if_comment->user_id ); ?>
 						</div>
 					</article>
 				<?php endforeach; ?>
@@ -365,4 +366,5 @@ get_header();
 	</div>
 </div>
 <?php
+get_template_part( 'template-parts/report-dialog' );
 get_footer();

@@ -48,6 +48,9 @@ function if_theme_assets(): void {
 	if ( is_front_page() || is_page( 'experiences' ) ) {
 		wp_enqueue_script_module( 'internfeel-browse', get_theme_file_uri( 'assets/js/browse.js' ), array(), IF_THEME_VERSION );
 	}
+	if ( ( is_singular( 'post' ) || is_page( 'dashboard' ) ) && is_user_logged_in() ) {
+		wp_enqueue_script_module( 'internfeel-report', get_theme_file_uri( 'assets/js/report.js' ), array(), IF_THEME_VERSION );
+	}
 	if ( is_singular( 'post' ) && comments_open() && is_user_logged_in() ) {
 		wp_enqueue_script( 'comment-reply' );
 	}

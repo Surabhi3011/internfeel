@@ -1,7 +1,8 @@
 <?php
 /**
  * Comments on an experience (approved-designs README, Experience page section 5): count, a sign-in
- * prompt or the form, then the list with one level of replies. Edit once and Report arrive on day 9.
+ * prompt or the form, then the list with one level of replies, each with Reply, Report and, on the
+ * reader's own comment, Edit (once).
  *
  * @package InternFeel
  */
@@ -64,6 +65,13 @@ $if_comment = static function ( WP_Comment $comment, array $args, int $depth ) u
 					),
 					$comment
 				);
+				if_the_report_button( 'comment', (int) $comment->comment_ID, (int) $comment->user_id );
+				$mine = is_user_logged_in() && get_current_user_id() === (int) $comment->user_id;
+				if ( $mine && '1' === (string) $comment->comment_approved && ! \InternFeel\Comments\Comments::edited( (int) $comment->comment_ID ) ) :
+					?>
+					<button class="if-btn if-btn--ghost if-btn--sm" type="button" data-if-edit data-id="<?php echo esc_attr( (string) $comment->comment_ID ); ?>" data-text="<?php echo esc_attr( $comment->comment_content ); ?>"><?php esc_html_e( 'Edit (once)', 'internfeel' ); ?></button>
+					<?php
+				endif;
 				?>
 			</div>
 		</div>
@@ -116,3 +124,4 @@ $if_comment = static function ( WP_Comment $comment, array $args, int $depth ) u
 		</ol>
 	<?php endif; ?>
 </section>
+<?php get_template_part( 'template-parts/report-dialog' ); ?>

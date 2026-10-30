@@ -212,14 +212,7 @@ function if_home_rows(): array {
 	);
 
 	foreach ( $lists as $list ) {
-		$ids   = array_slice( array_map( 'intval', (array) get_post_meta( $list->ID, '_if_list_items', true ) ), 0, 6 );
-		$cards = array();
-		foreach ( $ids as $id ) {
-			$post = get_post( $id );
-			if ( $post instanceof WP_Post && 'publish' === $post->post_status && count( $cards ) < 3 ) {
-				$cards[] = \InternFeel\Search\Cards::data( $post );
-			}
-		}
+		$cards  = array_map( array( \InternFeel\Search\Cards::class, 'data' ), \InternFeel\Lists\Lists::posts( $list->ID, 3 ) );
 		$rows[] = array(
 			'id'       => 'if-row-' . $list->ID,
 			'title'    => get_the_title( $list ),
@@ -283,4 +276,35 @@ function if_the_cards( array $cards, string $heading = 'h3' ): void {
 			)
 		);
 	}
+}
+
+/**
+ * A Report button for an experience or comment. Signed out, a link to log in; on the reader's own
+ * writing, nothing; already reported by this reader, a disabled "Reported".
+ *
+ * @param string $type  experience or comment.
+ * @param int    $id    Target ID.
+ * @param int    $owner Who wrote it.
+ * @param string $label Button text.
+ */
+function if_the_report_button( string $type, int $id, int $owner, string $label = '' ): void {
+	$label = '' === $label ? __( 'Report', 'internfeel' ) : $label;
+
+	if ( ! is_user_logged_in() ) {
+		$back = (string) get_permalink() . ( 'comment' === $type ? '#comment-' . $id : '' );
+		echo '<a class="if-report-link" href="' . esc_url( add_query_arg( 'redirect_to', rawurlencode( $back ), home_url( '/login/' ) ) ) . '">' . esc_html( $label ) . '</a>';
+		return;
+	}
+	if ( get_current_user_id() === $owner || ! if_core_active() ) {
+		return;
+	}
+
+	$done = \InternFeel\Moderation\Log::exists( get_current_user_id(), $type, $id, 'report' );
+	printf(
+		'<button class="if-btn if-btn--ghost if-btn--sm if-report-btn" type="button" data-if-report="%1$s" data-id="%2$d"%3$s>%4$s</button>',
+		esc_attr( $type ),
+		(int) $id,
+		$done ? ' disabled' : '',
+		esc_html( $done ? __( 'Reported', 'internfeel' ) : $label )
+	);
 }

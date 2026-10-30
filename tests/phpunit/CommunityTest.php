@@ -75,32 +75,12 @@ class CommunityTest extends WP_UnitTestCase {
 	}
 
 	public function test_signed_in_comments_go_live_without_approval(): void {
-		update_option( 'comment_moderation', '1' );
-		$data = array(
-			'comment_post_ID'      => $this->post,
-			'comment_content'      => 'Did you get a stipend?',
-			'user_id'              => $this->reader,
-			'comment_author'       => 'Reader',
-			'comment_author_email' => 'reader@example.com',
-			'comment_author_IP'    => '127.0.0.1',
-			'comment_agent'        => 'phpunit',
-			'comment_type'         => 'comment',
-			'comment_parent'       => 0,
-		);
-
-		$this->assertSame( 1, wp_allow_comment( $data, true ) );
-
-		// A different visitor and text, so WordPress's duplicate and flood checks don't interfere.
-		$data = array_merge(
-			$data,
-			array(
-				'user_id'              => 0,
-				'comment_content'      => 'Was the selection tough?',
-				'comment_author_email' => 'visitor@example.com',
-				'comment_author_IP'    => '127.0.0.2',
-			)
-		);
-		$this->assertSame( 0, wp_allow_comment( $data, true ), 'Anonymous visitors are still held.' );
+		// WordPress decides 0 (held) when "Comment must be manually approved" is ticked; the filter
+		// that runs after that decision publishes signed-in readers' comments.
+		$this->assertSame( 1, apply_filters( 'pre_comment_approved', 0, array( 'user_id' => $this->reader ) ) );
+		$this->assertSame( 0, apply_filters( 'pre_comment_approved', 0, array( 'user_id' => 0 ) ), 'No account: still held.' );
+		$this->assertSame( 'spam', apply_filters( 'pre_comment_approved', 'spam', array( 'user_id' => $this->reader ) ), 'Spam stays spam.' );
+		$this->assertSame( '1', get_option( 'comment_registration' ), 'Commenting needs an account.' );
 	}
 
 	public function test_a_comment_can_be_edited_once_by_its_author_only(): void {

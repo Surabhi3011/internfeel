@@ -51,6 +51,7 @@ final class Plugin {
 			Import\Import::class,
 			Submit\Submit::class,
 			Verify\Verify::class,
+			Moderation\Moderation::class,
 		);
 	}
 }

@@ -104,7 +104,22 @@ final class Search implements Module {
 	 * @return array<string, mixed>
 	 */
 	public static function query_args( array $filters, int $per_page = self::PER_PAGE ): array {
-		$meta = array( 'relation' => 'AND' );
+		// Experiences with three reports stay out of listings until an admin decides (architecture.md 5.8).
+		$meta = array(
+			'relation' => 'AND',
+			array(
+				'relation' => 'OR',
+				array(
+					'key'     => Fields::PREFIX . 'flagged',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
+					'key'     => Fields::PREFIX . 'flagged',
+					'value'   => '1',
+					'compare' => '!=',
+				),
+			),
+		);
 		$tax  = array( 'relation' => 'AND' );
 		$key  = static fn( string $name ): string => Fields::PREFIX . $name;
 

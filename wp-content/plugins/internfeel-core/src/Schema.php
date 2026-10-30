@@ -86,6 +86,10 @@ final class Schema {
 			5 => static function (): void {
 				Pages::ensure( 'join', __( 'Join InternFeel', 'internfeel' ) );
 			},
+			// Day 9: the /lists/ archive and listicle pages need the rewrite rules refreshed once.
+			6 => static function (): void {
+				flush_rewrite_rules( false );
+			},
 		);
 	}
 

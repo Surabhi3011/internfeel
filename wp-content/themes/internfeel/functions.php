@@ -42,8 +42,11 @@ function if_theme_assets(): void {
 	wp_enqueue_style( 'internfeel', get_stylesheet_uri(), array( 'internfeel-components' ), IF_THEME_VERSION );
 	wp_enqueue_script_module( 'internfeel-main', get_theme_file_uri( 'assets/js/main.js' ), array(), IF_THEME_VERSION );
 
-	if ( is_page( array( 'signup', 'login' ) ) ) {
+	if ( is_page( array( 'signup', 'login', 'dashboard' ) ) ) {
 		wp_enqueue_script_module( 'internfeel-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), IF_THEME_VERSION );
+	}
+	if ( is_page( 'dashboard' ) ) {
+		wp_enqueue_script_module( 'internfeel-dashboard', get_theme_file_uri( 'assets/js/dashboard.js' ), array(), IF_THEME_VERSION );
 	}
 	if ( is_page( 'submit' ) ) {
 		wp_enqueue_script_module( 'internfeel-submit', get_theme_file_uri( 'assets/js/submit.js' ), array(), IF_THEME_VERSION );

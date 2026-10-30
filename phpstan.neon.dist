@@ -2,6 +2,9 @@ parameters:
 	# WP-CLI classes for the import command (php-stubs/wp-cli-stubs).
 	scanFiles:
 		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+	# The plugin's committed runtime packages (Dompdf, QR codes), so their classes are known.
+	bootstrapFiles:
+		- wp-content/plugins/internfeel-core/vendor/autoload.php
 	level: 6
 	paths:
 		- wp-content/themes/internfeel

@@ -121,6 +121,7 @@ class CertificatesTest extends WP_UnitTestCase {
 	public function test_only_the_author_and_admins_can_download(): void {
 		$id      = $this->published();
 		$request = new WP_REST_Request( 'GET', "/internfeel/v1/certificates/{$id}" );
+		$request->set_url_params( array( 'id' => $id ) ); // Set by the router when dispatched.
 
 		wp_set_current_user( self::factory()->user->create( array( 'role' => Roles::STUDENT ) ) );
 		$this->assertWPError( Certificates::can_download( $request ) );

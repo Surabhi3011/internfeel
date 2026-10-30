@@ -149,10 +149,12 @@ final class Pdf {
 
 		$options = new QROptions(
 			array(
-				'outputInterface' => QRGdImagePNG::class,
-				'outputBase64'    => true,
-				'scale'           => 6,
-				'quietzoneSize'   => 1,
+				'outputInterface'  => QRGdImagePNG::class,
+				'outputBase64'     => true,
+				// Opaque, so Dompdf never hands it to Imagick (see the note on the certificate images).
+				'imageTransparent' => false,
+				'scale'            => 6,
+				'quietzoneSize'    => 1,
 			)
 		);
 

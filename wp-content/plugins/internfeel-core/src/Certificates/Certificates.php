@@ -159,18 +159,19 @@ final class Certificates implements Module {
 			return 0;
 		}
 
-		$ids = get_posts(
-			array(
-				'post_type'      => 'post',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'meta_key'       => Fields::PREFIX . 'certificate_no', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- lookup by certificate number.
-				'meta_value'     => $number, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- lookup by certificate number.
+		// A direct lookup, so removed and trashed experiences are found too (their certificates show as
+		// revoked) and no query filter for the current user can hide them.
+		global $wpdb;
+		$id = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- lookup by certificate number.
+			$wpdb->prepare(
+				"SELECT p.ID FROM {$wpdb->postmeta} m INNER JOIN {$wpdb->posts} p ON p.ID = m.post_id
+				WHERE m.meta_key = %s AND m.meta_value = %s AND p.post_type = 'post' ORDER BY p.ID LIMIT 1",
+				Fields::PREFIX . 'certificate_no',
+				$number
 			)
 		);
 
-		return array() === $ids ? 0 : (int) $ids[0];
+		return (int) $id;
 	}
 
 	/**

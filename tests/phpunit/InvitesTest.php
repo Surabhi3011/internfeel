@@ -135,7 +135,7 @@ class InvitesTest extends WP_UnitTestCase {
 		Invites::accept( $friend, $this->inviter, $code, '' );
 
 		$this->assertTrue( Invites::remove_referral( $friend, $this->admin, 'Same person' ) );
-		$this->assertSame( '', get_user_meta( $friend, '_if_referred_by_user_id', true ) );
+		$this->assertFalse( metadata_exists( 'user', $friend, '_if_referred_by_user_id' ) );
 		$this->assertSame( '0', get_user_meta( $this->inviter, '_if_invites_joined', true ) );
 		$this->assertSame( 'remove_referral', Log::for_target( 'referral', $friend )[0]['action'] );
 

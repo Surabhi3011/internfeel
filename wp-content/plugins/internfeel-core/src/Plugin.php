@@ -55,6 +55,8 @@ final class Plugin {
 			Certificates\Certificates::class,
 			Dashboard\Dashboard::class,
 			Search\Search::class,
+			Invites\Invites::class,
+			Invites\Admin::class,
 		);
 	}
 }

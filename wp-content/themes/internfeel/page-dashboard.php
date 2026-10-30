@@ -40,7 +40,7 @@ $if_items    = Dashboard::experiences( $if_user_id );
 $if_comments = Dashboard::comments( $if_user_id );
 $if_notes    = Notify::all( $if_user_id );
 $if_verified = (int) get_user_meta( $if_user_id, '_if_verified_count', true );
-$if_credits  = (int) get_user_meta( $if_user_id, '_if_invite_credits', true );
+$if_invites  = \InternFeel\Invites\Invites::summary( $if_user_id );
 $if_nonce    = wp_create_nonce( 'wp_rest' );
 $if_steps    = array(
 	1 => __( 'where and what', 'internfeel' ),
@@ -288,13 +288,23 @@ get_header();
 			</section>
 
 			<section class="if-dash__panel" role="tabpanel" id="if-panel-invites" aria-labelledby="if-tab-invites" hidden>
-				<?php get_template_part( 'template-parts/invite-panel', null, array( 'credits' => $if_credits ) ); ?>
+				<?php
+				get_template_part(
+					'template-parts/invite-panel',
+					null,
+					array(
+						'summary' => $if_invites,
+						'id'      => 'tab',
+						'full'    => true,
+					)
+				);
+				?>
 			</section>
 
 			<section class="if-dash__panel" role="tabpanel" id="if-panel-profile" aria-labelledby="if-tab-profile" hidden>
 				<div class="if-dash__item">
 					<h2 class="heading-3"><?php esc_html_e( 'Profile', 'internfeel' ); ?></h2>
-					<?php get_template_part( 'template-parts/profile-form' ); ?>
+					<?php get_template_part( 'template-parts/profile-form', null, array( 'settings' => true ) ); ?>
 					<div class="if-dash__actions">
 						<a class="if-btn if-btn--ghost if-btn--sm" href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Set or change your password', 'internfeel' ); ?></a>
 						<a class="if-btn if-btn--ghost if-btn--sm" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Log out', 'internfeel' ); ?></a>
@@ -341,7 +351,16 @@ get_header();
 				<?php endif; ?>
 			</section>
 
-			<?php get_template_part( 'template-parts/invite-panel', null, array( 'credits' => $if_credits ) ); ?>
+			<?php
+			get_template_part(
+				'template-parts/invite-panel',
+				null,
+				array(
+					'summary' => $if_invites,
+					'id'      => 'side',
+				)
+			);
+			?>
 		</aside>
 	</div>
 </div>

@@ -300,6 +300,9 @@ sequenceDiagram
 
 - **Credit line on the post:** "Shared through an invite from {referrer name}, {college}". It appears even when the author is anonymous; only the author is hidden.
 - **Abuse rules:** self-referral is blocked; sign-ups from the inviter's own IP or device within 24 hours are flagged for review; invites are limited to credits held; an admin can remove a credit, and the removal is logged.
+- **As built (day 8):** `InternFeel\Invites\Invites`. Credits arrive on `if_experience_verified` (3 each). `POST invites` spends one credit on an 8-character code, stored in `_if_invite_codes` and indexed as one `_if_invite_code` user meta row per code. `/join/?ref=CODE` (`page-join.php`, never cached) sets the `if_ref` cookie (30 days, HttpOnly, SameSite Lax) only for an unused code, and never for the inviter's own link. On `user_register` (email or Google) the cookie sets `referred_by_user_id` once, marks the code used, adds to `invites_joined` and notifies the inviter. Submissions take the referrer from `referred_by_user_id`, so every one is credited.
+- **Abuse rules as built:** the inviter's IP is kept only as a salted hash (`wp_hash`) on each code. A sign-up from the same IP within 24 hours of the invite is flagged (`_if_referral_flagged`, logged as `referral` / `flag`). Admins see these under **Review → Flagged referrals** and keep or remove them. A student's edit screen has **Remove one credit**. Both decisions are logged. Device matching is not built: there is no device fingerprinting, by design, for privacy.
+- **Credit line:** a student can tick "Keep my name off invite credits" in Profile (`_if_hide_invite_credit`); their invitees' posts then say "Shared through an InternFeel student invite".
 
 ### 5.4 Badges
 

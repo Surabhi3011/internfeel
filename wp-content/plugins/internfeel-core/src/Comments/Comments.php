@@ -31,6 +31,9 @@ final class Comments implements Module {
 		add_action( 'rest_api_init', array( self::class, 'routes' ) );
 		add_action( 'wp_insert_comment', array( self::class, 'on_insert' ), 10, 2 );
 		add_action( 'transition_comment_status', array( self::class, 'on_approve' ), 10, 3 );
+		add_filter( 'pre_comment_approved', array( self::class, 'approve_signed_in' ), 20, 2 );
+		// Only signed-in readers can comment, so every comment has an account behind it.
+		add_filter( 'pre_option_comment_registration', static fn(): string => '1' );
 	}
 
 	/**
@@ -108,6 +111,22 @@ final class Comments implements Module {
 			),
 			200
 		);
+	}
+
+	/**
+	 * Comments from signed-in readers go live straight away; reports (three hide a comment) are the
+	 * safety net instead of approval. WordPress's own spam and disallowed-words checks still win.
+	 *
+	 * @param int|string|\WP_Error $approved    1, 0, "spam", "trash" or an error.
+	 * @param array<string, mixed> $commentdata The comment.
+	 * @return int|string|\WP_Error
+	 */
+	public static function approve_signed_in( int|string|\WP_Error $approved, array $commentdata ): int|string|\WP_Error {
+		if ( is_wp_error( $approved ) || 'spam' === $approved || 'trash' === $approved ) {
+			return $approved;
+		}
+
+		return (int) ( $commentdata['user_id'] ?? 0 ) > 0 ? 1 : $approved;
 	}
 
 	/**

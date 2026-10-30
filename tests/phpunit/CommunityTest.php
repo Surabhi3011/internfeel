@@ -74,6 +74,15 @@ class CommunityTest extends WP_UnitTestCase {
 		$this->assertCount( 1, Notify::all( $this->author ) );
 	}
 
+	public function test_signed_in_comments_go_live_without_approval(): void {
+		// WordPress decides 0 (held) when "Comment must be manually approved" is ticked; the filter
+		// that runs after that decision publishes signed-in readers' comments.
+		$this->assertSame( 1, apply_filters( 'pre_comment_approved', 0, array( 'user_id' => $this->reader ) ) );
+		$this->assertSame( 0, apply_filters( 'pre_comment_approved', 0, array( 'user_id' => 0 ) ), 'No account: still held.' );
+		$this->assertSame( 'spam', apply_filters( 'pre_comment_approved', 'spam', array( 'user_id' => $this->reader ) ), 'Spam stays spam.' );
+		$this->assertSame( '1', get_option( 'comment_registration' ), 'Commenting needs an account.' );
+	}
+
 	public function test_a_comment_can_be_edited_once_by_its_author_only(): void {
 		$id = $this->comment( $this->reader );
 

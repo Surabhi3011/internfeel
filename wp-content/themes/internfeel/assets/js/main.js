@@ -14,3 +14,18 @@ if ( header ) {
 		header.classList.toggle( 'is-compact', ! entry.isIntersecting );
 	} ).observe( sentinel );
 }
+
+// Copy-link buttons ([data-if-copy] holds the URL; [data-if-label] inside it shows the result).
+document.addEventListener( 'click', async ( event ) => {
+	const button = event.target.closest( '[data-if-copy]' );
+	if ( ! button ) {
+		return;
+	}
+	const label = button.querySelector( '[data-if-label]' ) ?? button;
+	try {
+		await navigator.clipboard.writeText( button.dataset.ifCopy );
+		label.textContent = 'Link copied';
+	} catch {
+		label.textContent = 'Copy failed';
+	}
+} );

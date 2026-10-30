@@ -45,6 +45,12 @@ function if_theme_assets(): void {
 	if ( is_page( array( 'signup', 'login', 'dashboard' ) ) ) {
 		wp_enqueue_script_module( 'internfeel-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), IF_THEME_VERSION );
 	}
+	if ( is_front_page() || is_page( 'experiences' ) ) {
+		wp_enqueue_script_module( 'internfeel-browse', get_theme_file_uri( 'assets/js/browse.js' ), array(), IF_THEME_VERSION );
+	}
+	if ( is_singular( 'post' ) && comments_open() && is_user_logged_in() ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
 	if ( is_page( 'dashboard' ) ) {
 		wp_enqueue_script_module( 'internfeel-dashboard', get_theme_file_uri( 'assets/js/dashboard.js' ), array(), IF_THEME_VERSION );
 	}
@@ -82,3 +88,9 @@ function if_theme_favicon(): void {
 	printf( '<link rel="icon" href="%s" type="image/png">' . "\n", esc_url( get_theme_file_uri( 'assets/img/if-mark.png' ) ) );
 }
 add_action( 'wp_head', 'if_theme_favicon' );
+
+/**
+ * Comments are threaded one level deep (approved-designs README, Experience page section 5).
+ */
+add_filter( 'pre_option_thread_comments', static fn(): string => '1' );
+add_filter( 'pre_option_thread_comments_depth', static fn(): string => '2' );

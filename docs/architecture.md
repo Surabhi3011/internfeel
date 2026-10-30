@@ -325,6 +325,8 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **Shareable results:** filters live in the URL query string, so any filtered view can be shared and cached.
 - **Live updates:** results refresh through `GET /wp-json/internfeel/v1/experiences` without a page reload.
 - **Scale:** fine for a few thousand experiences. Beyond that, add a dedicated search index.
+- **As built (day 7):** `InternFeel\Search\Search` cleans the query string (`q`, `field`, `type`, `organisation`, `location`, `year`, `pay` as paid, unpaid or a stipend band, `verified`, `sort`, `page`) and builds the one `WP_Query`. The home page, `/experiences/` and `GET experiences` all use it, so a filtered URL renders the same results with or without JavaScript. Year matches the internship's start month, or the original publication year for migrated posts. Card data (`Search\Cards`) carries only public fields and never the author. The trust-strip counts and the filter menus' choices are cached for 10 minutes and an hour, and cleared whenever an experience is saved.
+- **Anonymous comments:** on an anonymous experience, the author's own comments show "Anonymous" everywhere: on the page, in reply links, and in the core comments REST route, which also drops the user ID and avatar.
 
 ### 5.8 Moderation
 

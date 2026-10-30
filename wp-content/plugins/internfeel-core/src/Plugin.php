@@ -54,6 +54,7 @@ final class Plugin {
 			Moderation\Moderation::class,
 			Certificates\Certificates::class,
 			Dashboard\Dashboard::class,
+			Search\Search::class,
 		);
 	}
 }

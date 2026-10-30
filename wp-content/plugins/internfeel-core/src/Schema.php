@@ -78,6 +78,10 @@ final class Schema {
 				Certificates::rewrite();
 				flush_rewrite_rules( false );
 			},
+			// Day 7: the experiences archive and search results page.
+			4 => static function (): void {
+				Pages::ensure( 'experiences', __( 'Internship experiences', 'internfeel' ) );
+			},
 		);
 	}
 

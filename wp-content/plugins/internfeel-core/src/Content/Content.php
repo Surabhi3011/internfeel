@@ -32,6 +32,8 @@ final class Content implements Module {
 		add_filter( 'rest_prepare_post', array( self::class, 'hide_anonymous_author' ), 10, 2 );
 		add_filter( 'rest_post_query', array( self::class, 'ignore_author_filter' ) );
 		add_filter( 'the_author', array( self::class, 'anonymous_feed_author' ) );
+		add_filter( 'get_comment_author', array( self::class, 'anonymous_comment_author' ), 10, 3 );
+		add_filter( 'rest_prepare_comment', array( self::class, 'hide_anonymous_commenter' ), 10, 2 );
 	}
 
 	/**
@@ -208,5 +210,58 @@ final class Content implements Module {
 		}
 
 		return __( 'Anonymous', 'internfeel' );
+	}
+
+	/**
+	 * On an anonymous experience, the author's own comments show "Anonymous" everywhere (the page,
+	 * reply links, feeds and REST), so a reply cannot reveal who wrote the post.
+	 *
+	 * @param string           $author     Comment author name.
+	 * @param string|int       $comment_id Comment ID.
+	 * @param \WP_Comment|null $comment    Comment.
+	 * @return string
+	 */
+	public static function anonymous_comment_author( string $author, string|int $comment_id, ?\WP_Comment $comment = null ): string {
+		$comment = $comment ?? get_comment( (int) $comment_id );
+
+		return $comment instanceof \WP_Comment && self::is_anonymous_authors_comment( $comment ) ? __( 'Anonymous', 'internfeel' ) : $author;
+	}
+
+	/**
+	 * Whether a comment was written by the author of the anonymous experience it is on.
+	 *
+	 * @param \WP_Comment $comment Comment.
+	 * @return bool
+	 */
+	public static function is_anonymous_authors_comment( \WP_Comment $comment ): bool {
+		$post_id = (int) $comment->comment_post_ID;
+
+		return (int) $comment->user_id > 0
+			&& (int) get_post_field( 'post_author', $post_id ) === (int) $comment->user_id
+			&& Fields::is_anonymous( $post_id );
+	}
+
+	/**
+	 * The core comments REST route shows the commenter's user ID, name and avatar. For the author's own
+	 * comments on an anonymous experience, remove all three.
+	 *
+	 * @param \WP_REST_Response $response Response.
+	 * @param \WP_Comment       $comment  Comment.
+	 * @return \WP_REST_Response
+	 */
+	public static function hide_anonymous_commenter( \WP_REST_Response $response, \WP_Comment $comment ): \WP_REST_Response {
+		if ( ! self::is_anonymous_authors_comment( $comment ) ) {
+			return $response;
+		}
+
+		$data                       = (array) $response->get_data();
+		$data['author']             = 0;
+		$data['author_name']        = __( 'Anonymous', 'internfeel' );
+		$data['author_url']         = '';
+		$data['author_avatar_urls'] = array();
+		$response->set_data( $data );
+		$response->remove_link( 'author' );
+
+		return $response;
 	}
 }

@@ -162,7 +162,18 @@ final class Import implements Module {
 		$dry_run  = $request->get_param( 'dry_run' );
 		$importer = new Importer( $source, is_bool( $dry_run ) ? $dry_run : rest_sanitize_boolean( (string) $dry_run ) );
 
-		return new \WP_REST_Response( $importer->batch( (int) $request->get_param( 'offset' ) ), 200 );
+		// Report what broke instead of WordPress's generic "critical error" page. Admin only, and the
+		// path is trimmed to the WordPress folder so no server path is shown.
+		try {
+			return new \WP_REST_Response( $importer->batch( (int) $request->get_param( 'offset' ) ), 200 );
+		} catch ( \Throwable $error ) {
+			$file = str_replace( wp_normalize_path( ABSPATH ), '', wp_normalize_path( $error->getFile() ) );
+			return Rest::error(
+				'if_import_failed',
+				sprintf( '%s: %s (%s line %d)', get_class( $error ), $error->getMessage(), $file, $error->getLine() ),
+				500
+			);
+		}
 	}
 
 	/**

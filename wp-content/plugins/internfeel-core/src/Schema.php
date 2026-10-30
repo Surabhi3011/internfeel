@@ -90,6 +90,10 @@ final class Schema {
 			6 => static function (): void {
 				flush_rewrite_rules( false );
 			},
+			// Day 10: /org/, the index of organisations and their programmes.
+			7 => static function (): void {
+				Pages::ensure( 'org', __( 'Programmes', 'internfeel' ) );
+			},
 		);
 	}
 

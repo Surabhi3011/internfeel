@@ -304,6 +304,11 @@ sequenceDiagram
 - **Abuse rules as built:** the inviter's IP is kept only as a salted hash (`wp_hash`) on each code. A sign-up from the same IP within 24 hours of the invite is flagged (`_if_referral_flagged`, logged as `referral` / `flag`). Admins see these under **Review → Flagged referrals** and keep or remove them. A student's edit screen has **Remove one credit**. Both decisions are logged. Device matching is not built: there is no device fingerprinting, by design, for privacy.
 - **Credit line:** a student can tick "Keep my name off invite credits" in Profile (`_if_hide_invite_credit`); their invitees' posts then say "Shared through an InternFeel student invite".
 
+### 5.3.1 Share previews and hub pages (as built, day 10)
+
+- **Share previews:** `InternFeel\Share\Share` prints Open Graph and Twitter tags. Each experience gets a 1200 × 630 PNG drawn with GD from the brand fonts: the logo, the title (up to three lines) and the organisation and type, never the author. It is made on first view and kept in `uploads/internfeel-share/`, named with a hash of what it shows, so editing the title makes a new one and removes the old. Other pages use one site image. Once Yoast SEO is installed (day 11), Yoast prints the tags and only borrows the experience image.
+- **Hub pages:** `/org/{organisation}/` and `/org/{organisation}/{programme}/` (the `if_master` taxonomy, also fields) show key facts: published experiences, average overall rating, the median stipend's band and the most common start months. Then an organisation's programmes, and up to 24 cards. `/org/` lists organisations A to Z with their programmes.
+
 ### 5.4 Badges
 
 One badge symbol per verified experience, shown next to the student's name on the dashboard, beside their comments and on their named posts. Above 10, the name shows 10 symbols and the number. Anonymous posts show no badge. Invites never earn badges.

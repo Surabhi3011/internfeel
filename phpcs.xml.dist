@@ -51,7 +51,7 @@
 	<!-- The plugin's src/ uses PSR-4 file names (Schema.php), not class-schema.php. -->
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>wp-content/plugins/internfeel-core/src/*</exclude-pattern>
-		<!-- WordPress's template hierarchy names these after the post type, if_list. -->
-		<exclude-pattern>wp-content/themes/internfeel/*-if_list.php</exclude-pattern>
+		<!-- WordPress's template hierarchy names these after if_list and if_master. -->
+		<exclude-pattern>wp-content/themes/internfeel/*-if_*.php</exclude-pattern>
 	</rule>
 </ruleset>

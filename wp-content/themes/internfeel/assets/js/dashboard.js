@@ -69,11 +69,16 @@ if ( root ) {
 		} );
 	}
 
-	// Open the tab named in the address, such as /dashboard/#profile.
-	const linked = document.getElementById( 'if-tab-' + location.hash.slice( 1 ) );
-	if ( linked && tabs.includes( linked ) ) {
-		select( linked, false );
+	// Open the tab named in the address, such as /dashboard/#profile, now and when the header's
+	// account menu changes the hash on this page.
+	function openLinkedTab() {
+		const linked = document.getElementById( 'if-tab-' + location.hash.slice( 1 ) );
+		if ( linked && tabs.includes( linked ) ) {
+			select( linked, false );
+		}
 	}
+	openLinkedTab();
+	window.addEventListener( 'hashchange', openLinkedTab );
 
 	root.addEventListener( 'change', async ( event ) => {
 		const input = event.target.closest( '[data-if-proof]' );

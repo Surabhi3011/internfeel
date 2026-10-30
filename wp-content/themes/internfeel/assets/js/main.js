@@ -29,3 +29,24 @@ document.addEventListener( 'click', async ( event ) => {
 		label.textContent = 'Copy failed';
 	}
 } );
+
+// Header menus (<details class="if-menu">): close on Escape, on a click outside, and when another opens.
+const menus = [ ...document.querySelectorAll( 'details.if-menu' ) ];
+document.addEventListener( 'click', ( event ) => {
+	menus.forEach( ( menu ) => {
+		if ( menu.open && ! menu.contains( event.target ) ) {
+			menu.open = false;
+		}
+	} );
+} );
+document.addEventListener( 'keydown', ( event ) => {
+	if ( event.key !== 'Escape' ) {
+		return;
+	}
+	menus.forEach( ( menu ) => {
+		if ( menu.open ) {
+			menu.open = false;
+			menu.querySelector( 'summary' ).focus();
+		}
+	} );
+} );

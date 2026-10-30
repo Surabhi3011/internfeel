@@ -317,6 +317,17 @@ final class Fields implements Module {
 			'public' => false,
 			'format' => 'json',
 		),
+		// "1" keeps the student's name off the credit line of experiences their invites led to.
+		'hide_invite_credit'  => array(
+			'type'   => 'string',
+			'public' => false,
+			'enum'   => array( '1', '0' ),
+		),
+		// Why a sign-up through an invite is waiting for an admin, such as same_ip.
+		'referral_flagged'    => array(
+			'type'   => 'string',
+			'public' => false,
+		),
 		'invites_joined'      => array(
 			'type'   => 'integer',
 			'public' => false,

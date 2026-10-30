@@ -82,6 +82,10 @@ final class Schema {
 			4 => static function (): void {
 				Pages::ensure( 'experiences', __( 'Internship experiences', 'internfeel' ) );
 			},
+			// Day 8: the invite landing page.
+			5 => static function (): void {
+				Pages::ensure( 'join', __( 'Join InternFeel', 'internfeel' ) );
+			},
 		);
 	}
 

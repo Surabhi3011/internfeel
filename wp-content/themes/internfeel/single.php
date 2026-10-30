@@ -63,7 +63,8 @@ if ( $if_legacy ) {
 // The referral credit names the referrer, even on anonymous posts (plan.md section 4).
 $if_referrer = (int) $if_meta( 'referrer_user_id' );
 $if_credit   = '';
-if ( $if_referrer > 0 && get_userdata( $if_referrer ) instanceof WP_User ) {
+$if_invited  = $if_referrer > 0 && get_userdata( $if_referrer ) instanceof WP_User;
+if ( $if_invited && ! \InternFeel\Invites\Invites::hides_name( $if_referrer ) ) {
 	$if_ref     = \InternFeel\Auth\Profile::get( $if_referrer );
 	$if_credit  = '' !== (string) $if_ref['display_name'] ? (string) $if_ref['display_name'] : (string) $if_ref['full_name'];
 	$if_credit .= '' !== (string) $if_ref['college'] ? ', ' . $if_ref['college'] : '';
@@ -199,10 +200,14 @@ get_header();
 			</div>
 		</div>
 
-		<?php if ( '' !== $if_credit ) : ?>
+		<?php if ( $if_invited ) : ?>
 			<span class="if-credit">
 				<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M19 8v6M16 11h6"/></svg>
-				<?php esc_html_e( 'Shared through an invite from', 'internfeel' ); ?> <strong><?php echo esc_html( $if_credit ); ?></strong>
+				<?php if ( '' === $if_credit ) : ?>
+					<?php esc_html_e( 'Shared through an InternFeel student invite', 'internfeel' ); ?>
+				<?php else : ?>
+					<?php esc_html_e( 'Shared through an invite from', 'internfeel' ); ?> <strong><?php echo esc_html( $if_credit ); ?></strong>
+				<?php endif; ?>
 			</span>
 		<?php endif; ?>
 

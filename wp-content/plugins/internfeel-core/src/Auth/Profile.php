@@ -76,18 +76,19 @@ final class Profile {
 		$full_name = self::meta( $user_id, 'full_name' );
 
 		return array(
-			'id'               => $user->ID,
-			'email'            => $user->user_email,
-			'full_name'        => $full_name,
+			'id'                 => $user->ID,
+			'email'              => $user->user_email,
+			'full_name'          => $full_name,
 			// Empty until the student chooses one: before the profile is saved the account holds only a
 			// placeholder name, and afterwards a blank choice means the full name is shown instead.
-			'display_name'     => '' === $full_name || $full_name === $user->display_name ? '' : $user->display_name,
-			'college'          => self::meta( $user_id, 'college' ),
-			'course'           => self::meta( $user_id, 'course' ),
-			'graduation_year'  => (int) self::meta( $user_id, 'graduation_year' ),
-			'is_under_18'      => '' === $under_18 ? null : '1' === $under_18,
-			'linkedin_url'     => self::meta( $user_id, 'linkedin_url' ),
-			'profile_complete' => self::is_complete( $user_id ),
+			'display_name'       => '' === $full_name || $full_name === $user->display_name ? '' : $user->display_name,
+			'college'            => self::meta( $user_id, 'college' ),
+			'course'             => self::meta( $user_id, 'course' ),
+			'graduation_year'    => (int) self::meta( $user_id, 'graduation_year' ),
+			'is_under_18'        => '' === $under_18 ? null : '1' === $under_18,
+			'linkedin_url'       => self::meta( $user_id, 'linkedin_url' ),
+			'hide_invite_credit' => '1' === self::meta( $user_id, 'hide_invite_credit' ),
+			'profile_complete'   => self::is_complete( $user_id ),
 		);
 	}
 
@@ -165,6 +166,11 @@ final class Profile {
 		update_user_meta( $user_id, Fields::PREFIX . 'graduation_year', $year );
 		update_user_meta( $user_id, Fields::PREFIX . 'is_under_18', $under_18 );
 		update_user_meta( $user_id, Fields::PREFIX . 'linkedin_url', $linkedin );
+
+		// Only the dashboard's Profile tab sends this; first sign-in leaves it unset (name shown).
+		if ( array_key_exists( 'hide_invite_credit', $input ) && is_scalar( $input['hide_invite_credit'] ) ) {
+			update_user_meta( $user_id, Fields::PREFIX . 'hide_invite_credit', rest_sanitize_boolean( (string) $input['hide_invite_credit'] ) ? '1' : '0' );
+		}
 
 		return true;
 	}

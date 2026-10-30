@@ -126,6 +126,20 @@ if ( root ) {
 			return;
 		}
 
+		const invite = event.target.closest( '[data-if-new-invite]' );
+		if ( invite ) {
+			invite.disabled = true;
+			try {
+				await request( 'invites', { method: 'POST' } );
+				location.hash = 'invites';
+				location.reload();
+			} catch ( error ) {
+				showError( error );
+				invite.disabled = false;
+			}
+			return;
+		}
+
 		const all = event.target.closest( '[data-if-all-notes]' );
 		if ( all ) {
 			root.querySelectorAll( '[data-if-notes] li[hidden]' ).forEach( ( item ) => ( item.hidden = false ) );

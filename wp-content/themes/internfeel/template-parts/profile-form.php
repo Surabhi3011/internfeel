@@ -5,7 +5,7 @@
  *
  * @package InternFeel
  *
- * @var array{submit?: string} $args
+ * @var array{submit?: string, settings?: bool} $args
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -56,6 +56,15 @@ $if_submit  = $args['submit'] ?? __( 'Save profile', 'internfeel' );
 			</div>
 			<span class="if-field__help" id="if-under-18-help"><?php esc_html_e( 'If you are, we show you only non-personalised ads.', 'internfeel' ); ?></span>
 		</fieldset>
+
+		<?php if ( ! empty( $args['settings'] ) ) : ?>
+			<input type="hidden" name="hide_invite_credit" value="0">
+			<label class="if-check">
+				<input type="checkbox" name="hide_invite_credit" value="1" aria-describedby="if-hide-credit-help" <?php checked( $if_profile['hide_invite_credit'] ); ?>>
+				<span><?php esc_html_e( 'Keep my name off invite credits', 'internfeel' ); ?></span>
+			</label>
+			<span class="if-field__help" id="if-hide-credit-help"><?php esc_html_e( 'Experiences from friends you invited then say “Shared through an InternFeel student invite” instead of your name.', 'internfeel' ); ?></span>
+		<?php endif; ?>
 
 		<p class="if-field__error if-form__status" role="alert" data-if-status></p>
 

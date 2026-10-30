@@ -280,7 +280,7 @@ gantt
 - [x] Old site taken offline behind a holding page that returns 503 to search engines; cPanel password changed (25 October 2026)
 - [ ] Old WordPress files (`old-site-quarantine`) deleted after the virus scan; old database deleted after the staging migration is confirmed
 - [ ] Holding `index.html` and `.htaccess` removed from `public_html` before production WordPress is installed
-- [ ] 217 experiences migrated and reviewed; every old post URL loads its rebuilt page
+- [ ] 217 experiences migrated and reviewed (imported to staging 30 October 2026: 216 imported, 2 skipped by design); every old post URL loads its rebuilt page
 - [ ] Search Console checked for traffic to old category and tag URLs
 - [ ] Sign-in, submit, verify, publish, comment, share, certificate and invite flows pass end-to-end tests
 - [ ] Referral credit appears correctly in all four cases
@@ -291,6 +291,7 @@ gantt
 - [ ] cPanel Email Deliverability valid for internfeel.com (SPF and DKIM); a password-reset email reaches Gmail and Outlook inboxes
 - [ ] UpdraftPlus backups running, and one restore tested on staging
 - [ ] At least 10 new, verified experiences from beta students published
+- [ ] Production PHP 8.5 has the extensions staging needed (development.md 5.1 item 4), including dom
 - [ ] Production deploy done from the tested commit; SSL valid
 
 ## 9. Risks

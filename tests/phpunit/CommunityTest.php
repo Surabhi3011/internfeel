@@ -85,6 +85,7 @@ class CommunityTest extends WP_UnitTestCase {
 			'comment_author_IP'    => '127.0.0.1',
 			'comment_agent'        => 'phpunit',
 			'comment_type'         => 'comment',
+			'comment_parent'       => 0,
 		);
 
 		$this->assertSame( 1, wp_allow_comment( $data, true ) );

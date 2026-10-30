@@ -267,7 +267,15 @@ final class Form {
 		$term_id = $term instanceof \WP_Term ? $term->term_id : 0;
 		update_post_meta( $post_id, Fields::PREFIX . $key . '_term', $term_id );
 		update_post_meta( $post_id, Fields::PREFIX . $key . '_suggestion', wp_slash( $term_id > 0 ? '' : $name ) );
+		self::link_terms( $post_id );
+	}
 
+	/**
+	 * Attach the experience to its organisation, programme and field master-list entries.
+	 *
+	 * @param int $post_id Experience ID.
+	 */
+	public static function link_terms( int $post_id ): void {
 		$terms = array_filter(
 			array(
 				(int) get_post_meta( $post_id, Fields::PREFIX . 'organisation_term', true ),

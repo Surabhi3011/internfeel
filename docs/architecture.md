@@ -192,6 +192,7 @@ Post meta (prefix `_if_`; the leading underscore hides it from the custom-fields
 | Counters | `view_count`, `report_count`, `flagged` |
 | Verification (private) | `proof_files` (JSON list of private file names), `verification_status` (not_submitted, pending, verified, rejected), `verified_by`, `verified_at`, `verification_note` |
 | Certificate | `certificate_no`, `certificate_issued_at`, `certificate_revoked_at` |
+| Moderation (private) | `moderation_note` (the admin's reason when changes are requested or the experience is rejected), `submitted_at` (latest submission, for the 24-hour highlight), `verified_counted` (set once the experience has counted towards the author's `verified_count`) |
 | Editing | `edit_count` (max 1 after publishing) |
 | Suggestions (private) | `organisation_suggestion`, `programme_suggestion`, `field_suggestion`: names a student typed that are not on the master list yet; an admin adds or matches them |
 | Legacy | `legacy_wp_id`, `legacy_student_name`, `legacy_published_year`, `import_kind` (experience or article) |
@@ -328,6 +329,8 @@ One badge symbol per verified experience, shown next to the student's name on th
 
 - **Queues:** a wp-admin page lists submissions, proofs, edits, reports and organisation suggestions, oldest first. Anything waiting more than 18 hours is highlighted, against the 24-hour promise.
 - **Auto-flagging:** an item with 3 reports is hidden from listings until an admin decides.
+- **As built (day 5):** wp-admin → **Review** has tabs for New submissions, Imported (the migrated posts, kept apart so they don't bury new ones), Proof, Suggestions and Log. Approve, request changes and reject apply to pending experiences; verify and reject proof apply when proof is pending. Requesting changes, rejecting and rejecting proof need a note, which the student sees in their notification. Imported posts have no student, so they can only be approved, rejected or edited. Each decision writes one log row and one notification. Adding a suggestion creates the master-list entry (or matches one with the same name) and links the experience; programmes need their organisation first.
+- **Hooks for later modules:** `if_experience_published` (certificates) fires on approval; `if_experience_verified` fires once when an experience is both published and verified, after `verified_count` goes up (badges, invite credits).
 
 ---
 

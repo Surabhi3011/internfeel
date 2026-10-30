@@ -198,6 +198,22 @@ final class Fields implements Module {
 			'public' => true,
 			'format' => 'datetime',
 		),
+		// Moderation (private): the admin's note to the student, when they last submitted, and whether
+		// the experience has been counted towards the author's badges.
+		'moderation_note'         => array(
+			'type'   => 'string',
+			'public' => false,
+			'format' => 'textarea',
+		),
+		'submitted_at'            => array(
+			'type'   => 'string',
+			'public' => false,
+			'format' => 'datetime',
+		),
+		'verified_counted'        => array(
+			'type'   => 'boolean',
+			'public' => false,
+		),
 		// Editing.
 		'edit_count'              => array(
 			'type'   => 'integer',

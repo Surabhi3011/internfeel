@@ -28,24 +28,45 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByText( 'No', { exact: true } ).click();
 	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
 
-	// The profile page already shows "Log out", so wait until the save has moved us on.
+	// Wait until the save has moved us on; signed in, the header shows the notifications bell.
 	await expect( page ).not.toHaveURL( /step=profile/ );
-	await expect( page.getByRole( 'link', { name: 'Log out' } ) ).toBeVisible();
+	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
 
 	// Students never see wp-admin.
 	await page.goto( '/wp-admin/' );
 	await expect( page ).not.toHaveURL( /wp-admin/ );
 
-	await page.getByRole( 'link', { name: 'Log out' } ).click();
-	await expect( page.getByRole( 'banner' ).getByRole( 'link', { name: 'Log in' } ) ).toBeVisible();
+	// Log out sits in the avatar menu (or the Menu button on phones).
+	await openMenu( page );
+	await page.getByRole( 'banner' ).getByRole( 'link', { name: 'Log out' } ).filter( { visible: true } ).click();
+	await openMenu( page );
+	await expect( page.getByRole( 'banner' ).getByRole( 'link', { name: 'Log in' } ).filter( { visible: true } ) ).toHaveCount( 1 );
 
 	await page.goto( '/login/' );
 	await page.getByLabel( 'Email' ).fill( email );
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Log in' } ).click();
 	await expect( page ).not.toHaveURL( /\/login\// );
-	await expect( page.getByRole( 'link', { name: 'Log out' } ) ).toBeVisible();
+	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
 } );
+
+/**
+ * Open the header menu that this screen width shows: the avatar menu when signed in on a wide
+ * screen, otherwise the Menu button.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+async function openMenu( page ) {
+	const account = page.getByRole( 'banner' ).locator( 'summary[aria-label="Your account menu"]' );
+	if ( await account.isVisible() ) {
+		await account.click();
+		return;
+	}
+	const menu = page.getByRole( 'banner' ).locator( 'summary[aria-label="Menu"]' );
+	if ( await menu.isVisible() ) {
+		await menu.click();
+	}
+}
 
 test( 'a wrong password shows an error without saying which part was wrong', async ( { page } ) => {
 	await page.goto( '/login/' );

@@ -165,3 +165,122 @@ function if_the_badges( int $count ): void {
 	}
 	echo '</span>';
 }
+
+/**
+ * The rating bar: five segments, halves allowed, then the value out of 5.
+ *
+ * @param float $rating 0 to 5, in steps of 0.5.
+ */
+function if_the_rating( float $rating ): void {
+	/* translators: %s: rating, such as 4.5. */
+	$label = sprintf( __( 'Rated %s out of 5', 'internfeel' ), number_format_i18n( $rating, 1 ) );
+
+	echo '<span class="if-rating" role="img" aria-label="' . esc_attr( $label ) . '"><span class="if-rating__bar" aria-hidden="true">';
+	for ( $i = 1; $i <= 5; $i++ ) {
+		$class = $rating >= $i ? 'on' : ( $rating >= $i - 0.5 ? 'half' : '' );
+		echo '<i class="' . esc_attr( $class ) . '"></i>';
+	}
+	echo '</span><span class="if-rating__value" aria-hidden="true">' . esc_html( number_format_i18n( $rating, 1 ) ) . '</span>';
+	echo '<span class="if-rating__of" aria-hidden="true">/ 5</span></span>';
+}
+
+/**
+ * The home page's rows: listicles with a home order (if_list, admin-curated), else three built-in rows
+ * so the page is never empty before the first listicle exists. Rows without cards are left out.
+ *
+ * @return list<array{id: string, title: string, subtitle: string, url: string, cards: list<array<string, mixed>>}>
+ */
+function if_home_rows(): array {
+	$rows  = array();
+	$lists = get_posts(
+		array(
+			'post_type'      => 'if_list',
+			'post_status'    => 'publish',
+			'posts_per_page' => 5,
+			'meta_key'       => '_if_home_order', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- a handful of listicles.
+			'orderby'        => 'meta_value_num',
+			'order'          => 'ASC',
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- a handful of listicles.
+				array(
+					'key'     => '_if_home_order',
+					'value'   => 0,
+					'compare' => '>',
+					'type'    => 'NUMERIC',
+				),
+			),
+		)
+	);
+
+	foreach ( $lists as $list ) {
+		$ids   = array_slice( array_map( 'intval', (array) get_post_meta( $list->ID, '_if_list_items', true ) ), 0, 6 );
+		$cards = array();
+		foreach ( $ids as $id ) {
+			$post = get_post( $id );
+			if ( $post instanceof WP_Post && 'publish' === $post->post_status && count( $cards ) < 3 ) {
+				$cards[] = \InternFeel\Search\Cards::data( $post );
+			}
+		}
+		$rows[] = array(
+			'id'       => 'if-row-' . $list->ID,
+			'title'    => get_the_title( $list ),
+			'subtitle' => wp_strip_all_tags( get_the_excerpt( $list ) ),
+			'url'      => (string) get_permalink( $list ),
+			'cards'    => $cards,
+		);
+	}
+
+	if ( array() === $rows ) {
+		$built_in = array(
+			array( 'latest', __( 'Latest experiences', 'internfeel' ), __( 'Newly published by students', 'internfeel' ), array() ),
+			array(
+				'research',
+				__( 'Top research internships', 'internfeel' ),
+				__( 'Labs and institutes, highest rated first', 'internfeel' ),
+				array(
+					'type' => 'research',
+					'sort' => 'rating',
+				),
+			),
+			array(
+				'paid-india',
+				__( 'Paid internships in India', 'internfeel' ),
+				__( 'With a stipend, in India', 'internfeel' ),
+				array(
+					'pay'      => 'paid',
+					'location' => 'India',
+				),
+			),
+		);
+		foreach ( $built_in as $row ) {
+			$filters = \InternFeel\Search\Search::filters( $row[3] );
+			$rows[]  = array(
+				'id'       => 'if-row-' . $row[0],
+				'title'    => $row[1],
+				'subtitle' => $row[2],
+				'url'      => add_query_arg( $row[3], home_url( '/experiences/' ) ),
+				'cards'    => \InternFeel\Search\Search::run( $filters, 3 )['cards'],
+			);
+		}
+	}
+
+	return array_values( array_filter( $rows, static fn( array $row ): bool => array() !== $row['cards'] ) );
+}
+
+/**
+ * Print a list of experience cards.
+ *
+ * @param list<array<string, mixed>> $cards   Card data from InternFeel\Search\Cards::data().
+ * @param string                     $heading Heading tag for the card titles.
+ */
+function if_the_cards( array $cards, string $heading = 'h3' ): void {
+	foreach ( $cards as $card ) {
+		get_template_part(
+			'template-parts/card',
+			null,
+			array(
+				'card'    => $card,
+				'heading' => $heading,
+			)
+		);
+	}
+}

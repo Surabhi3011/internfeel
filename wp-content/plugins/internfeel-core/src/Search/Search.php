@@ -360,6 +360,63 @@ final class Search implements Module {
 	}
 
 	/**
+	 * The key facts on a hub page (approved-designs README, "Programme hub"): experiences, average
+	 * overall rating, the typical stipend band and the months internships usually start.
+	 *
+	 * @param int $term_id Organisation, programme or field.
+	 * @return array{experiences: int, rating: float, band: string, months: list<string>}
+	 */
+	public static function hub_facts( int $term_id ): array {
+		$query = new \WP_Query(
+			array_merge(
+				self::query_args( self::filters( array( 'organisation' => (string) $term_id ) ), 500 ),
+				array(
+					'fields'        => 'ids',
+					'no_found_rows' => true,
+				)
+			)
+		);
+		$ids   = array_map( 'absint', $query->posts );
+
+		$ratings  = array();
+		$stipends = array();
+		$months   = array();
+		foreach ( $ids as $id ) {
+			$rating = (float) get_post_meta( $id, Fields::PREFIX . 'rating_overall', true );
+			if ( $rating > 0 ) {
+				$ratings[] = $rating;
+			}
+			$stipend = (int) get_post_meta( $id, Fields::PREFIX . 'stipend_amount_inr', true );
+			if ( $stipend > 0 && '1' === (string) get_post_meta( $id, Fields::PREFIX . 'paid', true ) ) {
+				$stipends[] = $stipend;
+			}
+			$month = (string) get_post_meta( $id, Fields::PREFIX . 'start_month', true );
+			if ( 1 === preg_match( '/^\d{4}-(\d{2})$/', $month, $match ) ) {
+				$months[] = (int) $match[1];
+			}
+		}
+
+		sort( $stipends );
+		$median = array() === $stipends ? 0 : $stipends[ intdiv( count( $stipends ), 2 ) ];
+		$bands  = Cards::bands();
+		$band   = Cards::band( $median );
+
+		$counts = array_count_values( $months );
+		arsort( $counts );
+		$usual = array_map(
+			static fn( int $month ): string => (string) wp_date( 'F', (int) mktime( 0, 0, 0, $month, 1, 2026 ) ),
+			array_slice( array_keys( $counts ), 0, 2 )
+		);
+
+		return array(
+			'experiences' => count( $ids ),
+			'rating'      => array() === $ratings ? 0.0 : round( array_sum( $ratings ) / count( $ratings ), 1 ),
+			'band'        => '' === $band ? '' : $bands[ $band ],
+			'months'      => $usual,
+		);
+	}
+
+	/**
 	 * Drop the cached counts and choices when an experience changes.
 	 */
 	public static function forget_counts(): void {

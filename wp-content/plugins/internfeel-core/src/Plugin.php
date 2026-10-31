@@ -61,6 +61,7 @@ final class Plugin {
 			Reports\Reports::class,
 			Reports\Admin::class,
 			Lists\Lists::class,
+			Share\Share::class,
 		);
 	}
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace InternFeel\Share;
 
+use InternFeel\Certificates\Pdf;
 use InternFeel\Module;
 use InternFeel\Search\Cards;
 use InternFeel\Submit\Form;
@@ -107,7 +108,7 @@ final class Share implements Module {
 	 */
 	public static function image_url( \WP_Post $post ): string {
 		$data = self::data( $post );
-		$name = $post->ID . '-' . substr( md5( (string) wp_json_encode( $data ) ), 0, 10 ) . '.png';
+		$name = $post->ID . '-' . substr( md5( (string) wp_json_encode( $data ) . Pdf::LOGO_VERSION ), 0, 10 ) . '.png';
 		$dir  = self::dir();
 		if ( null === $dir ) {
 			return '';
@@ -138,7 +139,7 @@ final class Share implements Module {
 		}
 
 		$tagline = __( 'Real internship experiences from students who’ve been there', 'internfeel' );
-		$name    = 'site-' . substr( md5( $tagline ), 0, 10 ) . '.png';
+		$name    = 'site-' . substr( md5( $tagline . Pdf::LOGO_VERSION ), 0, 10 ) . '.png';
 		$path    = $dir['path'] . '/' . $name;
 		if ( ! is_readable( $path ) && ! self::render( $tagline, __( 'Peep before you leap', 'internfeel' ), $path ) ) {
 			return '';

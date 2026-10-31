@@ -31,6 +31,8 @@ define( 'WP_ENVIRONMENT_TYPE', 'production' );
 // wp-config.php sits in /home/<cpanel-user>/public_html, so one level up is the home folder.
 define( 'IF_PRIVATE_DIR', dirname( __DIR__ ) . '/internfeel-private' );
 define( 'IF_ADSENSE_CLIENT', 'ca-pub-0000000000000000' );
+// One AdSense display unit per place; a place without an ID shows no slot.
+define( 'IF_ADSENSE_SLOTS', array( 'inline' => '', 'end' => '', 'sidebar' => '', 'card' => '', 'home' => '', 'hub' => '' ) );
 define( 'IF_GA4_ID', 'G-XXXXXXXXXX' );
 
 /* ---------- Staging: staging.internfeel.com (use instead of the production block) ----------

@@ -1,7 +1,7 @@
 <?php
 /**
  * Experiences archive and search results (/experiences/?…), from the approved-designs README "Pages
- * not drawn": the Browse band, then the results grid with Load more. Ad slots arrive on day 11.
+ * not drawn": the Browse band, then the results grid with Load more and a Sponsored slot per 8 cards.
  *
  * @package InternFeel
  */

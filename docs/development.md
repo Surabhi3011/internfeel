@@ -152,6 +152,7 @@ Each environment's `wp-config.php` sets these constants. They are listed, with f
 | `IF_MAIL_FROM`, `IF_MAIL_FROM_NAME` | Sender of the password-reset email: `no-reply@internfeel.com`, `InternFeel` (sent through cPanel mail) |
 | `IF_TURNSTILE_SITE_KEY`, `IF_TURNSTILE_SECRET` | Cloudflare Turnstile, after launch; leave unset until then and the forms skip the check |
 | `IF_ADSENSE_CLIENT` | `ca-pub-…`; empty on staging so no ads show |
+| `IF_ADSENSE_SLOTS` | Array of AdSense ad-unit IDs by place: `inline`, `end`, `sidebar`, `card`, `home`, `hub` (create one display unit per place in AdSense). A place without an ID shows no slot |
 | `IF_NEWSLETTER_ENDPOINT` | Form URL of the newsletter service (not chosen yet); the newsletter band is hidden until it is set |
 | `IF_GA4_ID` | Production only |
 
@@ -198,6 +199,13 @@ Staging went live on day 1 (WordPress 7.1.3 on PHP 8.5, the InternFeel theme and
 5. **Finding PHP errors:** cPanel **Errors** shows only web-server messages, not PHP fatals. Add `WP_DEBUG` (true), `WP_DEBUG_LOG` and `WP_DEBUG_DISPLAY` (false) to `wp-config.php`, replacing the existing `WP_DEBUG` line rather than adding a second one (the first definition wins), then read `wp-content/debug.log`. Afterwards set `WP_DEBUG` back to false and delete `debug.log`, which is web-readable.
 
 ---
+
+### 5.2 Day 11: consent, SEO and legal pages (admin steps, staging first)
+
+1. **CookieYes** (free plan, Google-certified for AdSense): install it from **Plugins → Add New**, connect it to a free CookieYes account, and turn on the categories **Analytics** and **Advertisement**, plus Google Consent Mode. The theme's `consent.js` loads AdSense only after Advertisement consent and GA4 only after Analytics consent, so neither loads until CookieYes is set up. The footer's **Cookie settings** link reopens the banner.
+2. **Yoast SEO** (free): install it, skip its tracking, and leave its Open Graph and sitemap features on. The theme keeps utility pages (dashboard, submit, sign-in, join) and author pages out of Yoast's sitemap, and Yoast borrows the experience share images. Staging stays noindex through the theme.
+3. **Legal and company pages** were created as **drafts**: Privacy policy, Terms of use, Content guidelines, Ad guidelines, About and Contact. Fill in every **[TO CONFIRM]** (business details from plan.md section 10, item 2), have the privacy policy and terms reviewed, then publish. Legal pages use the **Legal page** template and never show ads.
+4. **AdSense** (production only): set `IF_ADSENSE_CLIENT` and `IF_ADSENSE_SLOTS` in `wp-config.php`. `/ads.txt` is generated from the client ID, so there is no file to upload. Keep Auto ads off in AdSense.
 
 ## 6. Deployment through cPanel Git Version Control
 

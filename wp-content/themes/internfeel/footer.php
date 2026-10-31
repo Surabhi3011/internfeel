@@ -35,7 +35,7 @@ $if_columns = array(
 	__( 'Company', 'internfeel' )    => array(
 		__( 'About', 'internfeel' )             => '/about/',
 		__( 'Contact', 'internfeel' )           => '/contact/',
-		__( 'Advertise with us', 'internfeel' ) => '/advertise/',
+		__( 'Advertise with us', 'internfeel' ) => '/ad-guidelines/',
 		__( 'Report a problem', 'internfeel' )  => '/contact/',
 	),
 	__( 'Legal', 'internfeel' )      => array(
@@ -74,7 +74,8 @@ $if_columns = array(
 					<h2><?php echo esc_html( $if_heading ); ?></h2>
 					<ul>
 						<?php foreach ( $if_links as $if_label => $if_path ) : ?>
-							<li><a href="<?php echo esc_url( home_url( $if_path ) ); ?>"><?php echo esc_html( $if_label ); ?></a></li>
+							<?php // CookieYes reopens its banner from any element with the cky-banner-element class. ?>
+							<li><a href="<?php echo esc_url( home_url( $if_path ) ); ?>"<?php echo '/privacy-policy/#cookies' === $if_path ? ' class="cky-banner-element"' : ''; ?>><?php echo esc_html( $if_label ); ?></a></li>
 						<?php endforeach; ?>
 					</ul>
 				</nav>

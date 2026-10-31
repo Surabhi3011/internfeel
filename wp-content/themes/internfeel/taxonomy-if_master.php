@@ -2,7 +2,7 @@
 /**
  * Hub page for an organisation, programme or field (/org/{slug}/), from the approved-designs README
  * "Programme hub": the name as the title, a key-facts box, the programmes (for an organisation), then
- * the cards. The ad slot after the list arrives on day 11.
+ * the cards.
  *
  * @package InternFeel
  */
@@ -110,6 +110,7 @@ get_header();
 		<?php if ( $if_cards['total'] > count( $if_cards['cards'] ) ) : ?>
 			<a class="if-btn if-results__more" href="<?php echo esc_url( add_query_arg( 'organisation', $if_term->term_id, home_url( '/experiences/' ) ) ); ?>"><?php esc_html_e( 'See them all', 'internfeel' ); ?></a>
 		<?php endif; ?>
+		<?php if_the_ad( 'hub' ); ?>
 	<?php endif; ?>
 </div>
 <?php

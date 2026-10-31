@@ -317,3 +317,4 @@ gantt
 4. **Past contributors:** whether to invite original interviewees to claim their experiences; decide later.
 5. **Required story questions (Surabhi):** which of the seven standard questions are required, and any minimum length. Until confirmed, the first four are required.
 6. **Newsletter email service (before 5 November):** a free-tier service for the sign-up band. The band stays hidden until its form URL is set as `IF_NEWSLETTER_ENDPOINT` in `wp-config.php`.
+7. **Legal pages (Surabhi, before 9 November):** the drafts of the privacy policy, terms, content and ad guidelines, About and Contact need the business details from item 2, a legal review, and publishing. The privacy policy offers data download and deletion by email; a self-service button in Profile (architecture.md 10) is not built yet.

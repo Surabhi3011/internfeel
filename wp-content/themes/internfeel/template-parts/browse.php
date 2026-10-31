@@ -107,7 +107,7 @@ $if_menu = static function ( string $name, string $label, array $options, string
 	<div class="if-grid" data-if-grid>
 		<?php
 		if ( null !== $if_results ) {
-			if_the_cards( $if_results['cards'] );
+			if_the_cards( $if_results['cards'], 'h3', true );
 		}
 		?>
 	</div>

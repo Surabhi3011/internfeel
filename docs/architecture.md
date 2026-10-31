@@ -326,6 +326,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **What the endpoint skips:** bots (by user agent), the author, and repeat visits from a browser that already holds the `if_v_{id}` cookie (one day).
 - **How it counts:** an atomic SQL `UPDATE` on `view_count`, so simultaneous visits don't lose counts.
 - **Trade-off:** with no per-day history stored, dashboards show total views only.
+- **As built (day 12):** `views.js` posts once the page has loaded. Because cached pages carry no REST nonce, the endpoint reads the sign-in cookie directly, only to skip the author. Link previewers (WhatsApp, Facebook), headless browsers and Lighthouse count as bots.
 
 ### 5.7 Search and filters
 
@@ -454,6 +455,10 @@ The old install was probably compromised, so the new site starts clean and stays
   - Dashboard, submit, join and staging pages are `noindex`.
 
 ---
+
+### 11.1 Performance pass (day 12)
+
+The theme drops WordPress's emoji script, the block editor's front-end CSS (whole-library and per-block) and theme.json's global styles: the design system's CSS covers everything, and legal pages' simple blocks are styled in `style.css`. Measured in Playground, this took an experience page from 249 KB to 206 KB and the home page from 283 KB to 241 KB. What remains is the brand fonts (64–90 KB, preloaded), the design system's CSS (52 KB) and CookieYes's banner (about 35 KB inline, set by the plugin). Lighthouse mobile scores are to be taken on staging, where LiteSpeed caching and HTTP/2 apply, before launch.
 
 ## 12. Decisions log
 

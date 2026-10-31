@@ -103,6 +103,10 @@ final class Schema {
 				Pages::draft( 'about', __( 'About InternFeel', 'internfeel' ) );
 				Pages::draft( 'contact', __( 'Contact', 'internfeel' ) );
 			},
+			// The About page's own text (31 October 2026), into the draft made by step 8 if unedited.
+			9 => static function (): void {
+				Pages::refresh_draft( 'about', 'TO CONFIRM: Surabhi to rewrite' );
+			},
 		);
 	}
 

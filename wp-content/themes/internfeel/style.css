@@ -1459,9 +1459,12 @@ fieldset.if-field legend {
 .if-comments {
 	display: grid;
 	gap: var(--if-space-6);
-	max-width: calc(var(--if-reading) + 2 * var(--if-space-4));
-	margin-inline: 0;
 	padding-top: 56px;
+}
+
+/* Centred with the page like every section, but the text stays at reading width. */
+.if-comments > * {
+	max-width: var(--if-reading);
 }
 
 .if-comments h2 {
@@ -1985,8 +1988,10 @@ a.if-chip {
 .if-legal {
 	display: grid;
 	gap: var(--if-space-3);
-	max-width: calc(var(--if-reading) + 2 * var(--if-space-4));
-	margin-inline: 0;
+}
+
+.if-legal > * {
+	max-width: var(--if-reading);
 }
 
 .if-legal h1,
@@ -2007,4 +2012,109 @@ a.if-chip {
 .if-legal__body p,
 .if-legal__body ul {
 	margin: 0 0 var(--if-space-4);
+}
+
+/* ---------- Header: the logo never shrinks; Dashboard link (UI review, 1 November 2026) ---------- */
+
+/* Inner pages add the search box; without this the flex row squeezed the logo narrower. */
+.if-header__logo {
+	flex: none;
+}
+
+.if-header__logo img {
+	width: auto;
+	max-width: none;
+	height: 36px;
+}
+
+.if-header__dashboard {
+	white-space: nowrap;
+}
+
+/* Signed in, the header holds navigation, search, Submit, Dashboard, the bell and the avatar: the
+   search gives way first, so nothing runs off the edge. */
+.if-header__actions {
+	min-width: 0;
+}
+
+.if-header__search {
+	flex: 0 1 240px;
+	min-width: 120px;
+	width: auto;
+}
+
+.if-header__actions > :not(.if-header__search) {
+	flex: none;
+}
+
+@media (max-width: 1180px) {
+	.if-header__inner {
+		gap: var(--if-space-4);
+	}
+
+	/* No room for it next to everything else; search stays on the home page, /experiences/ and,
+	   below 1000 px, in the Menu. */
+	.if-header__search {
+		display: none;
+	}
+
+	.if-nav a {
+		padding-inline: 10px;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-header__logo img {
+		height: 28px;
+	}
+}
+
+/* ---------- Filters: one height, one border, equal widths (UI review, 1 November 2026) ---------- */
+
+.if-browse__row:not(.if-browse__types) {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--if-space-2);
+}
+
+.if-browse__search {
+	grid-column: span 2;
+	max-width: none;
+}
+
+.if-browse__row .if-search,
+.if-browse__row .if-chip {
+	box-sizing: border-box;
+	min-width: 0;
+	height: 44px;
+	min-height: 44px;
+	border-width: 1px;
+	font-size: 15px;
+}
+
+.if-browse__row .if-search {
+	padding: 0 6px 0 16px;
+}
+
+.if-browse__row .if-chip--select select {
+	width: 100%;
+	min-height: 42px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.if-browse__row .if-chip--toggle {
+	justify-content: center;
+}
+
+.if-browse__types .if-chip {
+	min-height: 40px;
+	font-size: 15px;
+}
+
+@media (max-width: 900px) {
+	.if-browse__row:not(.if-browse__types) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 }

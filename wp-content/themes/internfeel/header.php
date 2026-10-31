@@ -83,6 +83,7 @@ $if_home     = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_UR
 					/* translators: %d: number of unread notifications. */
 					: sprintf( _n( 'Notifications, %d unread', 'Notifications, %d unread', $if_unread, 'internfeel' ), $if_unread );
 				?>
+				<a class="if-btn if-btn--ghost if-btn--sm if-header__wide if-header__dashboard" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>"<?php echo is_page( 'dashboard' ) ? ' aria-current="page"' : ''; ?>><?php esc_html_e( 'Dashboard', 'internfeel' ); ?></a>
 				<a class="if-bell" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>" aria-label="<?php echo esc_attr( $if_bell_label ); ?>">
 					<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
 					<?php if ( $if_unread > 0 ) : ?>

@@ -148,7 +148,7 @@ $if_more = '' === $if_type ? array() : array_values(
 
 get_header();
 ?>
-<article class="if-exp">
+<article class="if-exp" data-if-view="<?php echo esc_attr( (string) $if_id ); ?>" data-rest="<?php echo esc_url( rest_url( 'internfeel/v1/view/' . $if_id ) ); ?>">
 	<header class="if-container if-exp__head">
 		<nav class="small if-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'internfeel' ); ?>">
 			<a href="<?php echo esc_url( home_url( '/experiences/' ) ); ?>"><?php esc_html_e( 'Experiences', 'internfeel' ); ?></a>

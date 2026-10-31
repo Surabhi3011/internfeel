@@ -50,6 +50,9 @@ function if_theme_assets(): void {
 	if ( is_front_page() || is_page( 'experiences' ) ) {
 		wp_enqueue_script_module( 'internfeel-browse', get_theme_file_uri( 'assets/js/browse.js' ), array(), IF_THEME_VERSION );
 	}
+	if ( is_singular( 'post' ) && 'publish' === get_post_status() ) {
+		wp_enqueue_script_module( 'internfeel-views', get_theme_file_uri( 'assets/js/views.js' ), array(), IF_THEME_VERSION );
+	}
 	if ( ( is_singular( 'post' ) || is_page( 'dashboard' ) ) && is_user_logged_in() ) {
 		wp_enqueue_script_module( 'internfeel-report', get_theme_file_uri( 'assets/js/report.js' ), array(), IF_THEME_VERSION );
 	}
@@ -99,3 +102,40 @@ add_action( 'wp_head', 'if_theme_favicon' );
  */
 add_filter( 'pre_option_thread_comments', static fn(): string => '1' );
 add_filter( 'pre_option_thread_comments_depth', static fn(): string => '2' );
+
+/**
+ * Keep pages light (plan.md 5.2: Lighthouse mobile 90 or above). The theme draws no emoji images
+ * and uses no block styles, so WordPress's emoji script and the block editor's front-end CSS are
+ * dropped; legal pages' simple paragraphs, headings and lists are styled by style.css.
+ */
+function if_theme_lean(): void {
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+	add_filter( 'emoji_svg_url', '__return_false' );
+
+	// theme.json's global styles: the design system's own CSS covers everything they would set.
+	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
+	remove_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
+}
+add_action( 'init', 'if_theme_lean' );
+
+/**
+ * Dequeue the block editor's front-end styles, which the classic theme never uses.
+ */
+function if_theme_dequeue_block_styles(): void {
+	foreach ( array( 'wp-block-library', 'wp-block-library-theme', 'classic-theme-styles', 'global-styles' ) as $handle ) {
+		wp_dequeue_style( $handle );
+	}
+	// Per-block styles (wp-block-paragraph and so on) are added as content renders.
+	foreach ( wp_styles()->queue as $handle ) {
+		if ( str_starts_with( $handle, 'wp-block-' ) ) {
+			wp_dequeue_style( $handle );
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'if_theme_dequeue_block_styles', 100 );
+add_action( 'wp_print_styles', 'if_theme_dequeue_block_styles', 100 );
+add_action( 'wp_print_footer_scripts', 'if_theme_dequeue_block_styles', 1 );

@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Filters live in the URL query string (q, field, type, organisation, location, year, pay, verified,
- * sort, page), so every filtered view can be shared and cached.
+ * sort, pg), so every filtered view can be shared and cached.
  *
  * @phpstan-type Filters array{q: string, field: int, type: string, organisation: int, location: string, year: int, pay: string, verified: bool, sort: string, page: int}
  */
@@ -79,7 +79,8 @@ final class Search implements Module {
 			'pay'          => in_array( $pay, self::PAY, true ) ? $pay : '',
 			'verified'     => in_array( $text( 'verified' ), array( '1', 'true', 'yes' ), true ),
 			'sort'         => in_array( $sort, array( 'newest', 'views', 'rating' ), true ) ? $sort : 'newest',
-			'page'         => max( 1, absint( $text( 'page' ) ) ),
+			// "pg", because WordPress keeps "page" for paginated posts and redirects it away.
+			'page'         => max( 1, absint( $text( 'pg' ) ) ),
 		);
 	}
 
@@ -209,10 +210,24 @@ final class Search implements Module {
 			$args['s'] = $filters['q'];
 		}
 		if ( 'views' === $filters['sort'] || 'rating' === $filters['sort'] ) {
-			$args['meta_key'] = $key( 'views' === $filters['sort'] ? 'view_count' : 'rating_overall' ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting.
-			$args['orderby']  = array(
-				'meta_value_num' => 'DESC',
-				'date'           => 'DESC',
+			// A named clause that also matches posts without the value (a new experience has no view
+			// count yet), so sorting never drops them; they sort last.
+			$sort_key                   = $key( 'views' === $filters['sort'] ? 'view_count' : 'rating_overall' );
+			$args['meta_query']['sort'] = array(
+				'relation'   => 'OR',
+				'sort_value' => array(
+					'key'     => $sort_key,
+					'compare' => 'EXISTS',
+					'type'    => 'NUMERIC',
+				),
+				array(
+					'key'     => $sort_key,
+					'compare' => 'NOT EXISTS',
+				),
+			);
+			$args['orderby']            = array(
+				'sort_value' => 'DESC',
+				'date'       => 'DESC',
 			);
 		}
 
@@ -377,6 +392,8 @@ final class Search implements Module {
 			)
 		);
 		$ids   = array_map( 'absint', $query->posts );
+		// One query for every post's meta, instead of four per post.
+		update_meta_cache( 'post', $ids );
 
 		$ratings  = array();
 		$stipends = array();

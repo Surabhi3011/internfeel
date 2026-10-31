@@ -6,7 +6,7 @@
  *
  * @package InternFeel
  *
- * @var array{filters: array<string, mixed>, results: array{cards: list<array<string, mixed>>, total: int, pages: int}|null, action: string, title: string, show_results?: bool} $args
+ * @var array{filters: array<string, mixed>, results: array{cards: list<array<string, mixed>>, total: int, pages: int}|null, action: string, title: string, show_results?: bool, always_results?: bool} $args
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -63,7 +63,7 @@ $if_menu = static function ( string $name, string $label, array $options, string
 			</span>
 		</div>
 
-		<form class="if-browse__form" method="get" action="<?php echo esc_url( $args['action'] ); ?>" role="search" data-if-browse data-rest="<?php echo esc_url( rest_url( 'internfeel/v1/experiences' ) ); ?>"<?php echo ( $args['show_results'] ?? false ) && ! Search::is_filtered( $if_filters ) ? ' data-always-results' : ''; ?>>
+		<form class="if-browse__form" method="get" action="<?php echo esc_url( $args['action'] ); ?>" role="search" data-if-browse data-rest="<?php echo esc_url( rest_url( 'internfeel/v1/experiences' ) ); ?>"<?php echo ! empty( $args['always_results'] ) ? ' data-always-results' : ''; ?>>
 			<div class="if-browse__row">
 				<span class="if-search if-browse__search">
 					<svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -113,7 +113,7 @@ $if_menu = static function ( string $name, string $label, array $options, string
 	</div>
 	<p class="if-results__empty" data-if-empty<?php echo null !== $if_results && 0 === $if_results['total'] ? '' : ' hidden'; ?>><?php esc_html_e( 'No experiences match. Remove a filter or try another field.', 'internfeel' ); ?></p>
 	<?php
-	$if_next = null !== $if_results && $if_filters['page'] < $if_results['pages'] ? add_query_arg( 'page', $if_filters['page'] + 1 ) : '';
+	$if_next = null !== $if_results && $if_filters['page'] < $if_results['pages'] ? add_query_arg( 'pg', $if_filters['page'] + 1 ) : '';
 	?>
 	<a class="if-btn if-results__more" href="<?php echo esc_url( $if_next ); ?>" data-if-more<?php echo '' === $if_next ? ' hidden' : ''; ?>><?php esc_html_e( 'Load more', 'internfeel' ); ?></a>
 </section>

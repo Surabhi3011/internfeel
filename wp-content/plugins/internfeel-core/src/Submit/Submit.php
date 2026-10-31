@@ -222,6 +222,8 @@ final class Submit implements Module {
 			update_post_meta( $post_id, Fields::PREFIX . 'referrer_user_id', $referrer );
 		}
 
+		delete_transient( 'if_review_waiting' );
+
 		// The review queue measures the 24-hour promise from here.
 		update_post_meta( $post_id, Fields::PREFIX . 'submitted_at', current_time( 'mysql', true ) );
 		delete_post_meta( $post_id, Fields::PREFIX . 'moderation_note' );

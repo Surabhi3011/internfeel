@@ -30,11 +30,13 @@ get_template_part(
 	'template-parts/browse',
 	null,
 	array(
-		'filters'      => $if_filters,
-		'results'      => Search::run( $if_filters ),
-		'action'       => (string) get_permalink(),
-		'title'        => __( 'Filter experiences', 'internfeel' ),
-		'show_results' => true,
+		'filters'        => $if_filters,
+		'results'        => Search::run( $if_filters ),
+		'action'         => (string) get_permalink(),
+		'title'          => __( 'Filter experiences', 'internfeel' ),
+		'show_results'   => true,
+		// The archive always shows results, even after every filter is cleared.
+		'always_results' => true,
 	)
 );
 get_footer();

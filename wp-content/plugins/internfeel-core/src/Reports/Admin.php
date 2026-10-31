@@ -37,7 +37,7 @@ final class Admin implements Module {
 	 * Review → Reports, with a count of flagged items.
 	 */
 	public static function menu(): void {
-		$flagged = count( array_filter( self::items(), static fn( array $item ): bool => $item['flagged'] ) );
+		$flagged = self::flagged_count();
 
 		add_submenu_page(
 			Queue::SLUG,
@@ -47,6 +47,42 @@ final class Admin implements Module {
 			self::SLUG,
 			array( self::class, 'render' )
 		);
+	}
+
+	/**
+	 * How many items are hidden pending a decision: two counting queries, cached for a minute,
+	 * because every admin screen builds the menu.
+	 *
+	 * @return int
+	 */
+	public static function flagged_count(): int {
+		$cached = get_transient( 'if_reports_flagged' );
+		if ( is_numeric( $cached ) ) {
+			return (int) $cached;
+		}
+
+		$posts    = new \WP_Query(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_key'       => Reports::FLAGGED_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- a count for the admin menu.
+				'meta_value'     => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- a count for the admin menu.
+			)
+		);
+		$comments = (int) get_comments(
+			array(
+				'status'     => 'hold',
+				'count'      => true,
+				'meta_key'   => Reports::FLAGGED_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- a count for the admin menu.
+				'meta_value' => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- a count for the admin menu.
+			)
+		);
+		$count    = $posts->found_posts + $comments;
+		set_transient( 'if_reports_flagged', $count, MINUTE_IN_SECONDS );
+
+		return $count;
 	}
 
 	/**

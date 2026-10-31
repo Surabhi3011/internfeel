@@ -165,6 +165,19 @@ class SearchTest extends WP_UnitTestCase {
 		$this->assertSame( 'Visible one', $response->get_data()['cards'][0]['title'] );
 	}
 
+	public function test_sorting_by_views_keeps_experiences_without_a_count(): void {
+		$popular = $this->experience( array( 'view_count' => 50 ) );
+		$quiet   = $this->experience( array( 'view_count' => 3 ) );
+		$new     = $this->experience( array() );
+
+		$this->assertSame( array( $popular, $quiet, $new ), $this->ids( array( 'sort' => 'views' ) ) );
+	}
+
+	public function test_the_page_number_is_read_from_pg_not_page(): void {
+		$this->assertSame( 3, Search::filters( array( 'pg' => '3' ) )['page'] );
+		$this->assertSame( 1, Search::filters( array( 'page' => '3' ) )['page'], 'WordPress owns "page".' );
+	}
+
 	public function test_the_authors_comments_on_an_anonymous_experience_stay_anonymous(): void {
 		$id      = $this->experience( array( 'is_anonymous' => true ) );
 		$comment = self::factory()->comment->create(

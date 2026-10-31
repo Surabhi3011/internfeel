@@ -34,7 +34,13 @@ final class Queue {
 	 * Add the Review menu, with a count of what is waiting.
 	 */
 	public static function menu(): void {
-		$waiting = self::count( 'new' ) + self::count( 'proofs' );
+		// Every admin screen builds this menu, so the count is cached for a minute.
+		$waiting = get_transient( 'if_review_waiting' );
+		if ( ! is_numeric( $waiting ) ) {
+			$waiting = self::count( 'new' ) + self::count( 'proofs' );
+			set_transient( 'if_review_waiting', $waiting, MINUTE_IN_SECONDS );
+		}
+		$waiting = (int) $waiting;
 		$bubble  = $waiting > 0 ? sprintf( ' <span class="awaiting-mod">%d</span>', $waiting ) : '';
 
 		add_menu_page(

@@ -303,6 +303,12 @@ final class Invites implements Module {
 	 * @param int $user_id New user.
 	 */
 	public static function attribute( int $user_id ): void {
+		// Only a visitor signing themselves up: an admin creating an account in wp-admin is signed in
+		// and may hold an old invite cookie of their own.
+		if ( is_user_logged_in() ) {
+			return;
+		}
+
 		$code = isset( $_COOKIE[ self::COOKIE ] ) ? strtoupper( sanitize_key( wp_unslash( $_COOKIE[ self::COOKIE ] ) ) ) : '';
 		if ( '' === $code ) {
 			return;

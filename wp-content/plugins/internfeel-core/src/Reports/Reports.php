@@ -131,6 +131,7 @@ final class Reports implements Module {
 				wp_set_comment_status( $id, 'hold' );
 			}
 			Log::add( 0, $type, $id, 'flag', 'reports' );
+			delete_transient( 'if_reports_flagged' );
 		}
 
 		return true;
@@ -151,6 +152,7 @@ final class Reports implements Module {
 			wp_set_comment_status( $id, 'approve' );
 		}
 		Log::add( $actor, $type, $id, 'dismiss_reports' );
+		delete_transient( 'if_reports_flagged' );
 	}
 
 	/**
@@ -178,6 +180,7 @@ final class Reports implements Module {
 		}
 		self::set_meta( $type, $id, self::FLAGGED_KEY, false );
 		Log::add( $actor, $type, $id, 'remove', 'reports', $note );
+		delete_transient( 'if_reports_flagged' );
 	}
 
 	/**

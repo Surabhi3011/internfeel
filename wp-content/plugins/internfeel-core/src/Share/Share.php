@@ -59,9 +59,10 @@ final class Share implements Module {
 
 		$title       = wp_get_document_title();
 		$description = get_bloginfo( 'description' );
-		$url         = home_url( add_query_arg( array() ) );
-		$image       = '';
-		$type        = 'website';
+		// The address without its query string, so tracking parameters never become the shared URL.
+		$url   = home_url( (string) wp_parse_url( add_query_arg( array() ), PHP_URL_PATH ) );
+		$image = '';
+		$type  = 'website';
 
 		if ( is_singular( 'post' ) ) {
 			$post        = get_queried_object();

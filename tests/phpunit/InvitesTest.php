@@ -99,6 +99,17 @@ class InvitesTest extends WP_UnitTestCase {
 		$this->assertArrayNotHasKey( Invites::COOKIE, $_COOKIE );
 	}
 
+	public function test_an_admin_creating_a_user_does_not_pass_on_their_cookie(): void {
+		Invites::change_credits( $this->inviter, 1 );
+		$_COOKIE[ Invites::COOKIE ] = Invites::create( $this->inviter )['code'];
+		wp_set_current_user( $this->admin );
+
+		$user = $this->friend();
+
+		$this->assertFalse( metadata_exists( 'user', $user, '_if_referred_by_user_id' ) );
+		unset( $_COOKIE[ Invites::COOKIE ] );
+	}
+
 	public function test_every_submission_is_credited_to_the_inviter(): void {
 		Invites::change_credits( $this->inviter, 1 );
 		$code   = Invites::create( $this->inviter )['code'];

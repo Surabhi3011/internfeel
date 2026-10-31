@@ -17,7 +17,7 @@ if ( form ) {
 	const count = document.querySelector( '[data-if-count]' );
 	const clear = form.querySelector( '[data-if-clear]' );
 	const defaults = document.querySelectorAll( '[data-if-default]' );
-	let page = Number( new URLSearchParams( location.search ).get( 'page' ) ) || 1;
+	let page = Number( new URLSearchParams( location.search ).get( 'pg' ) ) || 1;
 	let controller = null;
 	let typing = null;
 
@@ -52,7 +52,7 @@ if ( form ) {
 		const filtered = [ ...query.keys() ].length > 0;
 		page = append ? page + 1 : 1;
 		if ( page > 1 ) {
-			query.set( 'page', String( page ) );
+			query.set( 'pg', String( page ) );
 		}
 
 		const url = new URL( form.action );

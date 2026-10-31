@@ -9,6 +9,7 @@ InternFeel (internfeel.com) relaunch: a fresh WordPress 7.1 site on PHP 8.5, hos
 | [docs/plan.md](docs/plan.md) | Scope, decisions table (section 4), feature specs with "Done when" tests (section 5), day-by-day schedule (section 7), launch checklist |
 | [docs/architecture.md](docs/architecture.md) | Components, data model (section 4), flows, REST API, security, privacy |
 | [docs/development.md](docs/development.md) | Repo layout, conventions, local dev, secrets, cPanel deploy, CI, runbook |
+| [docs/launch.md](docs/launch.md) | Launch-day runbook: moving staging's reviewed site to production, smoke test, rollback |
 
 **Designs:** build every template from [docs/approved-designs/](docs/approved-designs/README.md) (Gate 1, signed off 26 October 2026); its README is the spec for each page. `docs/designs/` is superseded. The theme loads the design system as `assets/css/fonts.css`, `tokens.css` and `components.css` (copies of `docs/approved-designs/system/`, minus the Google Fonts import), then `style.css` for theme-only rules. Use the components' classes (`if-btn`, `if-field`, `if-field__help`, `if-segment`, `if-card`, ...) rather than new ones.
 

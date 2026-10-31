@@ -38,6 +38,52 @@ final class Dashboard implements Module {
 	 */
 	public static function register(): void {
 		add_action( 'rest_api_init', array( self::class, 'routes' ) );
+		add_filter( 'the_posts', array( self::class, 'own_preview' ), 10, 2 );
+	}
+
+	/**
+	 * Let a student see their own experience while it waits for review. WordPress's preview needs
+	 * editing rights, which students never get, so the dashboard links to ?p={id}&if_preview=1 and
+	 * this puts the post back after WordPress has hidden it. Only the author, only in review.
+	 *
+	 * @param array<int, mixed> $posts Posts WordPress found.
+	 * @param \WP_Query         $query The query.
+	 * @return array<int, mixed>
+	 */
+	public static function own_preview( array $posts, \WP_Query $query ): array {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only, checked against the author below.
+		if ( array() !== $posts || ! $query->is_main_query() || empty( $_GET['if_preview'] ) ) {
+			return $posts;
+		}
+
+		$post = get_post( (int) $query->get( 'p' ) );
+		if ( ! $post instanceof \WP_Post || 'post' !== $post->post_type || 'pending' !== $post->post_status || get_current_user_id() !== (int) $post->post_author || 0 === get_current_user_id() ) {
+			return $posts;
+		}
+
+		$query->is_404      = false;
+		$query->is_single   = true;
+		$query->is_singular = true;
+		nocache_headers();
+		add_filter( 'wp_robots', 'wp_robots_no_robots' );
+
+		return array( $post );
+	}
+
+	/**
+	 * Where the student sees an experience that is in review.
+	 *
+	 * @param int $post_id Experience ID.
+	 * @return string
+	 */
+	public static function preview_url( int $post_id ): string {
+		return add_query_arg(
+			array(
+				'p'          => $post_id,
+				'if_preview' => 1,
+			),
+			home_url( '/' )
+		);
 	}
 
 	/**
@@ -78,12 +124,14 @@ final class Dashboard implements Module {
 			)
 		);
 
+		// Comments from other people: the student's own replies are not "received".
 		$comments = (int) get_comments(
 			array(
-				'post_author' => $user_id,
-				'post_type'   => 'post',
-				'status'      => 'approve',
-				'count'       => true,
+				'post_author'    => $user_id,
+				'author__not_in' => array( $user_id ),
+				'post_type'      => 'post',
+				'status'         => 'approve',
+				'count'          => true,
 			)
 		);
 
@@ -135,7 +183,7 @@ final class Dashboard implements Module {
 				'comments'     => (int) $post->comment_count,
 				'certificate'  => 'publish' === $post->post_status ? Certificates::number( $post->ID ) : '',
 				'step'         => max( 1, min( 4, $step ) ),
-				'link'         => 'draft' === $post->post_status ? Submit::url( $post->ID ) : ( 'publish' === $post->post_status ? (string) get_permalink( $post ) : (string) get_preview_post_link( $post ) ),
+				'link'         => 'draft' === $post->post_status ? Submit::url( $post->ID ) : ( 'publish' === $post->post_status ? (string) get_permalink( $post ) : self::preview_url( $post->ID ) ),
 				'proofs'       => count( Proofs::all( $post->ID ) ),
 			);
 		}

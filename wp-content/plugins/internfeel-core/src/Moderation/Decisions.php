@@ -64,6 +64,8 @@ final class Decisions {
 			return self::error( 'if_note_required', __( 'Write a note for the student explaining why.', 'internfeel' ) );
 		}
 
+		delete_transient( 'if_review_waiting' );
+
 		return match ( $action ) {
 			'approve'         => self::approve( $post, $actor, $note ),
 			'request_changes' => self::send_back( $post, $actor, $note, 'draft' ),

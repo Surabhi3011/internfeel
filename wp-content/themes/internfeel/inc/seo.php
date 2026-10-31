@@ -42,8 +42,9 @@ function if_utility_page_ids(): array {
  * @return array<string, bool|string>
  */
 function if_robots( array $robots ): array {
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the query string.
-	$filtered = ! empty( $_GET ) && ( is_front_page() || is_page( 'experiences' ) );
+	// Only real filters count: tracking parameters such as utm_source leave the page indexable.
+	$filtered = if_core_active() && ( is_front_page() || is_page( 'experiences' ) )
+		&& \InternFeel\Search\Search::is_filtered( \InternFeel\Search\Search::filters( $_GET ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the query string.
 
 	if ( 'production' !== wp_get_environment_type() || is_page( if_utility_pages() ) || is_search() || $filtered ) {
 		$robots['noindex'] = true;

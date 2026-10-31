@@ -172,6 +172,41 @@ class CertificatesTest extends WP_UnitTestCase {
 		$this->assertNotSame( '', $by_id[ $live ]['certificate'] );
 	}
 
+	public function test_comments_received_leave_out_the_students_own_replies(): void {
+		$live = $this->published();
+		self::factory()->comment->create( array( 'comment_post_ID' => $live ) );
+		self::factory()->comment->create(
+			array(
+				'comment_post_ID' => $live,
+				'user_id'         => $this->student,
+			)
+		);
+
+		$this->assertSame( 1, Dashboard::stats( $this->student )['comments'] );
+	}
+
+	public function test_students_can_see_their_own_experience_while_it_is_in_review(): void {
+		$id = self::factory()->post->create(
+			array(
+				'post_status' => 'pending',
+				'post_author' => $this->student,
+			)
+		);
+		$this->assertStringContainsString( 'if_preview=1', Dashboard::experiences( $this->student )[0]['link'] );
+
+		$_GET['if_preview'] = '1';
+		wp_set_current_user( $this->student );
+		$this->go_to( Dashboard::preview_url( $id ) );
+		$this->assertSame( $id, get_the_ID() );
+		$this->assertFalse( is_404() );
+
+		// Anyone else still gets nothing.
+		wp_set_current_user( self::factory()->user->create( array( 'role' => Roles::STUDENT ) ) );
+		$this->go_to( Dashboard::preview_url( $id ) );
+		$this->assertTrue( is_404() );
+		unset( $_GET['if_preview'] );
+	}
+
 	public function test_students_delete_only_their_own_drafts(): void {
 		$draft = self::factory()->post->create(
 			array(

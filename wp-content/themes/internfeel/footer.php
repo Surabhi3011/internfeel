@@ -84,7 +84,7 @@ $if_columns = array(
 
 		<div class="if-footer__base">
 			<div class="if-footer__brand">
-				<img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/internfeel-logo.png' ) ); ?>" width="114" height="32" alt="<?php esc_attr_e( 'InternFeel, peep before you leap', 'internfeel' ); ?>">
+				<img src="<?php echo esc_url( add_query_arg( 'ver', IF_THEME_VERSION, get_theme_file_uri( 'assets/img/internfeel-logo.png' ) ) ); ?>" width="152" height="32" alt="<?php esc_attr_e( 'InternFeel', 'internfeel' ); ?>">
 				<a href="mailto:contact@internfeel.com">contact@internfeel.com</a>
 			</div>
 			<?php if_social_links(); ?>

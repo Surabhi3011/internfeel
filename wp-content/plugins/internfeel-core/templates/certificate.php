@@ -53,7 +53,7 @@ $if_font = static fn( string $file ): string => esc_attr( $assets . '/fonts/' . 
 	.facts .value { font-weight: 700; }
 	.mono { font-family: "Plex Mono", monospace; font-weight: 500; }
 	.qr { width: 96px; height: 96px; }
-	.mark { width: 72px; height: 72px; }
+	.mark { width: auto; height: 72px; }
 	.issued { display: block; margin-top: 6px; font-weight: 700; font-size: 14px; text-align: center; }
 </style>
 </head>

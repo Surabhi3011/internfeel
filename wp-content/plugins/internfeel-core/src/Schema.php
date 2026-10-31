@@ -94,6 +94,15 @@ final class Schema {
 			7 => static function (): void {
 				Pages::ensure( 'org', __( 'Programmes', 'internfeel' ) );
 			},
+			// Day 11: legal and company pages as drafts, for an admin to complete and publish.
+			8 => static function (): void {
+				Pages::draft( 'privacy-policy', __( 'Privacy policy', 'internfeel' ), 'template-legal.php' );
+				Pages::draft( 'terms', __( 'Terms of use', 'internfeel' ), 'template-legal.php' );
+				Pages::draft( 'content-guidelines', __( 'Content guidelines', 'internfeel' ), 'template-legal.php' );
+				Pages::draft( 'ad-guidelines', __( 'Ad guidelines', 'internfeel' ), 'template-legal.php' );
+				Pages::draft( 'about', __( 'About InternFeel', 'internfeel' ) );
+				Pages::draft( 'contact', __( 'Contact', 'internfeel' ) );
+			},
 		);
 	}
 

@@ -1947,3 +1947,64 @@ a.if-chip {
 	color: var(--if-ink);
 	text-decoration: none;
 }
+
+/* ---------- Ad slots (plan.md 5.6): each reserves its height, so nothing jumps ---------- */
+
+.if-ad .if-ad__box {
+	min-height: var(--if-ad-h, 250px);
+}
+
+.if-ad--inline,
+.if-ad--end {
+	max-width: var(--if-reading);
+	margin: var(--if-space-8) 0;
+}
+
+.if-ad--sidebar {
+	margin-top: var(--if-space-6);
+}
+
+.if-ad--card .if-ad__box {
+	height: 100%;
+}
+
+@media (max-width: 1000px) {
+	.if-ad--sidebar {
+		display: none;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-ad .if-ad__box {
+		min-height: var(--if-ad-h-phone, 250px);
+	}
+}
+
+/* ---------- Legal pages ---------- */
+
+.if-legal {
+	display: grid;
+	gap: var(--if-space-3);
+	max-width: calc(var(--if-reading) + 2 * var(--if-space-4));
+	margin-inline: 0;
+}
+
+.if-legal h1,
+.if-legal > p {
+	margin: 0;
+}
+
+.if-legal__body {
+	font-size: 18px;
+	line-height: 30px;
+}
+
+.if-legal__body h2 {
+	margin: var(--if-space-8) 0 var(--if-space-3);
+	font: 700 22px/28px var(--font-display);
+}
+
+.if-legal__body p,
+.if-legal__body ul {
+	margin: 0 0 var(--if-space-4);
+}

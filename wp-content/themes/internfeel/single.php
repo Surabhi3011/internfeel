@@ -2,7 +2,8 @@
 /**
  * Experience page, from docs/approved-designs/experience.html: title block, key facts, the story with
  * the ratings sidebar, comments, then more experiences of the same type. Anonymous experiences show
- * "Anonymous" and no photo, LinkedIn or caps (plan.md 5.1). Ad slots arrive on day 11.
+ * "Anonymous" and no photo, LinkedIn or caps (plan.md 5.1). Up to three ad slots: after the fourth
+ * answer, at the end of the story, and in the sidebar on desktop (plan.md 5.6).
  *
  * @package InternFeel
  */
@@ -287,12 +288,19 @@ get_header();
 	<div class="if-container if-exp__layout">
 		<div class="if-exp__story">
 			<?php if ( array() !== $if_story ) : ?>
+				<?php $if_answered = 0; ?>
 				<?php foreach ( Questions::all() as $if_key => $if_question ) : ?>
 					<?php if ( isset( $if_story[ $if_key ] ) ) : ?>
 						<section class="if-qa">
 							<h2 class="if-qa__q"><?php echo esc_html( $if_question ); ?></h2>
 							<div class="if-qa__a"><?php echo wp_kses_post( wpautop( esc_html( (string) $if_story[ $if_key ] ) ) ); ?></div>
 						</section>
+						<?php
+						// Ad 1 after the fourth answer (plan.md 5.6).
+						if ( 4 === ++$if_answered && count( $if_story ) > 4 ) {
+							if_the_ad( 'inline' );
+						}
+						?>
 					<?php endif; ?>
 				<?php endforeach; ?>
 			<?php else : ?>
@@ -305,6 +313,8 @@ get_header();
 					<div class="body-lg"><?php echo wp_kses_post( wpautop( esc_html( (string) $if_v['advice'] ) ) ); ?></div>
 				</aside>
 			<?php endif; ?>
+
+			<?php if_the_ad( 'end' ); ?>
 
 			<p class="small if-muted if-exp__report"><?php esc_html_e( 'Something wrong with this experience?', 'internfeel' ); ?> <?php if_the_report_button( 'experience', $if_id, $if_author, __( 'Report it', 'internfeel' ) ); ?></p>
 		</div>
@@ -324,6 +334,7 @@ get_header();
 						</ul>
 					<?php endif; ?>
 				</section>
+				<?php if_the_ad( 'sidebar' ); ?>
 			</aside>
 		<?php endif; ?>
 	</div>

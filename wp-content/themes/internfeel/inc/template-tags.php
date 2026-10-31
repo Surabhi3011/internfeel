@@ -264,9 +264,14 @@ function if_home_rows(): array {
  *
  * @param list<array<string, mixed>> $cards   Card data from InternFeel\Search\Cards::data().
  * @param string                     $heading Heading tag for the card titles.
+ * @param bool                       $ads     Add a Sponsored slot after every 8 cards.
  */
-function if_the_cards( array $cards, string $heading = 'h3' ): void {
-	foreach ( $cards as $card ) {
+function if_the_cards( array $cards, string $heading = 'h3', bool $ads = false ): void {
+	foreach ( $cards as $index => $card ) {
+		// Listings carry one card-shaped Sponsored slot per 8 cards (plan.md 5.6).
+		if ( $ads && $index > 0 && 0 === $index % 8 ) {
+			if_the_ad( 'card', __( 'Sponsored', 'internfeel' ) );
+		}
 		get_template_part(
 			'template-parts/card',
 			null,

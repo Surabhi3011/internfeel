@@ -1,7 +1,7 @@
 <?php
 /**
  * Listicle (/lists/{slug}/), from the approved-designs README "Pages not drawn": heading-1 title, the
- * intro at reading width, then the cards in the admin's order. The ad slot arrives on day 11.
+ * intro at reading width, then the cards in the admin's order.
  *
  * @package InternFeel
  */
@@ -26,6 +26,7 @@ get_header();
 		<p class="if-muted"><?php esc_html_e( 'Experiences for this list are on their way.', 'internfeel' ); ?></p>
 	<?php else : ?>
 		<div class="if-grid"><?php if_the_cards( $if_cards, 'h2' ); ?></div>
+		<?php if_the_ad( 'hub' ); ?>
 	<?php endif; ?>
 </div>
 <?php

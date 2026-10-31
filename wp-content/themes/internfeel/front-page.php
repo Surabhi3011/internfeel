@@ -2,7 +2,7 @@
 /**
  * Home page, from docs/approved-designs/home.html: hero, Browse band, trust strip, listicle rows, How
  * InternFeel works and, for students holding invites, the invite banner. Any filter in the URL shows
- * the results grid in place of the rows (plan.md 5.2). Ad slots arrive with AdSense (plan.md 7, day 11).
+ * the results grid in place of the rows (plan.md 5.2). One ad slot sits between the second and third rows.
  *
  * @package InternFeel
  */
@@ -134,7 +134,10 @@ get_template_part(
 		</div>
 	</section>
 
-	<?php foreach ( $if_rows as $if_row ) : ?>
+	<?php foreach ( $if_rows as $if_index => $if_row ) : ?>
+		<?php if ( 2 === $if_index ) : ?>
+			<div class="if-container if-row"><?php if_the_ad( 'home' ); ?></div>
+		<?php endif; ?>
 		<section class="if-container if-row" aria-labelledby="<?php echo esc_attr( $if_row['id'] ); ?>">
 			<div class="if-row__head">
 				<div>

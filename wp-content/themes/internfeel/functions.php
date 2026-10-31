@@ -12,6 +12,8 @@ defined( 'ABSPATH' ) || exit;
 define( 'IF_THEME_VERSION', '0.2.0' );
 
 require_once __DIR__ . '/inc/template-tags.php';
+require_once __DIR__ . '/inc/ads.php';
+require_once __DIR__ . '/inc/seo.php';
 
 /**
  * Register theme supports and menus.

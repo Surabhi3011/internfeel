@@ -80,17 +80,24 @@ final class Submit implements Module {
 			return Rest::error( 'if_not_logged_in', __( 'Please log in first.', 'internfeel' ), 401 );
 		}
 
-		if ( current_user_can( 'edit_posts' ) ) {
+		return current_user_can( 'if_submit' ) || current_user_can( 'edit_posts' )
+			? true
+			: Rest::error( 'if_forbidden', __( 'Your account cannot submit experiences.', 'internfeel' ), 403 );
+	}
+
+	/**
+	 * Experiences show the author's college and course, so a student completes their profile before
+	 * starting a draft or sending one for review. Reading, saving and deleting their own drafts never
+	 * needs it, so nobody is locked out of work already started.
+	 *
+	 * @return true|\WP_Error
+	 */
+	public static function profile_ready(): true|\WP_Error {
+		if ( current_user_can( 'edit_posts' ) || \InternFeel\Auth\Profile::is_complete( get_current_user_id() ) ) {
 			return true;
 		}
-		if ( ! current_user_can( 'if_submit' ) ) {
-			return Rest::error( 'if_forbidden', __( 'Your account cannot submit experiences.', 'internfeel' ), 403 );
-		}
 
-		// Experiences show the author's college and course, so the profile must be complete first.
-		return \InternFeel\Auth\Profile::is_complete( get_current_user_id() )
-			? true
-			: Rest::error( 'if_profile_incomplete', __( 'Add your college, course and graduation year in Profile on your dashboard first.', 'internfeel' ), 403 );
+		return Rest::error( 'if_profile_incomplete', __( 'Add your college, course and graduation year in Profile on your dashboard first.', 'internfeel' ), 403 );
 	}
 
 	/**
@@ -125,6 +132,10 @@ final class Submit implements Module {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function create( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$ready = self::profile_ready();
+		if ( true !== $ready ) {
+			return $ready;
+		}
 		$user_id = get_current_user_id();
 		if ( ! RateLimit::attempt( 'draft', (string) $user_id, self::DRAFT_LIMIT, self::DRAFT_WINDOW ) ) {
 			return Rest::error( 'if_rate_limited', __( 'You have started a lot of drafts in the last hour. Please continue one of them.', 'internfeel' ), 429 );
@@ -174,6 +185,11 @@ final class Submit implements Module {
 
 		if ( ! rest_sanitize_boolean( (string) $request->get_param( 'submit' ) ) ) {
 			return self::response( $post_id );
+		}
+
+		$ready = self::profile_ready();
+		if ( true !== $ready ) {
+			return $ready;
 		}
 
 		$valid = Form::validate( $post_id );

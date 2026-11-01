@@ -20,8 +20,10 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
-// Experiences show the author's college and course, so a student finishes their profile first.
-if ( if_core_active() && ! current_user_can( 'edit_posts' ) && ! \InternFeel\Auth\Profile::is_complete( get_current_user_id() ) ) {
+// Experiences show the author's college and course, so a student finishes their profile before
+// starting one. A draft already started still opens; sending it for review asks for the profile.
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the query string.
+if ( if_core_active() && empty( $_GET['id'] ) && ! current_user_can( 'edit_posts' ) && ! \InternFeel\Auth\Profile::is_complete( get_current_user_id() ) ) {
 	get_header();
 	?>
 	<div class="if-container if-join">

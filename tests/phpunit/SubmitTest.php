@@ -214,10 +214,14 @@ class SubmitTest extends WP_UnitTestCase {
 		$this->assertSame( 404, rest_do_request( new WP_REST_Request( 'GET', "/internfeel/v1/proof/{$id}/{$proof['file']}" ) )->get_status() );
 	}
 
-	public function test_students_finish_their_profile_before_submitting(): void {
+	public function test_students_finish_their_profile_before_starting_or_submitting(): void {
+		$draft = $this->draft( self::complete() );
 		delete_user_meta( $this->student, '_if_college' );
 
-		$this->assertSame( 403, $this->call( 'POST', 'experiences' )->get_status() );
+		$this->assertSame( 403, $this->call( 'POST', 'experiences' )->get_status(), 'No new drafts.' );
+		$this->assertSame( 403, $this->call( 'PATCH', "experiences/{$draft}", array( 'submit' => true, 'guidelines' => true ) )->get_status(), 'No sending for review.' );
+		$this->assertSame( 200, $this->call( 'PATCH', "experiences/{$draft}", array( 'city' => 'Pune' ) )->get_status(), 'Saving their own draft still works.' );
+		$this->assertSame( 'draft', get_post_status( $draft ) );
 	}
 
 	public function test_older_experiences_keep_the_questions_they_answered(): void {

@@ -20,6 +20,24 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
+// Experiences show the author's college and course, so a student finishes their profile before
+// starting one. A draft already started still opens; sending it for review asks for the profile.
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the query string.
+if ( if_core_active() && empty( $_GET['id'] ) && ! current_user_can( 'edit_posts' ) && ! \InternFeel\Auth\Profile::is_complete( get_current_user_id() ) ) {
+	get_header();
+	?>
+	<div class="if-container if-join">
+		<section class="if-join__card">
+			<h1 class="heading-1"><?php esc_html_e( 'First, a little about you', 'internfeel' ); ?></h1>
+			<p><?php esc_html_e( 'Your experience shows your college, course and graduation year (your name too, unless you post anonymously). Add them in Profile, then come back here.', 'internfeel' ); ?></p>
+			<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/dashboard/#profile' ) ); ?>"><?php esc_html_e( 'Complete your profile', 'internfeel' ); ?></a>
+		</section>
+	</div>
+	<?php
+	get_footer();
+	return;
+}
+
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only; ownership is checked below.
 $if_id     = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
 $if_post   = $if_id > 0 ? get_post( $if_id ) : null;
@@ -28,6 +46,10 @@ $if_draft  = $if_ok && 'draft' === $if_post->post_status;
 $if_values = $if_draft && class_exists( Form::class ) ? Form::values( $if_id ) : array();
 $if_proofs = $if_draft && class_exists( Proofs::class ) ? Proofs::list_for( $if_id ) : array();
 $if_home   = if_core_active() ? \InternFeel\Auth\Profile::home_url() : home_url( '/' );
+// A draft keeps the question set it was started with; new experiences use the current one.
+$if_set    = $if_draft ? Questions::version( $if_id ) : Questions::CURRENT;
+$if_hints  = Questions::hints( $if_set );
+$if_advice = Questions::advice( $if_set );
 
 /**
  * A saved value for a field, or a default.
@@ -206,12 +228,16 @@ get_header();
 					</div>
 					<?php
 					$if_story = (array) $if_value( 'story', array() );
-					foreach ( Questions::all() as $if_key => $if_question ) :
+					foreach ( Questions::all( $if_set ) as $if_key => $if_question ) :
 						$if_required = Questions::is_required( $if_key );
+						$if_hint     = $if_hints[ $if_key ] ?? '';
 						?>
 						<div class="if-field">
 							<label for="if-<?php echo esc_attr( $if_key ); ?>"><?php echo esc_html( $if_question ); ?><?php echo $if_required ? ' <span class="if-req" aria-hidden="true">*</span>' : ''; ?></label>
-							<textarea id="if-<?php echo esc_attr( $if_key ); ?>" name="story[<?php echo esc_attr( $if_key ); ?>]" rows="6" maxlength="<?php echo esc_attr( (string) Form::MAX_ANSWER ); ?>"<?php echo $if_required ? ' required' : ''; ?>><?php echo esc_textarea( (string) ( $if_story[ $if_key ] ?? '' ) ); ?></textarea>
+							<?php if ( '' !== $if_hint ) : ?>
+								<span class="if-field__help" id="if-<?php echo esc_attr( $if_key ); ?>-help"><?php echo esc_html( $if_hint ); ?></span>
+							<?php endif; ?>
+							<textarea id="if-<?php echo esc_attr( $if_key ); ?>" name="story[<?php echo esc_attr( $if_key ); ?>]" rows="6" maxlength="<?php echo esc_attr( (string) Form::MAX_ANSWER ); ?>"<?php echo $if_required ? ' required' : ''; ?><?php echo '' !== $if_hint ? ' aria-describedby="if-' . esc_attr( $if_key ) . '-help"' : ''; ?>><?php echo esc_textarea( (string) ( $if_story[ $if_key ] ?? '' ) ); ?></textarea>
 						</div>
 					<?php endforeach; ?>
 				</section>
@@ -242,9 +268,9 @@ get_header();
 					<?php endforeach; ?>
 
 					<div class="if-field">
-						<label for="if-advice"><?php esc_html_e( 'Advice for students applying', 'internfeel' ); ?></label>
+						<label for="if-advice"><?php echo esc_html( $if_advice[0] ); ?></label>
+						<span class="if-field__help" id="if-advice-help"><?php echo esc_html( $if_advice[1] ); ?></span>
 						<textarea id="if-advice" name="advice" rows="5" maxlength="<?php echo esc_attr( (string) Form::MAX_ADVICE ); ?>" aria-describedby="if-advice-help"><?php echo esc_textarea( (string) $if_value( 'advice' ) ); ?></textarea>
-						<span class="if-field__help" id="if-advice-help"><?php esc_html_e( 'Optional. Shown in its own box after your story.', 'internfeel' ); ?></span>
 					</div>
 				</section>
 
@@ -324,7 +350,7 @@ get_header();
 				<section class="if-submit__questions">
 					<h2 class="heading-3"><?php esc_html_e( 'The questions in step 2', 'internfeel' ); ?></h2>
 					<ol class="small">
-						<?php foreach ( Questions::all() as $if_question ) : ?>
+						<?php foreach ( Questions::all( $if_set ) as $if_question ) : ?>
 							<li><?php echo esc_html( $if_question ); ?></li>
 						<?php endforeach; ?>
 					</ol>

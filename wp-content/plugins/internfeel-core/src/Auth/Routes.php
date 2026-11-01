@@ -123,14 +123,20 @@ final class Routes {
 			return Rest::error( 'if_invalid', $problem, 400, 'password' );
 		}
 
+		// Sign-up asks only for the name; the rest of the profile can wait (1 November 2026).
+		$name = mb_substr( trim( sanitize_text_field( self::param( $request, 'full_name' ) ) ), 0, 120 );
+		if ( '' === $name ) {
+			return Rest::error( 'if_required', __( 'Enter your full name. It is shown on your comments and printed on your certificates.', 'internfeel' ), 400, 'full_name' );
+		}
+
 		$user_id = wp_insert_user(
 			array(
 				'user_login'           => self::new_login(),
 				'user_email'           => $email,
 				'user_pass'            => $password,
 				'role'                 => Roles::STUDENT,
-				'display_name'         => __( 'InternFeel student', 'internfeel' ),
-				'nickname'             => __( 'InternFeel student', 'internfeel' ),
+				'display_name'         => $name,
+				'nickname'             => $name,
 				'show_admin_bar_front' => 'false',
 			)
 		);
@@ -139,9 +145,10 @@ final class Routes {
 			return Rest::error( 'if_signup_failed', __( 'Sign-up failed. Please try again.', 'internfeel' ), 500 );
 		}
 
+		Profile::save_name( $user->ID, $name );
 		self::start_session( $user, true );
 
-		return new \WP_REST_Response( array( 'redirect' => Profile::url() ), 201 );
+		return new \WP_REST_Response( array( 'redirect' => Profile::home_url() ), 201 );
 	}
 
 	/**
@@ -179,7 +186,7 @@ final class Routes {
 		self::start_session( $user, rest_sanitize_boolean( self::param( $request, 'remember' ) ) );
 
 		$redirect = Profile::home_url();
-		if ( ! Profile::is_complete( $user->ID ) ) {
+		if ( ! Profile::has_name( $user->ID ) ) {
 			$redirect = Profile::url();
 		} elseif ( '' !== self::param( $request, 'redirect_to' ) ) {
 			$redirect = wp_validate_redirect( self::param( $request, 'redirect_to' ), $redirect );

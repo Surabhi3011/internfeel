@@ -27,10 +27,11 @@ if ( ! if_core_active() ) {
 }
 
 $if_user_id = get_current_user_id();
-if ( ! Profile::is_complete( $if_user_id ) ) {
-	wp_safe_redirect( home_url( '/signup/' ) );
+if ( ! Profile::has_name( $if_user_id ) ) {
+	wp_safe_redirect( Profile::url() );
 	exit;
 }
+$if_complete = Profile::is_complete( $if_user_id );
 
 $if_profile  = Profile::get( $if_user_id );
 $if_user     = wp_get_current_user();
@@ -38,6 +39,7 @@ $if_name     = '' !== (string) $if_profile['display_name'] ? (string) $if_profil
 $if_stats    = Dashboard::stats( $if_user_id );
 $if_items    = Dashboard::experiences( $if_user_id );
 $if_comments = Dashboard::comments( $if_user_id );
+$if_mine     = Dashboard::commented_on( $if_user_id );
 $if_notes    = Notify::all( $if_user_id );
 $if_verified = (int) get_user_meta( $if_user_id, '_if_verified_count', true );
 $if_invites  = \InternFeel\Invites\Invites::summary( $if_user_id );
@@ -114,22 +116,32 @@ get_header();
 		</a>
 	</div>
 
-	<section class="if-dash__counters" aria-label="<?php esc_attr_e( 'Your numbers', 'internfeel' ); ?>">
-		<?php
-		$if_counters = array(
-			array( $if_stats['published'], __( 'experiences published', 'internfeel' ) ),
-			array( $if_stats['views'], __( 'total views', 'internfeel' ) ),
-			array( $if_stats['comments'], __( 'comments received', 'internfeel' ) ),
-			array( $if_stats['joined'], __( 'friends who joined through you', 'internfeel' ) ),
-		);
-		foreach ( $if_counters as $if_counter ) :
-			?>
-			<div class="if-dash__counter">
-				<span class="if-dash__number"><?php echo esc_html( number_format_i18n( $if_counter[0] ) ); ?></span>
-				<span class="small if-muted"><?php echo esc_html( $if_counter[1] ); ?></span>
-			</div>
-		<?php endforeach; ?>
-	</section>
+	<?php if ( ! $if_complete ) : ?>
+		<p class="if-dash__reminder">
+			<?php esc_html_e( 'Add your college, course and graduation year to share an experience.', 'internfeel' ); ?>
+			<a href="#profile" data-if-open-tab="profile"><?php esc_html_e( 'Complete your profile', 'internfeel' ); ?></a>
+		</p>
+	<?php endif; ?>
+
+	<?php // The counters appear once the student has a published experience (1 November 2026). ?>
+	<?php if ( $if_stats['published'] > 0 ) : ?>
+		<section class="if-dash__counters" aria-label="<?php esc_attr_e( 'Your numbers', 'internfeel' ); ?>">
+			<?php
+			$if_counters = array(
+				array( $if_stats['published'], __( 'experiences published', 'internfeel' ) ),
+				array( $if_stats['views'], __( 'total views', 'internfeel' ) ),
+				array( $if_stats['comments'], __( 'comments received', 'internfeel' ) ),
+				array( $if_stats['joined'], __( 'friends who joined through you', 'internfeel' ) ),
+			);
+			foreach ( $if_counters as $if_counter ) :
+				?>
+				<div class="if-dash__counter">
+					<span class="if-dash__number"><?php echo esc_html( number_format_i18n( $if_counter[0] ) ); ?></span>
+					<span class="small if-muted"><?php echo esc_html( $if_counter[1] ); ?></span>
+				</div>
+			<?php endforeach; ?>
+		</section>
+	<?php endif; ?>
 
 	<div class="if-dash__layout">
 		<div class="if-dash__main">
@@ -269,21 +281,41 @@ get_header();
 			</section>
 
 			<section class="if-dash__panel" role="tabpanel" id="if-panel-comments" aria-labelledby="if-tab-comments" hidden>
-				<?php if ( array() === $if_comments ) : ?>
-					<p class="if-dash__empty"><?php esc_html_e( 'No comments on your experiences yet.', 'internfeel' ); ?></p>
+				<?php if ( $if_stats['published'] > 0 ) : ?>
+					<h2 class="heading-3"><?php esc_html_e( 'On your experiences', 'internfeel' ); ?></h2>
+					<?php if ( array() === $if_comments ) : ?>
+						<p class="if-dash__empty"><?php esc_html_e( 'No comments on your experiences yet.', 'internfeel' ); ?></p>
+					<?php endif; ?>
+					<?php foreach ( $if_comments as $if_comment ) : ?>
+						<article class="if-dash__item">
+							<a class="small" href="<?php echo esc_url( (string) get_permalink( (int) $if_comment->comment_post_ID ) ); ?>"><?php echo esc_html( get_the_title( (int) $if_comment->comment_post_ID ) ); ?></a>
+							<p class="if-dash__comment-by">
+								<strong><?php echo esc_html( $if_comment->comment_author ); ?></strong>
+								<span class="small if-muted"><?php echo esc_html( $if_date( $if_comment->comment_date_gmt, 'j M Y' ) ); ?></span>
+							</p>
+							<div class="if-dash__comment"><?php echo wp_kses_post( wpautop( $if_comment->comment_content ) ); ?></div>
+							<div class="if-dash__actions">
+								<a class="if-btn if-btn--ghost if-btn--sm" href="<?php echo esc_url( (string) get_comment_link( $if_comment ) ); ?>"><?php esc_html_e( 'Reply', 'internfeel' ); ?></a>
+								<?php if_the_report_button( 'comment', (int) $if_comment->comment_ID, (int) $if_comment->user_id ); ?>
+							</div>
+						</article>
+					<?php endforeach; ?>
 				<?php endif; ?>
-				<?php foreach ( $if_comments as $if_comment ) : ?>
+
+				<h2 class="heading-3"><?php esc_html_e( 'Where you commented', 'internfeel' ); ?></h2>
+				<?php if ( array() === $if_mine ) : ?>
+					<p class="if-dash__empty"><?php esc_html_e( 'Your comments on other students\' experiences appear here.', 'internfeel' ); ?></p>
+				<?php endif; ?>
+				<?php foreach ( $if_mine as $if_thread ) : ?>
 					<article class="if-dash__item">
-						<a class="small" href="<?php echo esc_url( (string) get_permalink( (int) $if_comment->comment_post_ID ) ); ?>"><?php echo esc_html( get_the_title( (int) $if_comment->comment_post_ID ) ); ?></a>
-						<p class="if-dash__comment-by">
-							<strong><?php echo esc_html( $if_comment->comment_author ); ?></strong>
-							<span class="small if-muted"><?php echo esc_html( $if_date( $if_comment->comment_date_gmt, 'j M Y' ) ); ?></span>
+						<h3 class="heading-3"><a href="<?php echo esc_url( $if_thread['link'] ); ?>"><?php echo esc_html( $if_thread['title'] ); ?></a></h3>
+						<p class="small if-muted">
+							<?php
+							/* translators: 1: number of comments, 2: date. */
+							echo esc_html( sprintf( _n( '%1$s comment, latest on %2$s', '%1$s comments, latest on %2$s', $if_thread['count'], 'internfeel' ), number_format_i18n( $if_thread['count'] ), $if_date( $if_thread['latest'], 'j M Y' ) ) );
+							?>
 						</p>
-						<div class="if-dash__comment"><?php echo wp_kses_post( wpautop( $if_comment->comment_content ) ); ?></div>
-						<div class="if-dash__actions">
-							<a class="if-btn if-btn--ghost if-btn--sm" href="<?php echo esc_url( (string) get_comment_link( $if_comment ) ); ?>"><?php esc_html_e( 'Reply', 'internfeel' ); ?></a>
-							<?php if_the_report_button( 'comment', (int) $if_comment->comment_ID, (int) $if_comment->user_id ); ?>
-						</div>
+						<div class="if-dash__comment"><?php echo wp_kses_post( wpautop( $if_thread['excerpt'] ) ); ?></div>
 					</article>
 				<?php endforeach; ?>
 			</section>
@@ -318,9 +350,7 @@ get_header();
 			<section class="if-dash__updates" aria-labelledby="if-updates-title">
 				<div class="if-dash__aside-head">
 					<h2 class="heading-3" id="if-updates-title"><?php esc_html_e( 'Updates', 'internfeel' ); ?></h2>
-					<?php if ( count( $if_notes ) > 5 ) : ?>
-						<button class="if-link small" type="button" data-if-all-notes aria-expanded="false"><?php esc_html_e( 'See all', 'internfeel' ); ?></button>
-					<?php endif; ?>
+
 				</div>
 				<?php if ( array() === $if_notes ) : ?>
 					<p class="small if-muted"><?php esc_html_e( 'Decisions on your experiences, proof and comments show up here.', 'internfeel' ); ?></p>
@@ -349,6 +379,9 @@ get_header();
 							</li>
 						<?php endforeach; ?>
 					</ul>
+					<?php if ( count( $if_notes ) > 5 ) : ?>
+						<button class="if-btn if-btn--ghost if-btn--sm if-dash__more-notes" type="button" data-if-more-notes><?php esc_html_e( 'Show older updates', 'internfeel' ); ?></button>
+					<?php endif; ?>
 				<?php endif; ?>
 			</section>
 

@@ -102,7 +102,7 @@ final class Form {
 
 		if ( isset( $input['story'] ) && is_array( $input['story'] ) ) {
 			$story = self::story( $post_id );
-			foreach ( array_keys( Questions::all() ) as $key ) {
+			foreach ( array_keys( Questions::all( Questions::version( $post_id ) ) ) as $key ) {
 				if ( array_key_exists( $key, $input['story'] ) ) {
 					$story[ $key ] = mb_substr( sanitize_textarea_field( self::scalar( $input['story'][ $key ] ) ), 0, self::MAX_ANSWER );
 				}
@@ -135,7 +135,7 @@ final class Form {
 			array( 1, 'selection_difficulty', $v['selection_difficulty'] >= 1 && $v['selection_difficulty'] <= 5, __( 'Rate how hard it was to get in.', 'internfeel' ) ),
 		);
 
-		foreach ( Questions::all() as $key => $question ) {
+		foreach ( Questions::all( Questions::version( $post_id ) ) as $key => $question ) {
 			if ( Questions::is_required( $key ) ) {
 				/* translators: %s: the question. */
 				$checks[] = array( 2, "story[{$key}]", '' !== trim( (string) ( $v['story'][ $key ] ?? '' ) ), sprintf( __( 'Answer: %s', 'internfeel' ), $question ) );
@@ -190,7 +190,7 @@ final class Form {
 		$title = sprintf( __( '%1$s at %2$s', 'internfeel' ), $what, $v['organisation'] );
 
 		$html = '';
-		foreach ( Questions::all() as $key => $question ) {
+		foreach ( Questions::all( Questions::version( $post_id ) ) as $key => $question ) {
 			$answer = trim( (string) ( $v['story'][ $key ] ?? '' ) );
 			if ( '' === $answer ) {
 				continue;
@@ -240,7 +240,7 @@ final class Form {
 	private static function story( int $post_id ): array {
 		$decoded = json_decode( (string) get_post_meta( $post_id, Fields::PREFIX . 'story', true ), true );
 		$story   = array();
-		foreach ( array_keys( Questions::all() ) as $key ) {
+		foreach ( array_keys( Questions::all( Questions::version( $post_id ) ) ) as $key ) {
 			$story[ $key ] = is_array( $decoded ) && is_scalar( $decoded[ $key ] ?? null ) ? (string) $decoded[ $key ] : '';
 		}
 

@@ -47,6 +47,23 @@ final class Profile {
 	 * @param int $user_id User ID.
 	 * @return bool
 	 */
+	/**
+	 * Whether the student has given their name, the only thing sign-up asks for.
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool
+	 */
+	public static function has_name( int $user_id ): bool {
+		return '' !== self::meta( $user_id, 'full_name' );
+	}
+
+	/**
+	 * Whether every profile question is answered: needed before submitting an experience, which shows
+	 * the author's college and course. Reading and commenting need only a name (has_name()).
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool
+	 */
 	public static function is_complete( int $user_id ): bool {
 		$user = get_userdata( $user_id );
 		if ( ! $user instanceof \WP_User ) {
@@ -101,6 +118,7 @@ final class Profile {
 	 */
 	public static function save( int $user_id, array $input ): true|\WP_Error {
 		$full    = self::text( $input, 'full_name' );
+		$minimal = is_scalar( $input['name_only'] ?? null ) && rest_sanitize_boolean( (string) $input['name_only'] );
 		$display = self::text( $input, 'display_name', 60 );
 		$college = self::text( $input, 'college' );
 		$course  = self::text( $input, 'course' );
@@ -109,6 +127,10 @@ final class Profile {
 
 		if ( '' === $full ) {
 			return Rest::error( 'if_required', __( 'Enter your full name. It is printed on your certificates.', 'internfeel' ), 400, 'full_name' );
+		}
+		// A student without a name yet (a Google sign-up) is asked only for it.
+		if ( $minimal ) {
+			return self::save_name( $user_id, $full, $display );
 		}
 		if ( '' === $college ) {
 			return Rest::error( 'if_required', __( 'Enter your college or university.', 'internfeel' ), 400, 'college' );
@@ -201,5 +223,33 @@ final class Profile {
 		$value = $input[ $key ] ?? '';
 
 		return is_scalar( $value ) ? mb_substr( sanitize_text_field( str_replace( '\\', '', (string) $value ) ), 0, $length ) : '';
+	}
+
+	/**
+	 * Save the full name and display name only.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $full    Full name (already checked as non-empty).
+	 * @param string $display Display name, or empty to use the full name.
+	 * @return true|\WP_Error
+	 */
+	public static function save_name( int $user_id, string $full, string $display = '' ): true|\WP_Error {
+		$display = '' === $display ? $full : $display;
+		$parts   = explode( ' ', $full, 2 );
+		$result  = wp_update_user(
+			array(
+				'ID'           => $user_id,
+				'first_name'   => $parts[0],
+				'last_name'    => $parts[1] ?? '',
+				'display_name' => $display,
+				'nickname'     => $display,
+			)
+		);
+		if ( is_wp_error( $result ) ) {
+			return Rest::error( 'if_profile_failed', __( 'Your profile could not be saved. Please try again.', 'internfeel' ), 500 );
+		}
+		update_user_meta( $user_id, Fields::PREFIX . 'full_name', $full );
+
+		return true;
 	}
 }

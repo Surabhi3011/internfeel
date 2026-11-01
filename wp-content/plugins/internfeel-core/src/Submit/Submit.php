@@ -86,6 +86,21 @@ final class Submit implements Module {
 	}
 
 	/**
+	 * Experiences show the author's college and course, so a student completes their profile before
+	 * starting a draft or sending one for review. Reading, saving and deleting their own drafts never
+	 * needs it, so nobody is locked out of work already started.
+	 *
+	 * @return true|\WP_Error
+	 */
+	public static function profile_ready(): true|\WP_Error {
+		if ( current_user_can( 'edit_posts' ) || \InternFeel\Auth\Profile::is_complete( get_current_user_id() ) ) {
+			return true;
+		}
+
+		return Rest::error( 'if_profile_incomplete', __( 'Add your college, course and graduation year in Profile on your dashboard first.', 'internfeel' ), 403 );
+	}
+
+	/**
 	 * Only the author may read or change their own draft.
 	 *
 	 * @param \WP_REST_Request $request The request.
@@ -117,6 +132,10 @@ final class Submit implements Module {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function create( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$ready = self::profile_ready();
+		if ( true !== $ready ) {
+			return $ready;
+		}
 		$user_id = get_current_user_id();
 		if ( ! RateLimit::attempt( 'draft', (string) $user_id, self::DRAFT_LIMIT, self::DRAFT_WINDOW ) ) {
 			return Rest::error( 'if_rate_limited', __( 'You have started a lot of drafts in the last hour. Please continue one of them.', 'internfeel' ), 429 );
@@ -136,6 +155,7 @@ final class Submit implements Module {
 		}
 
 		update_post_meta( $post_id, Fields::PREFIX . 'verification_status', 'not_submitted' );
+		update_post_meta( $post_id, Fields::PREFIX . 'story_version', Questions::CURRENT );
 		Form::save( $post_id, $request->get_params() );
 
 		return self::response( $post_id, 201 );
@@ -165,6 +185,11 @@ final class Submit implements Module {
 
 		if ( ! rest_sanitize_boolean( (string) $request->get_param( 'submit' ) ) ) {
 			return self::response( $post_id );
+		}
+
+		$ready = self::profile_ready();
+		if ( true !== $ready ) {
+			return $ready;
 		}
 
 		$valid = Form::validate( $post_id );

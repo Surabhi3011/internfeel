@@ -114,7 +114,8 @@ function if_ads_assets(): void {
 		return;
 	}
 
-	$minor = is_user_logged_in() && '1' === (string) get_user_meta( get_current_user_id(), '_if_is_under_18', true );
+	// Until a signed-in student answers the under-18 question, treat them as under 18 (the safe default).
+	$minor = is_user_logged_in() && '0' !== (string) get_user_meta( get_current_user_id(), '_if_is_under_18', true );
 
 	wp_enqueue_script_module( 'internfeel-consent', get_theme_file_uri( 'assets/js/consent.js' ), array(), IF_THEME_VERSION );
 	add_action(

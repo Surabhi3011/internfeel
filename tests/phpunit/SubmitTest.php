@@ -27,6 +27,10 @@ class SubmitTest extends WP_UnitTestCase {
 			Fields::register_meta();
 		}
 		$this->student = self::factory()->user->create( array( 'role' => Roles::STUDENT ) );
+		// Submitting needs a complete profile (college and course appear on the experience).
+		foreach ( array( 'full_name' => 'Priya Sharma', 'college' => 'IIT Bombay', 'course' => 'BTech', 'graduation_year' => 2027, 'is_under_18' => '0' ) as $key => $value ) {
+			update_user_meta( $this->student, '_if_' . $key, $value );
+		}
 		wp_set_current_user( $this->student );
 	}
 
@@ -137,7 +141,8 @@ class SubmitTest extends WP_UnitTestCase {
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( 'pending', $post->post_status );
 		$this->assertSame( 'Summer Research Fellowship at Northwind Labs', $post->post_title );
-		$this->assertStringContainsString( '<h2>What work did you do during the internship?</h2>', $post->post_content );
+		$this->assertStringContainsString( '<h2>What delighted you most about the internship?</h2>', $post->post_content );
+		$this->assertSame( '2', get_post_meta( $id, '_if_story_version', true ), 'New experiences use the current question set.' );
 		$this->assertStringContainsString( '<p>Wrote its firmware.</p>', $post->post_content );
 		$this->assertSame( '77', get_post_meta( $id, '_if_referrer_user_id', true ) );
 
@@ -207,6 +212,26 @@ class SubmitTest extends WP_UnitTestCase {
 		wp_set_current_user( self::factory()->user->create( array( 'role' => Roles::STUDENT ) ) );
 
 		$this->assertSame( 404, rest_do_request( new WP_REST_Request( 'GET', "/internfeel/v1/proof/{$id}/{$proof['file']}" ) )->get_status() );
+	}
+
+	public function test_students_finish_their_profile_before_starting_or_submitting(): void {
+		$draft = $this->draft( self::complete() );
+		delete_user_meta( $this->student, '_if_college' );
+
+		$this->assertSame( 403, $this->call( 'POST', 'experiences' )->get_status(), 'No new drafts.' );
+		$this->assertSame( 403, $this->call( 'PATCH', "experiences/{$draft}", array( 'submit' => true, 'guidelines' => true ) )->get_status(), 'No sending for review.' );
+		$this->assertSame( 200, $this->call( 'PATCH', "experiences/{$draft}", array( 'city' => 'Pune' ) )->get_status(), 'Saving their own draft still works.' );
+		$this->assertSame( 'draft', get_post_status( $draft ) );
+	}
+
+	public function test_older_experiences_keep_the_questions_they_answered(): void {
+		$id = self::factory()->post->create( array( 'post_author' => $this->student ) );
+		update_post_meta( $id, '_if_story', wp_json_encode( array( 'q4' => 'Designed a sensor board.' ) ) );
+
+		$this->assertSame( 1, \InternFeel\Submit\Questions::version( $id ), 'No recorded set means the launch set.' );
+		$this->assertStringContainsString( '<h2>What work did you do during the internship?</h2>', Form::render( $id )['post_content'] );
+		$this->assertCount( 7, \InternFeel\Submit\Questions::all( 1 ) );
+		$this->assertCount( 6, \InternFeel\Submit\Questions::all( 2 ) );
 	}
 
 	private function temp_file( string $contents ): string {

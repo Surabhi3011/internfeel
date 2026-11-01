@@ -89,6 +89,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Migrated view counts | Migrated experiences start at 0 views; there is no historical view data |
 | Display name | Free text the student types; left blank, the full name is shown (no auto-generated "First L."). The full name is always printed on certificates |
 | Newsletter | Sign-up band above the footer on every page, posting to a configurable endpoint (`IF_NEWSLETTER_ENDPOINT`); email service still open (section 10) |
+| Launch migration | Production gets staging's reviewed site: on launch day staging's test data is deleted, then its database, uploads and private files are copied to production and the addresses switched (docs/launch.md). Decided 31 October 2026 |
 | Story questions | Seven standard questions in step 2 of the submission form; the first four are required until Surabhi confirms (section 10) |
 | Certificate verify page | `/verify/{number}` shows the holder's name, published date and status. For an anonymous experience it leaves out the title and organisation, so a certificate number (which runs in sequence) can never link a name to an anonymous post. Confirmed by Surabhi on 30 October 2026 |
 
@@ -276,6 +277,9 @@ gantt
 
 ## 8. Launch checklist
 
+The launch-day steps are in [docs/launch.md](launch.md).
+
+
 - [x] Old site content exported in full (25 October 2026)
 - [x] Full cPanel backup of the old site downloaded and kept offline (25 October 2026)
 - [x] Old site taken offline behind a holding page that returns 503 to search engines; cPanel password changed (25 October 2026)
@@ -283,7 +287,7 @@ gantt
 - [ ] Holding `index.html` and `.htaccess` removed from `public_html` before production WordPress is installed
 - [ ] 217 experiences migrated and reviewed (imported to staging 30 October 2026: 216 imported, 2 skipped by design); every old post URL loads its rebuilt page
 - [ ] Search Console checked for traffic to old category and tag URLs
-- [ ] Sign-in, submit, verify, publish, comment, share, certificate and invite flows pass end-to-end tests
+- [x] Sign-in, submit, verify, publish, comment, certificate and invite flows pass end-to-end tests (`tests/e2e/lifecycle.spec.js`, 1 November 2026); share previews checked by hand
 - [ ] Referral credit appears correctly in all four cases
 - [ ] Admin review queue, verification and moderation log working; both admins have two-step sign-in
 - [ ] Privacy policy, terms of use, content guidelines, cookie consent and ads.txt live

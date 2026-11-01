@@ -216,7 +216,7 @@ The server has no Node.js and the plan has no SSH access. Because the repo is pu
 In cPanel **Git Version Control**, choose **Create**, turn on **Clone a Repository**, and clone `https://github.com/Surabhi3011/internfeel.git` twice:
 
 1. **Staging (day 1):** repository path `repositories/internfeel-staging`, name `internfeel-staging`. After cloning, open **Manage**, set **Checked-Out Branch** to `staging`, and click **Update**.
-2. **Production (day 14):** repository path `repositories/internfeel`, name `internfeel`, branch `main`.
+2. **Production (day 14):** repository path `repositories/internfeel`, name `internfeel`, branch `main`. Clone it before launch day, but deploy it only at step F of [docs/launch.md](launch.md).
 
 If the plan ever gets SSH access, the repo can go private: add a cPanel SSH key as a read-only GitHub deploy key and re-clone over `git@github.com:`.
 

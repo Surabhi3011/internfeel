@@ -2170,3 +2170,35 @@ a.if-chip {
 .if-dash__more-notes {
 	justify-self: start;
 }
+
+/* Anonymous sharing: a small note under Share buttons and a callout on the submit form. */
+.if-anon-note {
+	display: flex;
+	gap: var(--if-space-2, 8px);
+	align-items: center;
+	margin: var(--if-space-2, 8px) 0 0;
+	font-size: 0.875rem;
+	color: var(--if-teal-700);
+}
+
+.if-anon-note .if-icon {
+	flex: none;
+	width: 16px;
+	height: 16px;
+}
+
+.if-anon-callout {
+	margin-top: var(--if-space-4, 16px);
+	padding: var(--if-space-3, 12px) var(--if-space-4, 16px);
+	border-left: 4px solid var(--if-teal-700);
+	border-radius: 8px;
+	background: color-mix(in srgb, var(--if-teal) 10%, transparent);
+}
+
+.if-anon-callout p {
+	margin: 0;
+}
+
+.if-anon-callout p + p {
+	margin-top: var(--if-space-2, 8px);
+}

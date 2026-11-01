@@ -27,7 +27,7 @@ $if_columns = array(
 		__( 'Verified experiences', 'internfeel' ) => '/experiences/?verified=1',
 	),
 	__( 'Contribute', 'internfeel' ) => array(
-		__( 'Submit experience', 'internfeel' )       => '/submit/',
+		__( 'Share your experience', 'internfeel' )   => '/submit/',
 		__( 'Invite friends', 'internfeel' )          => '/dashboard/',
 		__( 'Contributor certificate', 'internfeel' ) => '/about/',
 		__( 'Content guidelines', 'internfeel' )      => '/content-guidelines/',

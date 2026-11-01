@@ -112,7 +112,7 @@ get_header();
 			</div>
 		</div>
 		<a class="if-btn if-btn--primary" href="<?php echo esc_url( Submit::url() ); ?>">
-			<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><?php esc_html_e( 'Add experience', 'internfeel' ); ?>
+			<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><?php esc_html_e( 'Share your experience', 'internfeel' ); ?>
 		</a>
 	</div>
 
@@ -158,6 +158,7 @@ get_header();
 					<div class="if-dash__empty">
 						<p><?php esc_html_e( 'You have not shared an experience yet. It takes about 20 minutes, and your draft saves as you go.', 'internfeel' ); ?></p>
 						<a class="if-btn if-btn--primary if-btn--sm" href="<?php echo esc_url( Submit::url() ); ?>"><?php esc_html_e( 'Share your first experience', 'internfeel' ); ?></a>
+						<p class="if-anon-note"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg><?php esc_html_e( 'You can share anonymously: your name will not appear on the experience.', 'internfeel' ); ?></p>
 					</div>
 				<?php endif; ?>
 

@@ -28,9 +28,9 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByText( 'No', { exact: true } ).click();
 	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
 
-	// Wait until the save has moved us on; signed in, the header shows the notifications bell.
+	// Wait until the save has moved us on; signed in, the header shows the Dashboard link (or the Menu).
 	await expect( page ).not.toHaveURL( /step=profile/ );
-	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
+	await expect( page.getByRole( 'banner' ).locator( 'a.if-header__dashboard:visible, summary[aria-label^="Menu"]:visible' ).first() ).toBeVisible();
 
 	// Students never see wp-admin.
 	await page.goto( '/wp-admin/' );
@@ -47,7 +47,7 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Log in' } ).click();
 	await expect( page ).not.toHaveURL( /\/login\// );
-	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
+	await expect( page.getByRole( 'banner' ).locator( 'a.if-header__dashboard:visible, summary[aria-label^="Menu"]:visible' ).first() ).toBeVisible();
 } );
 
 /**

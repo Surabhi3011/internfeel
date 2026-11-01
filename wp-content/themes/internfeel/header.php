@@ -1,8 +1,8 @@
 <?php
 /**
  * Site header (docs/approved-designs/README.md, "Header and footer"; plan.md 5.3): logo, navigation,
- * a compact search on inner pages, Submit, and either Log in and Sign up or the bell and the avatar
- * menu. Below 1000 px a Menu button holds the navigation and account links.
+ * a compact search on inner pages, Submit, and either Log in and Sign up or Dashboard (with the
+ * unread count) and the avatar menu. Below 1000 px a Menu button holds the navigation and account links.
  *
  * @package InternFeel
  */
@@ -21,10 +21,9 @@ $if_nav = array(
 $if_account = array();
 if ( is_user_logged_in() ) {
 	$if_account = array(
-		home_url( '/dashboard/' )             => __( 'Dashboard', 'internfeel' ),
-		home_url( '/dashboard/#experiences' ) => __( 'My experiences', 'internfeel' ),
-		home_url( '/dashboard/#invites' )     => __( 'Invites', 'internfeel' ),
-		home_url( '/dashboard/#profile' )     => __( 'Profile', 'internfeel' ),
+		home_url( '/dashboard/' )         => __( 'Dashboard', 'internfeel' ),
+		home_url( '/dashboard/#invites' ) => __( 'Invites', 'internfeel' ),
+		home_url( '/dashboard/#profile' ) => __( 'Profile', 'internfeel' ),
 	);
 	if ( current_user_can( 'if_moderate' ) ) {
 		$if_account[ admin_url( 'admin.php?page=internfeel-review' ) ] = __( 'Admin', 'internfeel' );
@@ -78,16 +77,16 @@ $if_home     = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_UR
 
 			<?php if ( is_user_logged_in() ) : ?>
 				<?php
-				$if_bell_label = 0 === $if_unread
-					? __( 'Notifications', 'internfeel' )
-					/* translators: %d: number of unread notifications. */
-					: sprintf( _n( 'Notifications, %d unread', 'Notifications, %d unread', $if_unread, 'internfeel' ), $if_unread );
+				// The unread count sits on the Dashboard link (the bell was dropped as redundant, 1 November 2026).
+				$if_dash_label = 0 === $if_unread
+					? __( 'Dashboard', 'internfeel' )
+					/* translators: %d: number of unread updates. */
+					: sprintf( _n( 'Dashboard, %d new update', 'Dashboard, %d new updates', $if_unread, 'internfeel' ), $if_unread );
 				?>
-				<a class="if-btn if-btn--ghost if-btn--sm if-header__wide if-header__dashboard" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>"<?php echo is_page( 'dashboard' ) ? ' aria-current="page"' : ''; ?>><?php esc_html_e( 'Dashboard', 'internfeel' ); ?></a>
-				<a class="if-bell" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>" aria-label="<?php echo esc_attr( $if_bell_label ); ?>">
-					<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+				<a class="if-btn if-btn--ghost if-btn--sm if-header__wide if-header__dashboard" href="<?php echo esc_url( home_url( '/dashboard/' ) ); ?>" aria-label="<?php echo esc_attr( $if_dash_label ); ?>"<?php echo is_page( 'dashboard' ) ? ' aria-current="page"' : ''; ?>>
+					<?php esc_html_e( 'Dashboard', 'internfeel' ); ?>
 					<?php if ( $if_unread > 0 ) : ?>
-						<span class="if-bell__count" aria-hidden="true"><?php echo esc_html( (string) min( $if_unread, 99 ) ); ?></span>
+						<span class="if-header__count" aria-hidden="true"><?php echo esc_html( (string) min( $if_unread, 99 ) ); ?></span>
 					<?php endif; ?>
 				</a>
 				<details class="if-menu if-header__wide">
@@ -101,8 +100,11 @@ $if_home     = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_UR
 			<?php endif; ?>
 
 			<details class="if-menu if-header__phone">
-				<summary class="if-menu__toggle" aria-label="<?php esc_attr_e( 'Menu', 'internfeel' ); ?>">
+				<summary class="if-menu__toggle" aria-label="<?php echo esc_attr( $if_unread > 0 ? sprintf( /* translators: %d: number of unread updates. */ _n( 'Menu, %d new update', 'Menu, %d new updates', $if_unread, 'internfeel' ), $if_unread ) : __( 'Menu', 'internfeel' ) ); ?>">
 					<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+					<?php if ( $if_unread > 0 ) : ?>
+						<span class="if-header__count if-header__count--dot" aria-hidden="true"><?php echo esc_html( (string) min( $if_unread, 99 ) ); ?></span>
+					<?php endif; ?>
 				</summary>
 				<div class="if-menu__list">
 					<form class="if-search" role="search" method="get" action="<?php echo esc_url( home_url( '/experiences/' ) ); ?>">

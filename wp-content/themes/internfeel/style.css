@@ -2118,3 +2118,33 @@ a.if-chip {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
+
+/* Unread updates on the Dashboard link and, on phones, the Menu button (replaces the bell). */
+.if-header__dashboard {
+	gap: 6px;
+}
+
+.if-header__count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	font: 700 12px/1 var(--font-body);
+	color: var(--if-on-teal);
+	background: var(--if-teal-700);
+	border-radius: var(--if-radius-pill);
+}
+
+.if-menu__toggle {
+	position: relative;
+}
+
+.if-header__count--dot {
+	position: absolute;
+	top: 2px;
+	right: -2px;
+	min-width: 18px;
+	height: 18px;
+	font-size: 11px;
+}

@@ -111,9 +111,12 @@ get_header();
 				</span>
 			</div>
 		</div>
-		<a class="if-btn if-btn--primary" href="<?php echo esc_url( Submit::url() ); ?>">
-			<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><?php esc_html_e( 'Share your experience', 'internfeel' ); ?>
-		</a>
+		<?php // Before the first experience, the empty My experiences card is the one Share button. ?>
+		<?php if ( array() !== $if_items ) : ?>
+			<a class="if-btn if-btn--primary" href="<?php echo esc_url( Submit::url() ); ?>">
+				<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><?php esc_html_e( 'Share your experience', 'internfeel' ); ?>
+			</a>
+		<?php endif; ?>
 	</div>
 
 	<?php if ( ! $if_complete ) : ?>

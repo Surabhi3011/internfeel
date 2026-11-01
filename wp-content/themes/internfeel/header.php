@@ -70,10 +70,13 @@ $if_home     = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_UR
 				<a class="if-btn if-btn--sm if-header__wide" href="<?php echo esc_url( home_url( '/signup/' ) ); ?>"><?php esc_html_e( 'Sign up', 'internfeel' ); ?></a>
 			<?php endif; ?>
 
-			<a class="if-btn if-btn--primary if-btn--sm" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
-				<span class="if-hide-mobile"><?php esc_html_e( 'Share your experience', 'internfeel' ); ?></span>
-				<span class="if-show-mobile"><?php esc_html_e( 'Share', 'internfeel' ); ?></span>
-			</a>
+			<?php // The dashboard and the form have their own Share button, so the header leaves it out there. ?>
+			<?php if ( ! is_page( array( 'dashboard', 'submit' ) ) ) : ?>
+				<a class="if-btn if-btn--primary if-btn--sm" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
+					<span class="if-hide-mobile"><?php esc_html_e( 'Share your experience', 'internfeel' ); ?></span>
+					<span class="if-show-mobile"><?php esc_html_e( 'Share', 'internfeel' ); ?></span>
+				</a>
+			<?php endif; ?>
 
 			<?php if ( is_user_logged_in() ) : ?>
 				<?php

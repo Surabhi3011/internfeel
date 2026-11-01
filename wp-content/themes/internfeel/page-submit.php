@@ -191,7 +191,9 @@ get_header();
 					<div class="if-form__two">
 						<div class="if-field">
 							<label for="if-start-month"><?php esc_html_e( 'Start month', 'internfeel' ); ?> <span class="if-req" aria-hidden="true">*</span></label>
-							<input id="if-start-month" name="start_month" type="month" max="<?php echo esc_attr( gmdate( 'Y-m' ) ); ?>" required value="<?php echo esc_attr( (string) $if_value( 'start_month' ) ); ?>">
+							<span class="if-month" data-placeholder="<?php esc_attr_e( 'Select month and year', 'internfeel' ); ?>">
+								<input id="if-start-month" name="start_month" type="month" max="<?php echo esc_attr( gmdate( 'Y-m' ) ); ?>" required value="<?php echo esc_attr( (string) $if_value( 'start_month' ) ); ?>">
+							</span>
 						</div>
 						<div class="if-field">
 							<label for="if-duration"><?php esc_html_e( 'Duration in weeks', 'internfeel' ); ?> <span class="if-req" aria-hidden="true">*</span></label>

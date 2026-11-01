@@ -29,7 +29,8 @@ if ( if_core_active() && empty( $_GET['id'] ) && ! current_user_can( 'edit_posts
 	<div class="if-container if-join">
 		<section class="if-join__card">
 			<h1 class="heading-1"><?php esc_html_e( 'First, a little about you', 'internfeel' ); ?></h1>
-			<p><?php esc_html_e( 'Your experience shows your college, course and graduation year (your name too, unless you post anonymously). Add them in Profile, then come back here.', 'internfeel' ); ?></p>
+			<p><?php esc_html_e( 'We need your college, course and graduation year for your personal dashboard and your certificate. Add them in Profile, then come back here.', 'internfeel' ); ?></p>
+			<p class="if-anon-note"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg><?php esc_html_e( 'You can still share anonymously: if you do, the experience will not contain your name.', 'internfeel' ); ?></p>
 			<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/dashboard/#profile' ) ); ?>"><?php esc_html_e( 'Complete your profile', 'internfeel' ); ?></a>
 		</section>
 	</div>
@@ -81,6 +82,10 @@ get_header();
 		<a class="small" href="<?php echo esc_url( $if_home ); ?>">‹ <?php esc_html_e( 'Back to your dashboard', 'internfeel' ); ?></a>
 		<h1 class="heading-1 if-submit__title"><?php esc_html_e( 'Share your internship experience', 'internfeel' ); ?></h1>
 		<p><?php esc_html_e( 'Takes about 20 minutes. Your draft saves every 10 seconds, so you can stop and come back.', 'internfeel' ); ?></p>
+		<div class="if-anon-callout">
+			<p><strong><?php esc_html_e( 'You can share anonymously.', 'internfeel' ); ?></strong> <?php esc_html_e( 'Choose it in step 4 and the experience will not contain your name, photo or LinkedIn.', 'internfeel' ); ?></p>
+			<p><?php esc_html_e( 'We still need your profile details for your personal dashboard and certificate. Your college, course and year still show on the experience.', 'internfeel' ); ?></p>
+		</div>
 	</div>
 
 	<?php if ( ! class_exists( Submit::class ) ) : ?>
@@ -286,7 +291,7 @@ get_header();
 							<label><input type="radio" name="is_anonymous" value="0" <?php checked( ! $if_value( 'is_anonymous', false ) ); ?>><span><?php esc_html_e( 'Show my name', 'internfeel' ); ?></span></label>
 							<label><input type="radio" name="is_anonymous" value="1" <?php checked( (bool) $if_value( 'is_anonymous', false ) ); ?>><span><?php esc_html_e( 'Post anonymously', 'internfeel' ); ?></span></label>
 						</div>
-						<span class="if-field__help" id="if-anonymous-help"><?php esc_html_e( 'Posting anonymously hides only your name, photo and LinkedIn. Your college, course, year and the details stay visible.', 'internfeel' ); ?></span>
+						<span class="if-field__help" id="if-anonymous-help"><?php esc_html_e( 'If you post anonymously, the experience will not contain your name, photo or LinkedIn; your profile still powers your personal dashboard. Your college, course, year and the details stay visible.', 'internfeel' ); ?></span>
 					</fieldset>
 
 					<div class="if-field" data-if-proofs>

@@ -71,8 +71,8 @@ $if_home     = untrailingslashit( (string) wp_parse_url( home_url( '/' ), PHP_UR
 			<?php endif; ?>
 
 			<a class="if-btn if-btn--primary if-btn--sm" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>">
-				<span class="if-hide-mobile"><?php esc_html_e( 'Submit experience', 'internfeel' ); ?></span>
-				<span class="if-show-mobile"><?php esc_html_e( 'Submit', 'internfeel' ); ?></span>
+				<span class="if-hide-mobile"><?php esc_html_e( 'Share your experience', 'internfeel' ); ?></span>
+				<span class="if-show-mobile"><?php esc_html_e( 'Share', 'internfeel' ); ?></span>
 			</a>
 
 			<?php if ( is_user_logged_in() ) : ?>

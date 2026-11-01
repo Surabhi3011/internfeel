@@ -2202,3 +2202,41 @@ a.if-chip {
 .if-anon-callout p + p {
 	margin-top: var(--if-space-2, 8px);
 }
+
+/* Segmented radios inside a form field: one line per option, none of the text-input sizing. */
+.if-segment label {
+	display: inline-flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.if-field .if-segment input {
+	min-height: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* The month field shows a placeholder while empty and not being edited. */
+.if-month {
+	position: relative;
+	display: block;
+}
+
+.if-month.is-empty:not(:focus-within)::before {
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	content: attr(data-placeholder);
+	color: var(--if-muted);
+	pointer-events: none;
+	transform: translateY(-50%);
+}
+
+.if-month.is-empty:not(:focus-within) input::-webkit-datetime-edit {
+	color: transparent;
+}
+
+/* A fieldset beside a taller field keeps its rows at their own height instead of stretching. */
+fieldset.if-field {
+	align-content: start;
+}

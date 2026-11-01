@@ -32,6 +32,13 @@ if ( form ) {
 	let savedAt = null;
 	let saving = null;
 
+	// An empty month field shows a placeholder instead of the browser's "---------, ----".
+	const month = form.querySelector( '.if-month' );
+	const syncMonth = () => month?.classList.toggle( 'is-empty', '' === month.querySelector( 'input' ).value );
+	syncMonth();
+	month?.addEventListener( 'input', syncMonth );
+	month?.addEventListener( 'change', syncMonth );
+
 	form.addEventListener( 'input', () => ( dirty = true ) );
 	form.addEventListener( 'change', () => ( dirty = true ) );
 

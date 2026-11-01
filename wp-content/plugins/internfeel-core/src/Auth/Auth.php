@@ -79,7 +79,8 @@ final class Auth implements Module {
 		if ( ! is_user_logged_in() || current_user_can( 'edit_posts' ) || is_feed() || is_robots() ) {
 			return;
 		}
-		if ( is_page( array( 'signup', 'login' ) ) || Profile::is_complete( get_current_user_id() ) ) {
+		// Only the name is required to use the site; the rest of the profile is asked for when needed.
+		if ( is_page( array( 'signup', 'login' ) ) || Profile::has_name( get_current_user_id() ) ) {
 			return;
 		}
 

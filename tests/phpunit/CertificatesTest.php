@@ -207,6 +207,24 @@ class CertificatesTest extends WP_UnitTestCase {
 		unset( $_GET['if_preview'] );
 	}
 
+	public function test_where_you_commented_lists_each_experience_once(): void {
+		$first  = self::factory()->post->create( array( 'post_title' => 'First' ) );
+		$second = self::factory()->post->create( array( 'post_title' => 'Second' ) );
+		foreach ( array( $first, $first, $second ) as $post ) {
+			self::factory()->comment->create(
+				array(
+					'comment_post_ID' => $post,
+					'user_id'         => $this->student,
+				)
+			);
+		}
+
+		$threads = Dashboard::commented_on( $this->student );
+
+		$this->assertEqualsCanonicalizing( array( $first, $second ), array_column( $threads, 'post_id' ) );
+		$this->assertSame( 2, array_column( $threads, 'count', 'post_id' )[ $first ] );
+	}
+
 	public function test_students_delete_only_their_own_drafts(): void {
 		$draft = self::factory()->post->create(
 			array(

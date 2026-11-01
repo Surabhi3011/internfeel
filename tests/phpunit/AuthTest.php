@@ -37,8 +37,8 @@ class AuthTest extends WP_UnitTestCase {
 		return rest_do_request( $request );
 	}
 
-	public function test_signup_creates_a_signed_in_student_and_asks_for_the_profile(): void {
-		$response = $this->post( 'auth/signup', array( 'email' => 'new.student@example.com', 'password' => 'long enough' ) );
+	public function test_signup_creates_a_named_student_and_goes_to_the_dashboard(): void {
+		$response = $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'new.student@example.com', 'password' => 'long enough' ) );
 
 		$this->assertSame( 201, $response->get_status() );
 		$user = get_user_by( 'email', 'new.student@example.com' );
@@ -46,11 +46,21 @@ class AuthTest extends WP_UnitTestCase {
 		$this->assertSame( array( Roles::STUDENT ), array_values( $user->roles ) );
 		$this->assertStringNotContainsString( 'new.student', $user->user_login );
 		$this->assertSame( $user->ID, get_current_user_id() );
-		$this->assertStringContainsString( 'step=profile', $response->get_data()['redirect'] );
+		$this->assertSame( Profile::home_url(), $response->get_data()['redirect'], 'No profile step at sign-up.' );
+		$this->assertSame( 'Priya Sharma', $user->display_name, 'Comments show the name from the start.' );
+		$this->assertTrue( Profile::has_name( $user->ID ) );
+		$this->assertFalse( Profile::is_complete( $user->ID ), 'College and course come later.' );
+	}
+
+	public function test_signup_needs_a_full_name(): void {
+		$response = $this->post( 'auth/signup', array( 'email' => 'noname@example.com', 'password' => 'long enough', 'full_name' => '  ' ) );
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'full_name', $response->get_data()['data']['field'] );
 	}
 
 	public function test_signup_rejects_a_short_password(): void {
-		$response = $this->post( 'auth/signup', array( 'email' => 'short@example.com', 'password' => 'short' ) );
+		$response = $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'short@example.com', 'password' => 'short' ) );
 
 		$this->assertSame( 400, $response->get_status() );
 		$this->assertSame( 'password', $response->get_data()['data']['field'] );
@@ -60,11 +70,11 @@ class AuthTest extends WP_UnitTestCase {
 	public function test_signup_rejects_an_existing_email(): void {
 		self::factory()->user->create( array( 'user_email' => 'taken@example.com' ) );
 
-		$this->assertSame( 409, $this->post( 'auth/signup', array( 'email' => 'taken@example.com', 'password' => 'long enough' ) )->get_status() );
+		$this->assertSame( 409, $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'taken@example.com', 'password' => 'long enough' ) )->get_status() );
 	}
 
 	public function test_signup_rejects_the_honeypot(): void {
-		$response = $this->post( 'auth/signup', array( 'email' => 'bot@example.com', 'password' => 'long enough', 'website' => 'http://spam.example.com' ) );
+		$response = $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'bot@example.com', 'password' => 'long enough', 'website' => 'http://spam.example.com' ) );
 
 		$this->assertSame( 400, $response->get_status() );
 		$this->assertFalse( get_user_by( 'email', 'bot@example.com' ) );
@@ -78,7 +88,7 @@ class AuthTest extends WP_UnitTestCase {
 	}
 
 	public function test_signup_refuses_other_sites(): void {
-		$response = $this->post( 'auth/signup', array( 'email' => 'csrf@example.com', 'password' => 'long enough' ), array( 'origin' => 'https://evil.example.com' ) );
+		$response = $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'csrf@example.com', 'password' => 'long enough' ), array( 'origin' => 'https://evil.example.com' ) );
 
 		$this->assertSame( 403, $response->get_status() );
 	}
@@ -87,11 +97,11 @@ class AuthTest extends WP_UnitTestCase {
 		$limit = static fn(): int => 2;
 		add_filter( 'if_rate_limit', $limit );
 
-		$this->post( 'auth/signup', array( 'email' => 'a@example.com', 'password' => 'long enough' ) );
+		$this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'a@example.com', 'password' => 'long enough' ) );
 		wp_set_current_user( 0 );
-		$this->post( 'auth/signup', array( 'email' => 'b@example.com', 'password' => 'long enough' ) );
+		$this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'b@example.com', 'password' => 'long enough' ) );
 		wp_set_current_user( 0 );
-		$third = $this->post( 'auth/signup', array( 'email' => 'c@example.com', 'password' => 'long enough' ) );
+		$third = $this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'c@example.com', 'password' => 'long enough' ) );
 
 		remove_filter( 'if_rate_limit', $limit );
 		$this->assertSame( 429, $third->get_status() );
@@ -232,7 +242,7 @@ class AuthTest extends WP_UnitTestCase {
 	}
 
 	public function test_a_new_account_starts_with_a_blank_display_name(): void {
-		$this->post( 'auth/signup', array( 'email' => 'fresh@example.com', 'password' => 'long enough' ) );
+		$this->post( 'auth/signup', array( 'full_name' => 'Priya Sharma', 'email' => 'fresh@example.com', 'password' => 'long enough' ) );
 		$user = get_user_by( 'email', 'fresh@example.com' );
 
 		$this->assertSame( '', Profile::get( $user->ID )['display_name'], 'The profile form must not show the placeholder name.' );

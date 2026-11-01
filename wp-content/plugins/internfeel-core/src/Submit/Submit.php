@@ -80,9 +80,17 @@ final class Submit implements Module {
 			return Rest::error( 'if_not_logged_in', __( 'Please log in first.', 'internfeel' ), 401 );
 		}
 
-		return current_user_can( 'if_submit' ) || current_user_can( 'edit_posts' )
+		if ( current_user_can( 'edit_posts' ) ) {
+			return true;
+		}
+		if ( ! current_user_can( 'if_submit' ) ) {
+			return Rest::error( 'if_forbidden', __( 'Your account cannot submit experiences.', 'internfeel' ), 403 );
+		}
+
+		// Experiences show the author's college and course, so the profile must be complete first.
+		return \InternFeel\Auth\Profile::is_complete( get_current_user_id() )
 			? true
-			: Rest::error( 'if_forbidden', __( 'Your account cannot submit experiences.', 'internfeel' ), 403 );
+			: Rest::error( 'if_profile_incomplete', __( 'Add your college, course and graduation year in Profile on your dashboard first.', 'internfeel' ), 403 );
 	}
 
 	/**
@@ -136,6 +144,7 @@ final class Submit implements Module {
 		}
 
 		update_post_meta( $post_id, Fields::PREFIX . 'verification_status', 'not_submitted' );
+		update_post_meta( $post_id, Fields::PREFIX . 'story_version', Questions::CURRENT );
 		Form::save( $post_id, $request->get_params() );
 
 		return self::response( $post_id, 201 );

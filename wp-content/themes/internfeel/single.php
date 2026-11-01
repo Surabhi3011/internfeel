@@ -289,7 +289,7 @@ get_header();
 		<div class="if-exp__story">
 			<?php if ( array() !== $if_story ) : ?>
 				<?php $if_answered = 0; ?>
-				<?php foreach ( Questions::all() as $if_key => $if_question ) : ?>
+				<?php foreach ( Questions::all( Questions::version( $if_id ) ) as $if_key => $if_question ) : ?>
 					<?php if ( isset( $if_story[ $if_key ] ) ) : ?>
 						<section class="if-qa">
 							<h2 class="if-qa__q"><?php echo esc_html( $if_question ); ?></h2>

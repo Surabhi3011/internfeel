@@ -2148,3 +2148,25 @@ a.if-chip {
 	height: 18px;
 	font-size: 11px;
 }
+
+/* ---------- Dashboard: profile reminder, older updates (1 November 2026) ---------- */
+
+.if-dash__reminder {
+	margin: 0;
+	padding: var(--if-space-3) var(--if-space-4);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__reminder a {
+	margin-left: var(--if-space-2);
+	font-weight: 700;
+}
+
+.if-dash__panel > h2 {
+	margin: var(--if-space-2) 0 0;
+}
+
+.if-dash__more-notes {
+	justify-self: start;
+}

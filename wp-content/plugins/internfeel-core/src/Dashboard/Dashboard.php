@@ -212,4 +212,51 @@ final class Dashboard implements Module {
 
 		return is_array( $comments ) ? array_values( array_filter( $comments, static fn( mixed $c ): bool => $c instanceof \WP_Comment ) ) : array();
 	}
+
+	/**
+	 * The experiences a student has commented on, most recent comment first, one entry each.
+	 *
+	 * @param int $user_id Student.
+	 * @param int $limit   How many experiences.
+	 * @return list<array{post_id: int, title: string, link: string, count: int, latest: string, excerpt: string}>
+	 */
+	public static function commented_on( int $user_id, int $limit = 30 ): array {
+		$comments = get_comments(
+			array(
+				'user_id'   => $user_id,
+				'status'    => 'approve',
+				'post_type' => 'post',
+				'number'    => 200,
+				'orderby'   => 'comment_date_gmt',
+				'order'     => 'DESC',
+			)
+		);
+
+		$threads = array();
+		foreach ( is_array( $comments ) ? $comments : array() as $comment ) {
+			if ( ! $comment instanceof \WP_Comment ) {
+				continue;
+			}
+			$post_id = (int) $comment->comment_post_ID;
+			if ( 'publish' !== get_post_status( $post_id ) ) {
+				continue;
+			}
+			if ( ! isset( $threads[ $post_id ] ) ) {
+				if ( count( $threads ) >= $limit ) {
+					continue;
+				}
+				$threads[ $post_id ] = array(
+					'post_id' => $post_id,
+					'title'   => get_the_title( $post_id ),
+					'link'    => (string) get_comment_link( $comment ),
+					'count'   => 0,
+					'latest'  => $comment->comment_date_gmt,
+					'excerpt' => wp_trim_words( $comment->comment_content, 30, '…' ),
+				);
+			}
+			++$threads[ $post_id ]['count'];
+		}
+
+		return array_values( $threads );
+	}
 }

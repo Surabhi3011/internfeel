@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { rejectCookies, signUpStudent } from './helpers.js';
+import { completeProfile, rejectCookies, signUpStudent } from './helpers.js';
 
 // plan.md 5.1 "Submission form" and "Verify your experience": each step validates its required fields,
 // the preview matches the answers, proof uploads privately, and the experience goes to review.
@@ -11,6 +11,7 @@ test.beforeEach( async ( { page } ) => rejectCookies( page ) );
 
 test( 'a student fills in all four steps, adds proof and submits for review', async ( { page }, testInfo ) => {
 	await signUpStudent( page, `submit-${ testInfo.project.name }` );
+	await completeProfile( page );
 	await page.goto( '/submit/' );
 
 	// Step 1 will not move on with required fields missing.
@@ -45,7 +46,7 @@ test( 'a student fills in all four steps, adds proof and submits for review', as
 	for ( const name of [ 'rating_overall', 'rating_learning', 'rating_mentorship', 'rating_culture' ] ) {
 		await page.locator( `input[name="${ name }"][value="5"]` ).check( { force: true } );
 	}
-	await page.getByLabel( 'Advice for students applying' ).fill( 'Make the proposal specific.' );
+	await page.getByLabel( 'Any advice or words of caution for students who want this internship?' ).fill( 'Make the proposal specific.' );
 	await page.getByRole( 'button', { name: 'Next: review' } ).click();
 
 	// Step 4: proof, preview, guidelines, submit.

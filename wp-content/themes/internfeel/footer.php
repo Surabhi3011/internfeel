@@ -28,7 +28,7 @@ $if_columns = array(
 	),
 	__( 'Contribute', 'internfeel' ) => array(
 		__( 'Share your experience', 'internfeel' )   => '/submit/',
-		__( 'Invite friends', 'internfeel' )          => '/dashboard/',
+		__( 'Invite friends', 'internfeel' )          => '/dashboard/#invites',
 		__( 'Contributor certificate', 'internfeel' ) => '/about/',
 		__( 'Content guidelines', 'internfeel' )      => '/content-guidelines/',
 	),

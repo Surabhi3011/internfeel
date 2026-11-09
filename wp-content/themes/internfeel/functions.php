@@ -126,6 +126,22 @@ function if_theme_lean(): void {
 add_action( 'init', 'if_theme_lean' );
 
 /**
+ * WordPress's own search (/?s=) is not used: send it to the experience search, which has the
+ * filters, cards and live results. The search term carries over as ?q=.
+ */
+function if_theme_redirect_search(): void {
+	if ( ! is_search() || is_admin() ) {
+		return;
+	}
+
+	$term = trim( (string) get_search_query( false ) );
+	$url  = home_url( '/experiences/' );
+	wp_safe_redirect( '' === $term ? $url : add_query_arg( 'q', rawurlencode( $term ), $url ), 301 );
+	exit;
+}
+add_action( 'template_redirect', 'if_theme_redirect_search' );
+
+/**
  * Dequeue the block editor's front-end styles, which the classic theme never uses.
  */
 function if_theme_dequeue_block_styles(): void {

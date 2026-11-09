@@ -2240,3 +2240,209 @@ a.if-chip {
 fieldset.if-field {
 	align-content: start;
 }
+
+/* ---------- 404: "You leapt before you peeped" ---------- */
+.if-404 {
+	padding: 40px 0 56px;
+}
+
+.if-404__inner {
+	display: grid;
+	gap: 48px;
+	align-items: center;
+}
+
+.if-404__text {
+	display: grid;
+	gap: 20px;
+}
+
+.if-404__text > * {
+	margin: 0;
+}
+
+.if-404__label {
+	color: var(--if-teal-800);
+}
+
+.if-404__title {
+	font-size: 36px;
+	line-height: 42px;
+	text-wrap: balance;
+}
+
+.if-404__search {
+	display: flex;
+	gap: var(--if-space-2);
+	max-width: 36rem;
+}
+
+.if-404__search .if-search {
+	flex: 1;
+	min-width: 0;
+}
+
+.if-404__types {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-404__types .if-chips {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-404__types .if-chip {
+	text-decoration: none;
+}
+
+.if-404__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+}
+
+/* The card for the internship that never happened, slightly askew, with eyes peeping over its top edge. */
+.if-404__art {
+	position: relative;
+	justify-self: center;
+	width: min(100%, 380px);
+	padding-top: 60px;
+}
+
+.if-404__card {
+	transform: rotate(-2deg);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-404__card:hover {
+	border-color: var(--if-line);
+}
+
+.if-404__eyes {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	z-index: 0;
+	width: 156px;
+	height: 65px;
+	transform: translateX(-50%);
+	overflow: visible;
+}
+
+.if-404__card {
+	position: relative;
+	z-index: 1;
+}
+
+.if-404__brow {
+	fill: none;
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+	stroke-linecap: round;
+}
+
+.if-404__eye {
+	fill: var(--if-surface);
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+}
+
+.if-404__pupil {
+	fill: var(--if-ink);
+}
+
+.if-404__lids {
+	transform-box: fill-box;
+	transform-origin: center bottom;
+}
+
+.if-404__rating {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+}
+
+.if-404__score {
+	flex: none;
+	font: 800 32px/1 var(--font-display);
+	color: var(--if-danger);
+}
+
+.if-404__score span {
+	font-size: 16px;
+	color: var(--if-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.if-404__eyes {
+		animation: if-404-peep 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms both;
+	}
+
+	.if-404__lids {
+		animation: if-404-blink 5s ease-in-out 1.4s infinite;
+	}
+
+	.if-404__pupil {
+		animation: if-404-look 7s ease-in-out 1.8s infinite;
+	}
+}
+
+@keyframes if-404-peep {
+	from {
+		transform: translate(-50%, 60px);
+	}
+	to {
+		transform: translate(-50%, 0);
+	}
+}
+
+@keyframes if-404-blink {
+	0%,
+	92%,
+	100% {
+		transform: scaleY(1);
+	}
+	95% {
+		transform: scaleY(0.1);
+	}
+}
+
+@keyframes if-404-look {
+	0%,
+	30%,
+	100% {
+		transform: translateX(0);
+	}
+	40%,
+	60% {
+		transform: translateX(-8px);
+	}
+	70%,
+	90% {
+		transform: translateX(2px);
+	}
+}
+
+@media (min-width: 900px) {
+	.if-404 {
+		padding: 64px 0 80px;
+	}
+
+	.if-404__inner {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: 56px;
+	}
+
+	.if-404__title {
+		font-size: 48px;
+		line-height: 52px;
+	}
+}
+
+@media (max-width: 480px) {
+	.if-404__search {
+		flex-direction: column;
+	}
+}

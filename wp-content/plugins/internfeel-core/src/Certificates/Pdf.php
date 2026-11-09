@@ -27,6 +27,11 @@ defined( 'ABSPATH' ) || exit;
 final class Pdf {
 
 	/**
+	 * Bump when the logo or mark in assets/img changes, so certificates and share images are redrawn.
+	 */
+	public const LOGO_VERSION = '2';
+
+	/**
 	 * Path of the experience's certificate PDF, rendering it if needed.
 	 *
 	 * @param int $post_id Experience ID.
@@ -44,7 +49,7 @@ final class Pdf {
 		}
 
 		$data = self::data( $post_id );
-		$path = $dir . '/' . $number . '-' . substr( md5( (string) wp_json_encode( $data ) ), 0, 12 ) . '.pdf';
+		$path = $dir . '/' . $number . '-' . substr( md5( (string) wp_json_encode( $data ) . self::LOGO_VERSION ), 0, 12 ) . '.pdf';
 		if ( is_readable( $path ) ) {
 			return $path;
 		}

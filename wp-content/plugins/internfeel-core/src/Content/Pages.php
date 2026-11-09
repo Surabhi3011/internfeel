@@ -123,4 +123,40 @@ final class Pages {
 
 		return $id;
 	}
+
+	/**
+	 * Refresh an existing draft from its content file, but only while it still contains a placeholder
+	 * the file no longer has (nobody has written their own version yet). Published pages and edited
+	 * drafts are never touched.
+	 *
+	 * @param string $slug        Page slug and content file name.
+	 * @param string $placeholder Text that marks the page as untouched.
+	 * @return bool Whether the page was refreshed.
+	 */
+	public static function refresh_draft( string $slug, string $placeholder ): bool {
+		$pages = get_posts(
+			array(
+				'post_type'      => 'page',
+				'name'           => $slug,
+				'post_status'    => 'draft',
+				'posts_per_page' => 1,
+			)
+		);
+		$file  = dirname( __DIR__, 2 ) . '/templates/pages/' . $slug . '.html';
+		if ( array() === $pages || ! is_readable( $file ) || ! str_contains( $pages[0]->post_content, $placeholder ) ) {
+			return false;
+		}
+
+		$updated = wp_update_post(
+			wp_slash(
+				array(
+					'ID'           => $pages[0]->ID,
+					'post_content' => (string) file_get_contents( $file ), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a bundled file.
+				)
+			),
+			true
+		);
+
+		return ! is_wp_error( $updated );
+	}
 }

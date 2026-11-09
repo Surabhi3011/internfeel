@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'IF_THEME_VERSION', '0.2.0' );
+define( 'IF_THEME_VERSION', '0.3.0' );
 
 require_once __DIR__ . '/inc/template-tags.php';
 require_once __DIR__ . '/inc/ads.php';
@@ -93,7 +93,10 @@ function if_theme_favicon(): void {
 	if ( has_site_icon() ) {
 		return;
 	}
-	printf( '<link rel="icon" href="%s" type="image/png">' . "\n", esc_url( get_theme_file_uri( 'assets/img/if-mark.png' ) ) );
+	$icon = static fn( string $file ): string => esc_url( add_query_arg( 'ver', IF_THEME_VERSION, get_theme_file_uri( 'assets/img/' . $file ) ) );
+	printf( '<link rel="icon" href="%s" sizes="32x32" type="image/png">' . "\n", $icon( 'if-icon-32.png' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by $icon.
+	printf( '<link rel="icon" href="%s" sizes="512x512" type="image/png">' . "\n", $icon( 'if-mark.png' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by $icon.
+	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", $icon( 'if-icon-180.png' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by $icon.
 }
 add_action( 'wp_head', 'if_theme_favicon' );
 
@@ -121,6 +124,22 @@ function if_theme_lean(): void {
 	remove_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
 }
 add_action( 'init', 'if_theme_lean' );
+
+/**
+ * WordPress's own search (/?s=) is not used: send it to the experience search, which has the
+ * filters, cards and live results. The search term carries over as ?q=.
+ */
+function if_theme_redirect_search(): void {
+	if ( ! is_search() || is_admin() ) {
+		return;
+	}
+
+	$term = trim( (string) get_search_query( false ) );
+	$url  = home_url( '/experiences/' );
+	wp_safe_redirect( '' === $term ? $url : add_query_arg( 'q', rawurlencode( $term ), $url ), 301 );
+	exit;
+}
+add_action( 'template_redirect', 'if_theme_redirect_search' );
 
 /**
  * Dequeue the block editor's front-end styles, which the classic theme never uses.

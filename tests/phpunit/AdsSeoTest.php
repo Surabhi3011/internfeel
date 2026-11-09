@@ -88,13 +88,44 @@ class AdsSeoTest extends WP_UnitTestCase {
 		$this->assertFalse( apply_filters( 'wp_sitemaps_add_provider', 'users-provider', 'users' ) );
 	}
 
+	public function test_the_about_draft_takes_the_new_text_only_while_untouched(): void {
+		$about = get_posts(
+			array(
+				'post_type'   => 'page',
+				'name'        => 'about',
+				'post_status' => 'draft',
+			)
+		)[0];
+		$this->assertStringContainsString( 'InternFeel began in 2012', $about->post_content );
+
+		// A draft still holding the old placeholder is refreshed; an edited one is left alone.
+		wp_update_post(
+			array(
+				'ID'           => $about->ID,
+				'post_content' => '[TO CONFIRM: Surabhi to rewrite this]',
+			)
+		);
+		$this->assertTrue( Pages::refresh_draft( 'about', 'TO CONFIRM: Surabhi to rewrite' ) );
+		$this->assertStringContainsString( 'InternFeel began in 2012', get_post( $about->ID )->post_content );
+
+		wp_update_post(
+			array(
+				'ID'           => $about->ID,
+				'post_content' => 'Our own words',
+			)
+		);
+		$this->assertFalse( Pages::refresh_draft( 'about', 'TO CONFIRM: Surabhi to rewrite' ) );
+		$this->assertSame( 'Our own words', get_post( $about->ID )->post_content );
+	}
+
 	public function test_legal_pages_start_as_drafts_and_are_never_overwritten(): void {
 		$id   = Pages::draft( 'privacy-policy', 'Privacy policy', 'template-legal.php' );
 		$post = get_post( $id );
 
 		$this->assertSame( 'draft', $post->post_status );
 		$this->assertSame( 'template-legal.php', get_page_template_slug( $id ) );
-		$this->assertStringContainsString( 'TO CONFIRM', $post->post_content );
+		$this->assertStringContainsString( 'What we collect', $post->post_content );
+		$this->assertStringNotContainsString( 'TO CONFIRM', $post->post_content );
 
 		wp_update_post(
 			array(

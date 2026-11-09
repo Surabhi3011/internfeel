@@ -3,7 +3,7 @@ Theme Name:        InternFeel
 Theme URI:         https://internfeel.com
 Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
 Author:            InternFeel
-Version:           0.2.0
+Version:           0.3.0
 Requires at least: 7.1
 Tested up to:      7.1
 Requires PHP:      8.3
@@ -1459,9 +1459,12 @@ fieldset.if-field legend {
 .if-comments {
 	display: grid;
 	gap: var(--if-space-6);
-	max-width: calc(var(--if-reading) + 2 * var(--if-space-4));
-	margin-inline: 0;
 	padding-top: 56px;
+}
+
+/* Centred with the page like every section, but the text stays at reading width. */
+.if-comments > * {
+	max-width: var(--if-reading);
 }
 
 .if-comments h2 {
@@ -1985,8 +1988,10 @@ a.if-chip {
 .if-legal {
 	display: grid;
 	gap: var(--if-space-3);
-	max-width: calc(var(--if-reading) + 2 * var(--if-space-4));
-	margin-inline: 0;
+}
+
+.if-legal > * {
+	max-width: var(--if-reading);
 }
 
 .if-legal h1,
@@ -2007,4 +2012,437 @@ a.if-chip {
 .if-legal__body p,
 .if-legal__body ul {
 	margin: 0 0 var(--if-space-4);
+}
+
+/* ---------- Header: the logo never shrinks; Dashboard link (UI review, 1 November 2026) ---------- */
+
+/* Inner pages add the search box; without this the flex row squeezed the logo narrower. */
+.if-header__logo {
+	flex: none;
+}
+
+.if-header__logo img {
+	width: auto;
+	max-width: none;
+	height: 36px;
+}
+
+.if-header__dashboard {
+	white-space: nowrap;
+}
+
+/* Signed in, the header holds navigation, search, Submit, Dashboard, the bell and the avatar: the
+   search gives way first, so nothing runs off the edge. */
+.if-header__actions {
+	min-width: 0;
+}
+
+.if-header__search {
+	flex: 0 1 240px;
+	min-width: 120px;
+	width: auto;
+}
+
+.if-header__actions > :not(.if-header__search) {
+	flex: none;
+}
+
+@media (max-width: 1180px) {
+	.if-header__inner {
+		gap: var(--if-space-4);
+	}
+
+	/* No room for it next to everything else; search stays on the home page, /experiences/ and,
+	   below 1000 px, in the Menu. */
+	.if-header__search {
+		display: none;
+	}
+
+	.if-nav a {
+		padding-inline: 10px;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-header__logo img {
+		height: 28px;
+	}
+}
+
+/* ---------- Filters: one height, one border, equal widths (UI review, 1 November 2026) ---------- */
+
+.if-browse__row:not(.if-browse__types) {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--if-space-2);
+}
+
+.if-browse__search {
+	grid-column: span 2;
+	max-width: none;
+}
+
+.if-browse__row .if-search,
+.if-browse__row .if-chip {
+	box-sizing: border-box;
+	min-width: 0;
+	height: 44px;
+	min-height: 44px;
+	border-width: 1px;
+	font-size: 15px;
+}
+
+.if-browse__row .if-search {
+	padding: 0 6px 0 16px;
+}
+
+.if-browse__row .if-chip--select select {
+	width: 100%;
+	min-height: 42px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.if-browse__row .if-chip--toggle {
+	justify-content: center;
+}
+
+.if-browse__types .if-chip {
+	min-height: 40px;
+	font-size: 15px;
+}
+
+@media (max-width: 900px) {
+	.if-browse__row:not(.if-browse__types) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* Unread updates on the Dashboard link and, on phones, the Menu button (replaces the bell). */
+.if-header__dashboard {
+	gap: 6px;
+}
+
+.if-header__count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	font: 700 12px/1 var(--font-body);
+	color: var(--if-on-teal);
+	background: var(--if-teal-700);
+	border-radius: var(--if-radius-pill);
+}
+
+.if-menu__toggle {
+	position: relative;
+}
+
+.if-header__count--dot {
+	position: absolute;
+	top: 2px;
+	right: -2px;
+	min-width: 18px;
+	height: 18px;
+	font-size: 11px;
+}
+
+/* ---------- Dashboard: profile reminder, older updates (1 November 2026) ---------- */
+
+.if-dash__reminder {
+	margin: 0;
+	padding: var(--if-space-3) var(--if-space-4);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__reminder a {
+	margin-left: var(--if-space-2);
+	font-weight: 700;
+}
+
+.if-dash__panel > h2 {
+	margin: var(--if-space-2) 0 0;
+}
+
+.if-dash__more-notes {
+	justify-self: start;
+}
+
+/* Anonymous sharing: a small note under Share buttons and a callout on the submit form. */
+.if-anon-note {
+	display: flex;
+	gap: var(--if-space-2, 8px);
+	align-items: center;
+	margin: var(--if-space-2, 8px) 0 0;
+	font-size: 0.875rem;
+	color: var(--if-teal-700);
+}
+
+.if-anon-note .if-icon {
+	flex: none;
+	width: 16px;
+	height: 16px;
+}
+
+.if-anon-callout {
+	margin-top: var(--if-space-4, 16px);
+	padding: var(--if-space-3, 12px) var(--if-space-4, 16px);
+	border-left: 4px solid var(--if-teal-700);
+	border-radius: 8px;
+	background: color-mix(in srgb, var(--if-teal) 10%, transparent);
+}
+
+.if-anon-callout p {
+	margin: 0;
+}
+
+.if-anon-callout p + p {
+	margin-top: var(--if-space-2, 8px);
+}
+
+/* Segmented radios inside a form field: one line per option, none of the text-input sizing. */
+.if-segment label {
+	display: inline-flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.if-field .if-segment input {
+	min-height: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* The month field shows a placeholder while empty and not being edited. */
+.if-month {
+	position: relative;
+	display: block;
+}
+
+.if-month.is-empty:not(:focus-within)::before {
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	content: attr(data-placeholder);
+	color: var(--if-muted);
+	pointer-events: none;
+	transform: translateY(-50%);
+}
+
+.if-month.is-empty:not(:focus-within) input::-webkit-datetime-edit {
+	color: transparent;
+}
+
+/* A fieldset beside a taller field keeps its rows at their own height instead of stretching. */
+fieldset.if-field {
+	align-content: start;
+}
+
+/* ---------- 404: "You leapt before you peeped" ---------- */
+.if-404 {
+	padding: 40px 0 56px;
+}
+
+.if-404__inner {
+	display: grid;
+	gap: 48px;
+	align-items: center;
+}
+
+.if-404__text {
+	display: grid;
+	gap: 20px;
+}
+
+.if-404__text > * {
+	margin: 0;
+}
+
+.if-404__label {
+	color: var(--if-teal-800);
+}
+
+.if-404__title {
+	font-size: 36px;
+	line-height: 42px;
+	text-wrap: balance;
+}
+
+.if-404__search {
+	display: flex;
+	gap: var(--if-space-2);
+	max-width: 36rem;
+}
+
+.if-404__search .if-search {
+	flex: 1;
+	min-width: 0;
+}
+
+.if-404__types {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-404__types .if-chips {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-404__types .if-chip {
+	text-decoration: none;
+}
+
+.if-404__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+}
+
+/* The card for the internship that never happened, slightly askew, with eyes peeping over its top edge. */
+.if-404__art {
+	position: relative;
+	justify-self: center;
+	width: min(100%, 380px);
+	padding-top: 60px;
+}
+
+.if-404__card {
+	transform: rotate(-2deg);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-404__card:hover {
+	border-color: var(--if-line);
+}
+
+.if-404__eyes {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	z-index: 0;
+	width: 156px;
+	height: 65px;
+	transform: translateX(-50%);
+	overflow: visible;
+}
+
+.if-404__card {
+	position: relative;
+	z-index: 1;
+}
+
+.if-404__brow {
+	fill: none;
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+	stroke-linecap: round;
+}
+
+.if-404__eye {
+	fill: var(--if-surface);
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+}
+
+.if-404__pupil {
+	fill: var(--if-ink);
+}
+
+.if-404__lids {
+	transform-box: fill-box;
+	transform-origin: center bottom;
+}
+
+.if-404__rating {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+}
+
+.if-404__score {
+	flex: none;
+	font: 800 32px/1 var(--font-display);
+	color: var(--if-danger);
+}
+
+.if-404__score span {
+	font-size: 16px;
+	color: var(--if-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.if-404__eyes {
+		animation: if-404-peep 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms both;
+	}
+
+	.if-404__lids {
+		animation: if-404-blink 5s ease-in-out 1.4s infinite;
+	}
+
+	.if-404__pupil {
+		animation: if-404-look 7s ease-in-out 1.8s infinite;
+	}
+}
+
+@keyframes if-404-peep {
+	from {
+		transform: translate(-50%, 60px);
+	}
+	to {
+		transform: translate(-50%, 0);
+	}
+}
+
+@keyframes if-404-blink {
+	0%,
+	92%,
+	100% {
+		transform: scaleY(1);
+	}
+	95% {
+		transform: scaleY(0.1);
+	}
+}
+
+@keyframes if-404-look {
+	0%,
+	30%,
+	100% {
+		transform: translateX(0);
+	}
+	40%,
+	60% {
+		transform: translateX(-8px);
+	}
+	70%,
+	90% {
+		transform: translateX(2px);
+	}
+}
+
+@media (min-width: 900px) {
+	.if-404 {
+		padding: 64px 0 80px;
+	}
+
+	.if-404__inner {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: 56px;
+	}
+
+	.if-404__title {
+		font-size: 48px;
+		line-height: 52px;
+	}
+}
+
+@media (max-width: 480px) {
+	.if-404__search {
+		flex-direction: column;
+	}
 }

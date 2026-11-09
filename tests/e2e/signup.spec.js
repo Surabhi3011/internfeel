@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { rejectCookies } from './helpers.js';
 
-// plan.md 5.1 "Done when": a new student signs up and completes their profile; sign-out works; the
-// same account can log back in. Each project (desktop, mobile) uses its own address.
+// plan.md 5.1 "Done when": a new student signs up (name, email, password only) and lands on the
+// dashboard; sign-out works; the same account can log back in. Each project (desktop, mobile) uses its
+// own address.
 
 test.beforeEach( async ( { page } ) => rejectCookies( page ) );
 
-test( 'a student signs up, completes their profile, logs out and logs back in', async ( { page }, testInfo ) => {
+test( 'a student signs up with just a name, email and password, logs out and logs back in', async ( { page }, testInfo ) => {
 	const email = `student.${ testInfo.project.name }.${ Date.now() }@example.com`;
 	const password = 'a long enough password';
 
@@ -14,23 +15,15 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByLabel( 'Email' ).fill( email );
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Create account' } ).click();
-
-	await expect( page.getByRole( 'heading', { name: 'Tell us a little about you' } ) ).toBeVisible();
-	await expect( page ).toHaveURL( /step=profile/ );
-
-	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
 	await expect( page.getByLabel( 'Full name' ) ).toBeFocused();
 
 	await page.getByLabel( 'Full name' ).fill( 'Priya Sharma' );
-	await page.getByLabel( 'College' ).fill( 'IIT Bombay' );
-	await page.getByLabel( 'Course' ).fill( 'BTech Computer Science' );
-	await page.getByLabel( 'Graduation year' ).fill( '2027' );
-	await page.getByText( 'No', { exact: true } ).click();
-	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
+	await page.getByRole( 'button', { name: 'Create account' } ).click();
 
-	// Wait until the save has moved us on; signed in, the header shows the notifications bell.
-	await expect( page ).not.toHaveURL( /step=profile/ );
-	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
+	// No profile step: straight to the dashboard, which asks for the rest of the profile only as a reminder.
+	await expect( page ).toHaveURL( /\/dashboard\//, { timeout: 60_000 } );
+	await expect( page.locator( '.if-dash__reminder' ) ).toBeVisible();
+	await expect( page.getByRole( 'banner' ).locator( 'a.if-header__dashboard:visible, summary[aria-label^="Menu"]:visible' ).first() ).toBeVisible();
 
 	// Students never see wp-admin.
 	await page.goto( '/wp-admin/' );
@@ -47,7 +40,7 @@ test( 'a student signs up, completes their profile, logs out and logs back in', 
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Log in' } ).click();
 	await expect( page ).not.toHaveURL( /\/login\// );
-	await expect( page.getByRole( 'link', { name: /^Notifications/ } ) ).toBeVisible();
+	await expect( page.getByRole( 'banner' ).locator( 'a.if-header__dashboard:visible, summary[aria-label^="Menu"]:visible' ).first() ).toBeVisible();
 } );
 
 /**

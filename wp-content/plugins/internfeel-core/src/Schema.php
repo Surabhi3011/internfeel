@@ -61,7 +61,7 @@ final class Schema {
 	private static function steps(): array {
 		return array(
 			// Day 2: data model, roles, archive user, sign-up and log-in pages, /slug/ permalinks.
-			1 => static function (): void {
+			1  => static function (): void {
 				self::create_moderation_log();
 				Roles::install();
 				Pages::ensure( 'signup', __( 'Sign up', 'internfeel' ) );
@@ -69,39 +69,48 @@ final class Schema {
 				self::use_slug_permalinks();
 			},
 			// Day 4: the submission form's page.
-			2 => static function (): void {
+			2  => static function (): void {
 				Pages::ensure( 'submit', __( 'Share your internship experience', 'internfeel' ) );
 			},
 			// Day 6: the dashboard page, and the /verify/{number}/ rewrite rules for certificates.
-			3 => static function (): void {
+			3  => static function (): void {
 				Pages::ensure( 'dashboard', __( 'Your dashboard', 'internfeel' ) );
 				Certificates::rewrite();
 				flush_rewrite_rules( false );
 			},
 			// Day 7: the experiences archive and search results page.
-			4 => static function (): void {
+			4  => static function (): void {
 				Pages::ensure( 'experiences', __( 'Internship experiences', 'internfeel' ) );
 			},
 			// Day 8: the invite landing page.
-			5 => static function (): void {
+			5  => static function (): void {
 				Pages::ensure( 'join', __( 'Join InternFeel', 'internfeel' ) );
 			},
 			// Day 9: the /lists/ archive and listicle pages need the rewrite rules refreshed once.
-			6 => static function (): void {
+			6  => static function (): void {
 				flush_rewrite_rules( false );
 			},
 			// Day 10: /org/, the index of organisations and their programmes.
-			7 => static function (): void {
+			7  => static function (): void {
 				Pages::ensure( 'org', __( 'Programmes', 'internfeel' ) );
 			},
 			// Day 11: legal and company pages as drafts, for an admin to complete and publish.
-			8 => static function (): void {
+			8  => static function (): void {
 				Pages::draft( 'privacy-policy', __( 'Privacy policy', 'internfeel' ), 'template-legal.php' );
 				Pages::draft( 'terms', __( 'Terms of use', 'internfeel' ), 'template-legal.php' );
 				Pages::draft( 'content-guidelines', __( 'Content guidelines', 'internfeel' ), 'template-legal.php' );
 				Pages::draft( 'ad-guidelines', __( 'Ad guidelines', 'internfeel' ), 'template-legal.php' );
 				Pages::draft( 'about', __( 'About InternFeel', 'internfeel' ) );
 				Pages::draft( 'contact', __( 'Contact', 'internfeel' ) );
+			},
+			// The About page's own text (31 October 2026), into the draft made by step 8 if unedited.
+			9  => static function (): void {
+				Pages::refresh_draft( 'about', 'TO CONFIRM: Surabhi to rewrite' );
+			},
+			// The privacy policy and terms without [TO CONFIRM] notes (9 November 2026), into drafts not yet edited.
+			10 => static function (): void {
+				Pages::refresh_draft( 'privacy-policy', '[TO CONFIRM' );
+				Pages::refresh_draft( 'terms', '[TO CONFIRM' );
 			},
 		);
 	}

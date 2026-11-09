@@ -3,7 +3,8 @@
  * Sign-up page (/signup/), from docs/approved-designs/signup.html.
  *
  * Signed out: "Create your account" (email and password, or Google).
- * Signed in with an incomplete profile: "Tell us a little about you" (first sign-in only).
+ * Signed in without a name (a Google sign-up that gave none): "What should we call you?". The rest of
+ * the profile is filled in later, from Profile on the dashboard.
  *
  * @package InternFeel
  */
@@ -12,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 if_no_page_cache();
 
-$if_complete = is_user_logged_in() && if_core_active() && \InternFeel\Auth\Profile::is_complete( get_current_user_id() );
+$if_complete = is_user_logged_in() && if_core_active() && \InternFeel\Auth\Profile::has_name( get_current_user_id() );
 if ( $if_complete || current_user_can( 'edit_posts' ) ) {
 	wp_safe_redirect( if_core_active() ? \InternFeel\Auth\Profile::home_url() : home_url( '/' ) );
 	exit;
@@ -42,6 +43,12 @@ get_header();
 				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/auth/signup' ) ); ?>">
 					<input type="hidden" name="_if_nonce" value="<?php echo esc_attr( wp_create_nonce( 'if_auth' ) ); ?>">
 					<?php if_honeypot_field(); ?>
+
+					<div class="if-field">
+						<label for="if-signup-name"><?php esc_html_e( 'Full name', 'internfeel' ); ?></label>
+						<input type="text" id="if-signup-name" name="full_name" autocomplete="name" maxlength="120" required aria-describedby="if-signup-name-help">
+						<span class="if-field__help" id="if-signup-name-help"><?php esc_html_e( 'Shown on your comments and printed on your certificates.', 'internfeel' ); ?></span>
+					</div>
 
 					<div class="if-field">
 						<label for="if-email"><?php esc_html_e( 'Email', 'internfeel' ); ?></label>
@@ -75,12 +82,19 @@ get_header();
 		<?php else : ?>
 			<section class="if-auth__card" aria-labelledby="if-profile-title">
 				<div class="if-auth__head">
-					<span class="label"><?php esc_html_e( 'Step 2, first sign-in only', 'internfeel' ); ?></span>
-					<h1 id="if-profile-title" class="heading-2"><?php esc_html_e( 'Tell us a little about you', 'internfeel' ); ?></h1>
-					<p class="small if-auth__fine-print"><?php esc_html_e( 'You can change this later in Profile.', 'internfeel' ); ?></p>
+					<h1 id="if-profile-title" class="heading-2"><?php esc_html_e( 'What should we call you?', 'internfeel' ); ?></h1>
+					<p class="small if-auth__fine-print"><?php esc_html_e( 'You can add your college and course later, from Profile on your dashboard.', 'internfeel' ); ?></p>
 				</div>
-
-				<?php get_template_part( 'template-parts/profile-form', null, array( 'submit' => __( 'Go to your dashboard', 'internfeel' ) ) ); ?>
+				<form class="if-form" method="post" data-if-rest="<?php echo esc_url( rest_url( 'internfeel/v1/me' ) ); ?>" data-if-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>">
+					<input type="hidden" name="name_only" value="1">
+					<div class="if-field">
+						<label for="if-full-name"><?php esc_html_e( 'Full name', 'internfeel' ); ?></label>
+						<input type="text" id="if-full-name" name="full_name" autocomplete="name" maxlength="120" required aria-describedby="if-full-name-help">
+						<span class="if-field__help" id="if-full-name-help"><?php esc_html_e( 'Shown on your comments and printed on your certificates.', 'internfeel' ); ?></span>
+					</div>
+					<p class="if-field__error if-form__status" role="alert" data-if-status></p>
+					<button type="submit" class="if-btn if-btn--primary if-btn--block"><?php esc_html_e( 'Go to your dashboard', 'internfeel' ); ?></button>
+				</form>
 			</section>
 		<?php endif; ?>
 	</div>

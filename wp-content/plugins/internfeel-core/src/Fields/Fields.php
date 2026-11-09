@@ -205,6 +205,13 @@ final class Fields implements Module {
 			'public' => false,
 			'format' => 'textarea',
 		),
+		// Which set of story questions the experience answered (Submit\Questions); 1 when unset.
+		'story_version'           => array(
+			'type'   => 'integer',
+			'public' => false,
+			'min'    => 0,
+			'max'    => 9,
+		),
 		'submitted_at'            => array(
 			'type'   => 'string',
 			'public' => false,

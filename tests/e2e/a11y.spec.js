@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { rejectCookies, signUpStudent } from './helpers.js';
+import { completeProfile, rejectCookies, signUpStudent } from './helpers.js';
 
 // WCAG 2.2 AA checks with axe (docs/development.md section 7) on every public page type. The
 // experience page uses WordPress's sample post, which exists on a fresh install.
@@ -43,6 +43,7 @@ for ( const { name, path } of pages ) {
 test( 'submission form has no serious accessibility issues @a11y', async ( { page }, testInfo ) => {
 	await rejectCookies( page );
 	await signUpStudent( page, `a11y-${ testInfo.project.name }` );
+	await completeProfile( page );
 	await page.goto( '/submit/' );
 
 	const found = await serious( page );

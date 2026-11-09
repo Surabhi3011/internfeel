@@ -79,9 +79,10 @@ get_header();
 				</p>
 			<?php endif; ?>
 			<div class="if-hero__actions">
-				<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your experience', 'internfeel' ); ?></a>
+				<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Share your experience', 'internfeel' ); ?></a>
 				<a class="if-btn if-btn--ghost" href="#how"><?php esc_html_e( 'How it works', 'internfeel' ); ?></a>
 			</div>
+			<p class="if-anon-note"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg><?php esc_html_e( 'You can share anonymously: your name will not appear on the experience.', 'internfeel' ); ?></p>
 		</div>
 		<div class="if-hero__art" aria-hidden="true">
 			<svg viewBox="0 0 560 440" preserveAspectRatio="xMidYMid slice" focusable="false">
@@ -176,7 +177,8 @@ get_template_part(
 				<p class="if-muted"><?php esc_html_e( 'Every published experience earns a certificate of contribution that anyone can verify.', 'internfeel' ); ?></p>
 			</div>
 		</div>
-		<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Submit your experience', 'internfeel' ); ?></a>
+		<a class="if-btn if-btn--primary" href="<?php echo esc_url( home_url( '/submit/' ) ); ?>"><?php esc_html_e( 'Share your experience', 'internfeel' ); ?></a>
+		<p class="if-anon-note"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg><?php esc_html_e( 'You can share anonymously: your name will not appear on the experience.', 'internfeel' ); ?></p>
 	</section>
 
 	<?php if ( $if_credits > 0 ) : ?>

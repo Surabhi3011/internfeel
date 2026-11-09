@@ -23,20 +23,31 @@ export async function signUpStudent( page, label ) {
 	const password = 'a long enough password';
 
 	await page.goto( '/signup/' );
+	await page.getByLabel( 'Full name' ).fill( 'Priya Sharma' );
 	await page.getByLabel( 'Email' ).fill( email );
 	await page.getByLabel( 'Password' ).fill( password );
 	await page.getByRole( 'button', { name: 'Create account' } ).click();
-	await expect( page ).toHaveURL( /step=profile/ );
-
-	await page.getByLabel( 'Full name' ).fill( 'Priya Sharma' );
-	await page.getByLabel( 'College' ).fill( 'IIT Bombay' );
-	await page.getByLabel( 'Course' ).fill( 'BTech Computer Science' );
-	await page.getByLabel( 'Graduation year' ).fill( '2027' );
-	await page.getByText( 'No', { exact: true } ).click();
-	await page.getByRole( 'button', { name: 'Go to your dashboard' } ).click();
-	await expect( page ).not.toHaveURL( /step=profile/ );
+	// No profile step: straight to the dashboard.
+	await expect( page ).toHaveURL( /\/dashboard\//, { timeout: 60_000 } );
 
 	return { email, password };
+}
+
+/**
+ * Fill in the rest of the profile from the dashboard's Profile tab (needed before submitting).
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+export async function completeProfile( page ) {
+	await page.goto( '/dashboard/#profile' );
+	const panel = page.locator( '#if-panel-profile' );
+	await panel.getByLabel( 'College' ).fill( 'IIT Bombay' );
+	await panel.getByLabel( 'Course' ).fill( 'BTech Computer Science' );
+	await panel.getByLabel( 'Graduation year' ).fill( '2027' );
+	await panel.getByText( 'No', { exact: true } ).click();
+	await panel.getByRole( 'button', { name: /Save|Go to your dashboard/ } ).click();
+	// Saving reloads the dashboard, which is slow the first time on Playground.
+	await expect( page.locator( '.if-dash__reminder' ) ).toHaveCount( 0, { timeout: 60_000 } );
 }
 
 // A 1×1 PNG, so a proof upload passes the real-type check.
@@ -50,6 +61,7 @@ export const PNG = Buffer.from( 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAA
  * @return {Promise<string>} The experience's title.
  */
 export async function submitExperience( page, organisation ) {
+	await completeProfile( page );
 	await page.goto( '/submit/' );
 	await page.getByLabel( 'Organisation' ).fill( organisation );
 	await page.getByLabel( 'Programme or role' ).fill( 'Summer Research Fellowship' );

@@ -145,11 +145,21 @@ if ( root ) {
 			return;
 		}
 
-		const all = event.target.closest( '[data-if-all-notes]' );
-		if ( all ) {
-			root.querySelectorAll( '[data-if-notes] li[hidden]' ).forEach( ( item ) => ( item.hidden = false ) );
-			all.setAttribute( 'aria-expanded', 'true' );
-			all.hidden = true;
+		// Updates show five at first, then ten more per click.
+		const more = event.target.closest( '[data-if-more-notes]' );
+		if ( more ) {
+			const hidden = [ ...root.querySelectorAll( '[data-if-notes] li[hidden]' ) ];
+			hidden.slice( 0, 10 ).forEach( ( item ) => ( item.hidden = false ) );
+			hidden[ 0 ]?.querySelector( 'a, p' )?.setAttribute( 'tabindex', '-1' );
+			hidden[ 0 ]?.querySelector( 'a, p' )?.focus();
+			more.hidden = hidden.length <= 10;
+			return;
+		}
+
+		const open = event.target.closest( '[data-if-open-tab]' );
+		if ( open ) {
+			event.preventDefault();
+			document.getElementById( 'if-tab-' + open.dataset.ifOpenTab )?.click();
 		}
 	} );
 

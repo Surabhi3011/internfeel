@@ -1,9 +1,8 @@
 # THIS REPO IS PUBLIC. Private details, the old site's export and backups are never committed
 # (development.md section 1).
 docs-private/
-tools/export/*.zip
-tools/export/*.tar
-tools/export/internfeel-content-export.md
+# The old site's export, in any form (zips, tars and unpacked folders hold contributors' emails)
+tools/export/
 old-site-backup/
 holding-page/
 

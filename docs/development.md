@@ -204,7 +204,7 @@ Staging went live on day 1 (WordPress 7.1.3 on PHP 8.5, the InternFeel theme and
 
 1. **CookieYes** (free plan, Google-certified for AdSense): install it from **Plugins → Add New**, connect it to a free CookieYes account, and turn on the categories **Analytics** and **Advertisement**, plus Google Consent Mode. The theme's `consent.js` loads AdSense only after Advertisement consent and GA4 only after Analytics consent, so neither loads until CookieYes is set up. The footer's **Cookie settings** link reopens the banner.
 2. **Yoast SEO** (free): install it, skip its tracking, and leave its Open Graph and sitemap features on. The theme keeps utility pages (dashboard, submit, sign-in, join) and author pages out of Yoast's sitemap, and Yoast borrows the experience share images. Staging stays noindex through the theme.
-3. **Legal and company pages** were created as **drafts**: Privacy policy, Terms of use, Content guidelines, Ad guidelines, About and Contact. Fill in every **[TO CONFIRM]** (business details from plan.md section 10, item 2), have the privacy policy and terms reviewed, then publish. Legal pages use the **Legal page** template and never show ads.
+3. **Legal and company pages** were created as **drafts**: Privacy policy, Terms of use, Content guidelines, Ad guidelines, About and Contact. They carry no placeholders (9 November 2026), so they can be published as they are; add the business details from plan.md section 10, item 2 and a legal review when ready. Legal pages use the **Legal page** template and never show ads.
 4. **AdSense** (production only): set `IF_ADSENSE_CLIENT` and `IF_ADSENSE_SLOTS` in `wp-config.php`. `/ads.txt` is generated from the client ID, so there is no file to upload. Keep Auto ads off in AdSense.
 
 ## 6. Deployment through cPanel Git Version Control
@@ -386,7 +386,7 @@ Run the import on staging first. Once the check passes, run it on production.
 | --- | --- |
 | Weekly | Wordfence scan results; plugin updates applied; backups present |
 | Monthly | Check Google Drive backup space; review the master list for duplicate organisations |
-| Each quarter | Lighthouse and axe checks; restore test; review admin accounts and two-step sign-in |
+| Each quarter | Lighthouse and axe checks; restore test; review admin accounts |
 | Before 13 May 2027 | Ship the parental-consent step for under-18 students |
 
 ---

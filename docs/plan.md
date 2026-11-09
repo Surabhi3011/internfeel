@@ -89,6 +89,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Migrated view counts | Migrated experiences start at 0 views; there is no historical view data |
 | Display name | Free text the student types; left blank, the full name is shown (no auto-generated "First L."). The full name is always printed on certificates |
 | Newsletter | Sign-up band above the footer on every page, posting to a configurable endpoint (`IF_NEWSLETTER_ENDPOINT`); email service still open (section 10) |
+| Launch migration | Production gets staging's reviewed site: on launch day staging's test data is deleted, then its database, uploads and private files are copied to production and the addresses switched (docs/launch.md). Decided 31 October 2026 |
 | Header, signed in | No bell: the Dashboard link carries the unread count (on phones, the Menu button), and the avatar menu drops My experiences, which duplicated Dashboard. Decided 1 November 2026 |
 | Story questions | Revised 1 November 2026: six questions in step 2 (about yourself; application and selection; the work; what delighted you; what was not so great; how it changed you), each with a hint, and the advice question as the Advice field in step 3. The first four are required until Surabhi confirms (section 10). Experiences written before keep the seven launch questions they answered (`_if_story_version`) |
 | Admin sign-in and legal pages | Decided 9 November 2026: admins do not use two-step sign-in (Wordfence login limits stay on). The privacy policy and terms drafts carry no [TO CONFIRM] notes, so they can be published as they are; the business details and a legal review are added later. Backups (UpdraftPlus) are set up after launch |
@@ -279,6 +280,9 @@ gantt
 
 ## 8. Launch checklist
 
+The launch-day steps are in [docs/launch.md](launch.md).
+
+
 - [x] Old site content exported in full (25 October 2026)
 - [x] Full cPanel backup of the old site downloaded and kept offline (25 October 2026)
 - [x] Old site taken offline behind a holding page that returns 503 to search engines; cPanel password changed (25 October 2026)
@@ -286,7 +290,7 @@ gantt
 - [ ] Holding `index.html` and `.htaccess` removed from `public_html` before production WordPress is installed
 - [ ] 217 experiences migrated and reviewed (imported to staging 30 October 2026: 216 imported, 2 skipped by design); every old post URL loads its rebuilt page
 - [ ] Search Console checked for traffic to old category and tag URLs
-- [ ] Sign-in, submit, verify, publish, comment, share, certificate and invite flows pass end-to-end tests
+- [x] Sign-in, submit, verify, publish, comment, certificate and invite flows pass end-to-end tests (`tests/e2e/lifecycle.spec.js`, 1 November 2026); share previews checked by hand
 - [ ] Referral credit appears correctly in all four cases
 - [ ] Admin review queue, verification and moderation log working
 - [ ] Privacy policy, terms of use, content guidelines, cookie consent and ads.txt live

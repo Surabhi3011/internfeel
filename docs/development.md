@@ -30,7 +30,8 @@ internfeel/
 │   └── mu-plugins/internfeel-hardening.php
 ├── tools/
 │   ├── export/                         # notes and scripts from the 25 Oct 2026 content export
-│   └── seed/                           # sample users and experiences for local and staging
+│   ├── seed/                           # sample users and experiences for local and staging
+│   └── check-public.sh                 # public-repo check: emails, /home/ paths, keys
 ├── tests/
 │   ├── phpunit/                        # unit and integration tests (wp-env)
 │   └── e2e/                            # Playwright end-to-end tests
@@ -43,14 +44,17 @@ internfeel/
 ├── .cpanel.yml                         # cPanel deployment tasks
 ├── .wp-env.json
 ├── composer.json                       # dev tools: PHPCS, PHPStan, PHPUnit
-├── package.json                        # dev tools: Playwright, wp-env, Playground CLI
+├── package.json                        # dev tools: Playwright, wp-env, Playground CLI (exact versions, package-lock.json committed)
 ├── phpcs.xml.dist
+├── phpstan.neon.dist
+├── playwright.config.js
+├── CLAUDE.md                           # conventions summary for Claude Code
 └── README.md
 ```
 
 **Never committed:** `docs-private/`, `wp-config.php`, `.env` files, the WordPress core, third-party plugins, uploads, proofs, certificates, database dumps, the old site's export or backup, and `holding-page/`.
 
-**Public-repo safeguards:** turn on GitHub **secret scanning** and **push protection** (Settings → Code security). CI also fails if it finds an email address, `/home/` path or key-like string outside the allowed placeholders.
+**Public-repo safeguards:** turn on GitHub **secret scanning** and **push protection** (Settings → Code security). CI also fails if it finds an email address, `/home/` path or key-like string outside the allowed placeholders (`tools/check-public.sh`, the first step of the `lint` job). Run it locally before every commit, passing a file of private values from outside the repo: `bash tools/check-public.sh <private-values-file>`.
 
 ---
 
@@ -79,17 +83,35 @@ Two options. Both need **Node.js 20 or newer** and **Git**.
 
 ```bash
 npm install
-npx @wp-playground/cli@latest server \
-  --wp=latest --php=8.4 \
+npm run playground        # http://127.0.0.1:9400, signed in as admin
+```
+
+`npm run playground` runs the version of `@wp-playground/cli` pinned in `package.json` (3.1.58), not `@latest`, with:
+
+```bash
+wp-playground-cli server --wp=7.1 --php=8.5 \
   --mount=./wp-content/themes/internfeel:/wordpress/wp-content/themes/internfeel \
   --mount=./wp-content/plugins/internfeel-core:/wordpress/wp-content/plugins/internfeel-core \
+  --mount=./wp-content/mu-plugins/internfeel-hardening.php:/wordpress/wp-content/mu-plugins/internfeel-hardening.php \
   --blueprint=./dev/blueprint.json \
   --login
 ```
 
-- `dev/blueprint.json` installs the free plugins from architecture.md 3.3, activates the theme and plugin, sets pretty permalinks, and runs `tools/seed` to create sample students, organisations and experiences.
+- `dev/blueprint.json` defines the local constants (with automatic updates off), installs the free plugins from architecture.md 3.3, and activates the theme, internfeel-core, Two-Factor, Yoast SEO, Nextend Social Login, CookieYes and UpdraftPlus. LiteSpeed Cache and Wordfence are installed but stay inactive, because they have nothing to do in Playground. Once `tools/seed` exists, the blueprint will also run it to create sample students, organisations and experiences.
+- **Blueprint quirks found on day 1:**
+  - Activation goes through WP-CLI steps, theme and internfeel-core first. Playground's own `activatePlugin` step fails on Nextend Social Login (which activates cleanly on PHP 8.5 when called directly). It also fails on anything that comes after a plugin that redirects wp-admin to a welcome screen.
+  - `AUTOMATIC_UPDATER_DISABLED` must stay set. Without it, WP-Cron starts automatic updates during boot, and the site answers "Briefly unavailable for scheduled maintenance".
+  - **Permalinks stay date-based in Playground.** The CLI's installer forces `/%year%/%monthnum%/%day%/%postname%/`, overriding a blueprint step that sets the option. If you need `/slug/` URLs locally, change it in **Settings → Permalinks** after boot, or use wp-env, which sets `/%postname%/` after every start.
+- **For browser tests, use `npm run playground:test`** (the same site without `--login`). Playground's auto-login signs every new browser in on its first request, which makes the sign-up and log-in tests fail with "Cookie check failed" now and then. Then run `WP_BASE_URL=http://127.0.0.1:9400 npx playwright test`.
+- On Windows, run the CLI through `npm run playground` or PowerShell. Git Bash rewrites paths such as `/wordpress/...` unless you set `MSYS_NO_PATHCONV=1`.
+- Checked on day 1: `npm run playground` boots WordPress 7.1.3 on PHP 8.5.10 with every plugin above active, and `WP_BASE_URL=http://127.0.0.1:9400 npx playwright test` passes all of `tests/e2e`.
 - Playground uses SQLite instead of MySQL, so database-specific code (the moderation log table, atomic view updates) must also pass on wp-env or staging.
-- To confirm on day 1: the exact Playground flags, and whether it offers PHP 8.5. Until then, use 8.4 locally and test PHP 8.5 on staging.
+- **Confirmed on day 1 (26 October 2026, CLI 3.1.58):**
+  - **PHP 8.5 is available.** `--php` accepts 8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 7.4 and 5.2, and defaults to 8.3, so always pass `--php=8.5`.
+  - `--mount=host:vfs` can be repeated and accepts a single file as well as a folder, so the mu-plugin is mounted as one file. (Playground keeps its own mu-plugins in `/internal/shared/mu-plugins`, not in `wp-content`.)
+  - `--wp` accepts a version such as `7.1` (it resolves to the newest 7.1.x) or `latest`. `--port` defaults to 9400.
+  - `--login` signs in as admin. `--blueprint` takes a local path. Add `--blueprint-may-read-adjacent-files` once the blueprint bundles local files such as `tools/seed`; without it, Playground won't read them.
+  - Other useful flags: `--xdebug`, `--phpmyadmin`, `--verbosity=debug`, and `--skip-sqlite-setup` (MySQL only).
 
 ### 3.2 wp-env (Docker; matches production more closely, used in CI)
 
@@ -100,7 +122,17 @@ npx wp-env run cli wp plugin list
 npx wp-env stop
 ```
 
-`.wp-env.json` pins WordPress 7.0 and maps the theme and plugin. It lists the free plugins by their WordPress.org zip URLs and sets `phpVersion` to the newest supported version. To confirm on day 1: whether wp-env offers PHP 8.5.
+`.wp-env.json` pins WordPress 7.1.3, maps the theme, plugin and mu-plugin, lists the free plugins by their WordPress.org zip URLs, sets `phpVersion` to `8.5`, and after each start activates the theme (wp-env only maps themes; it doesn't activate them) and sets pretty permalinks.
+
+**Confirmed on day 1 (26 October 2026, `@wordpress/env` 11.17.0):**
+- **PHP 8.5 is available.** wp-env builds its containers from the official `wordpress:php<version>` and `wordpress:cli-php<version>` Docker images. Both `wordpress:php8.5` and `wordpress:cli-php8.5` are published on Docker Hub, so `"phpVersion": "8.5"` works. The CI `unit` job prints `php -v` from the container on every run; the first run reported PHP 8.5.12.
+- The separate tests site on port 8889 is deprecated in wp-env 11 (`testsEnvironment` defaults to `false`), so local runs and CI both use the development site on port 8888.
+- wp-env 11 also has an experimental Docker-free mode, `wp-env start --runtime=playground`. We use `npm run playground` instead, because it supports mounts and blueprints.
+- **WordPress version:** 7.1.3 is pinned, the current release on 26 October 2026. The brief said 7.0, but WordPress.org lists the newest 7.0 release (7.0.7) as "outdated", so we moved to 7.1 on day 1 (plan.md section 4). When a 7.1.x security release comes out, bump the pin in `.wp-env.json`; Playground's `--wp=7.1` picks up the newest 7.1.x by itself.
+
+**Unit and integration tests (PHPUnit):** `composer install`, then `npm run test:unit`. PHPUnit 9.6 and the PHPUnit Polyfills come from the repo's Composer dev tools. They run inside the wp-env `cli` container, which provides the WordPress test suite at `WP_TESTS_DIR`; the repo is mapped into the container as `internfeel-dev` for this. **The test suite reinstalls WordPress in the wp-env database, so it resets your local wp-env site.** CI runs it in its own job.
+
+**Rate limits on local sites** are ten times the real ones, because every test run comes from the same address. Staging and production use the real limits.
 
 ### 3.3 Seed data
 
@@ -120,6 +152,8 @@ Each environment's `wp-config.php` sets these constants. They are listed, with f
 | `IF_MAIL_FROM`, `IF_MAIL_FROM_NAME` | Sender of the password-reset email: `no-reply@internfeel.com`, `InternFeel` (sent through cPanel mail) |
 | `IF_TURNSTILE_SITE_KEY`, `IF_TURNSTILE_SECRET` | Cloudflare Turnstile, after launch; leave unset until then and the forms skip the check |
 | `IF_ADSENSE_CLIENT` | `ca-pub-…`; empty on staging so no ads show |
+| `IF_ADSENSE_SLOTS` | Array of AdSense ad-unit IDs by place: `inline`, `end`, `sidebar`, `card`, `home`, `hub` (create one display unit per place in AdSense). A place without an ID shows no slot |
+| `IF_NEWSLETTER_ENDPOINT` | Form URL of the newsletter service (not chosen yet); the newsletter band is hidden until it is set |
 | `IF_GA4_ID` | Production only |
 
 Google sign-in keys are stored in Nextend Social Login's own settings in wp-admin. Each environment gets its own OAuth redirect URI.
@@ -148,13 +182,30 @@ Done on day 1 with Surabhi's cPanel access.
    - `public_html` also holds folders for other sites on the account (listed in `docs-private/environment.md`). Never move, delete or overwrite them, including when production WordPress is installed in `public_html`.
    - Private storage (`internfeel-private`, `internfeel-private-staging`) stays in the home folder, outside `public_html`.
 4. **Databases:** create one MySQL database and user per environment, with a strong password.
-5. **WordPress:** install WordPress 7.0 fresh in each document root, using the cPanel installer or a manual upload. Use new admin accounts and new salts, and a table prefix other than `wp_`.
+5. **WordPress:** install WordPress 7.1 (7.1.3 or newer) fresh in each document root, using the cPanel installer or a manual upload. Use new admin accounts and new salts, and a table prefix other than `wp_`.
 6. **Private storage:** create `internfeel-private` and `internfeel-private-staging` in the home folder, outside `public_html`.
 7. **Free plugins:** install LiteSpeed Cache, Wordfence, Two-Factor, Yoast SEO, Nextend Social Login, CookieYes and UpdraftPlus. Simple Cloudflare Turnstile is added after launch.
 8. **Email:** create the `contact@internfeel.com` (public) and `no-reply@internfeel.com` mailboxes. In cPanel → **Email Deliverability**, fix anything flagged for internfeel.com (SPF and DKIM). DNS is managed in the VaporHost cPanel Zone Editor, so Email Deliverability can apply the records directly.
 9. **Git:** connect the repository (section 6).
 
+### 5.1 Lessons from setting up staging (26 October 2026)
+
+Staging went live on day 1 (WordPress 7.1.3 on PHP 8.5, the InternFeel theme and InternFeel Core active, deployed from `staging` through cPanel Git). These are the snags to avoid next time, including on production.
+
+1. **Softaculous installer:** leave **In Directory** empty, so WordPress goes straight into the domain's document root, and untick every bundled plugin. Softaculous adds Loginizer and CookieAdmin by default; we use Wordfence and CookieYes instead.
+2. **PHP version gets reset:** after any WordPress reinstall or Directory Privacy change, re-apply PHP 8.5 (`ea-php85`) in **MultiPHP Manager**. Both rewrite the site's `.htaccess` and drop the PHP handler lines, so the site falls back to the server's default PHP, and the theme reports an incompatible PHP version.
+3. **First deploy:** cPanel deploys only work once `.cpanel.yml` is on the branch being deployed. Merge the deploy setup into `staging` (or `main`) before the first clone, then clone, switch the checked-out branch, **Update from Remote** and **Deploy HEAD Commit**.
+4. **PHP extensions (30 October 2026):** certificates also need **gd** (QR code and images in the PDF), so keep it ticked. The PHP 8.5 build had **dom** switched off, so the first real import stopped with `Class "DOMDocument" not found` (the dry run never cleans HTML, so it passed). In **Select PHP Version → Extensions** for 8.5, tick dom, xml, xmlreader, simplexml, mbstring, fileinfo, gd (or imagick), intl and zip. Keep exactly one of mysqli and nd_mysqli: cPanel skips the other as conflicting, which is expected.
+5. **Finding PHP errors:** cPanel **Errors** shows only web-server messages, not PHP fatals. Add `WP_DEBUG` (true), `WP_DEBUG_LOG` and `WP_DEBUG_DISPLAY` (false) to `wp-config.php`, replacing the existing `WP_DEBUG` line rather than adding a second one (the first definition wins), then read `wp-content/debug.log`. Afterwards set `WP_DEBUG` back to false and delete `debug.log`, which is web-readable.
+
 ---
+
+### 5.2 Day 11: consent, SEO and legal pages (admin steps, staging first)
+
+1. **CookieYes** (free plan, Google-certified for AdSense): install it from **Plugins → Add New**, connect it to a free CookieYes account, and turn on the categories **Analytics** and **Advertisement**, plus Google Consent Mode. The theme's `consent.js` loads AdSense only after Advertisement consent and GA4 only after Analytics consent, so neither loads until CookieYes is set up. The footer's **Cookie settings** link reopens the banner.
+2. **Yoast SEO** (free): install it, skip its tracking, and leave its Open Graph and sitemap features on. The theme keeps utility pages (dashboard, submit, sign-in, join) and author pages out of Yoast's sitemap, and Yoast borrows the experience share images. Staging stays noindex through the theme.
+3. **Legal and company pages** were created as **drafts**: Privacy policy, Terms of use, Content guidelines, Ad guidelines, About and Contact. They carry no placeholders (9 November 2026), so they can be published as they are; add the business details from plan.md section 10, item 2 and a legal review when ready. Legal pages use the **Legal page** template and never show ads.
+4. **AdSense** (production only): set `IF_ADSENSE_CLIENT` and `IF_ADSENSE_SLOTS` in `wp-config.php`. `/ads.txt` is generated from the client ID, so there is no file to upload. Keep Auto ads off in AdSense.
 
 ## 6. Deployment through cPanel Git Version Control
 
@@ -164,8 +215,8 @@ The server has no Node.js and the plan has no SSH access. Because the repo is pu
 
 In cPanel **Git Version Control**, choose **Create**, turn on **Clone a Repository**, and clone `https://github.com/Surabhi3011/internfeel.git` twice:
 
-1. **Staging (day 1):** repository path `repositories/internfeel-staging`, name `internfeel-staging`. After cloning, open **Manage**, set **Checked-Out Branch** to `staging`, and click **Update**.
-2. **Production (day 14):** repository path `repositories/internfeel`, name `internfeel`, branch `main`.
+1. **Staging (day 1):** repository path `repositories/internfeel`, name `internfeel-staging`. After cloning, open **Manage**, set **Checked-Out Branch** to `staging`, and click **Update**.
+2. **Production:** repository path `repositories/internfeel-production`, name `internfeel-production`, branch `main`. Clone it before launch day, but deploy it only at step F of [docs/launch.md](launch.md).
 
 If the plan ever gets SSH access, the repo can go private: add a cPanel SSH key as a read-only GitHub deploy key and re-clone over `git@github.com:`.
 
@@ -224,7 +275,7 @@ Merging into `main` needs all four jobs green and Surabhi's approval.
 
 ## 8. Database changes
 
-- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `plugins_loaded`, it runs any pending upgrade steps, written with `dbDelta` and in order.
+- **Version tracking:** the plugin keeps a schema version in the option `if_db_version`. On activation and on `init` (after the content types are registered, so rewrite rules can be flushed), it runs any pending upgrade steps, written with `dbDelta` and in order.
 - **Additive only:** add tables and columns, and never rename or drop them in the same release. A later release removes unused columns once nothing reads them.
 - **Meta changes** run as batched upgrade steps that are safe to run twice.
 - **Before a production deploy that includes an upgrade step:** run an UpdraftPlus database backup.
@@ -251,6 +302,17 @@ The export (25 October 2026) is the zip `internfeel-export-content.zip` plus `in
 7. **Check:** `tools/export/check-urls` (Playwright) requests every post URL from `url-list.txt` and expects 200, and checks every `<img>` on those pages loads.
 
 Run the import on staging first. Once the check passes, run it on production.
+
+### 9.1 The importer as built (day 2)
+
+- **Where:** Tools → InternFeel import (administrators). Upload `posts.json`, `categories.json`, `comments.json` and `media.json`; they are stored in `IF_PRIVATE_DIR/import/`. The page shows the category mapping, then **Dry run** (writes nothing, shows a report row per post) and **Import** (batches of 20 through `POST internfeel/v1/import/batch`). Locally, the same runs from WP-CLI: `wp internfeel import --dir=<content folder> --dry-run --report=report.csv`.
+- **Status:** experiences arrive as **Pending review**, never published by the import. Posts that are guides or opinion pieces rather than internship experiences (filed only under "Internship Guide" or "Blog") arrive as **drafts** with `_if_import_kind = article`, for Surabhi to keep, rewrite or delete.
+- **Every migrated experience** keeps its original slug, title and dates; is owned by InternFeel Archive; has `view_count` 0 and `verification_status` "not_submitted" (never Verified); and records `legacy_wp_id`, `legacy_student_name` (when the title clearly names the student) and `legacy_published_year`.
+- **Mapping:** the old flat categories fill type, mode, field, country and (for IISc, RBI, Google and NIFT only) organisation. Fields and organisations are created as `if_master` terms. Anything the categories don't say stays empty for the review; nothing is guessed. Stipend and duration are only in the free-text answers, so the review fills them in. "rate … out of 10" lines become the 1–5 overall rating.
+- **Cleaning:** inline styles, old classes and `data-*` attributes, formatting wrappers, H1s (to H2), dead Facebook and Flipkart embeds, images hosted elsewhere, and the old plugins' shortcodes (Shortcodes Ultimate buttons and spacers, popups, coupons; boxes and social lockers are unwrapped so their text stays). YouTube embeds become links that WordPress embeds again. Old-site links, image sources and written-out addresses are rewritten to **the importing site's own address**, so they work on staging as well as production.
+- **Re-running** skips every post whose `legacy_wp_id` exists, and attachments and comments are matched by their old IDs, so nothing is duplicated.
+- **Local dry run on the real export (26 October 2026):** 216 to import (206 experiences, 10 articles), 2 skipped. Type found for 129, country for 134, field for 69, organisation for 9, student name for 120, rating for 11. A full import on a throwaway local site then gave: 216 of 218 original slugs kept (the two skipped), 178 featured images from 169 attachments, 4 comments, and no inline styles, iframes or old-site URLs left; a second run imported nothing.
+- **For the review:** some titles already contain "�" in the export (characters lost on the old site); several bodies start with an old "Readers Please Note" notice about a Facebook group.
 
 ---
 
@@ -324,7 +386,7 @@ Run the import on staging first. Once the check passes, run it on production.
 | --- | --- |
 | Weekly | Wordfence scan results; plugin updates applied; backups present |
 | Monthly | Check Google Drive backup space; review the master list for duplicate organisations |
-| Each quarter | Lighthouse and axe checks; restore test; review admin accounts and two-step sign-in |
+| Each quarter | Lighthouse and axe checks; restore test; review admin accounts |
 | Before 13 May 2027 | Ship the parental-consent step for under-18 students |
 
 ---

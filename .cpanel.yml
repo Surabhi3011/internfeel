@@ -1,0 +1,18 @@
+---
+# cPanel Git Version Control deployment (docs/development.md section 6.2).
+# The same file is used by both server clones; the target folder comes from the checked-out branch.
+# Anything other than main (including a detached HEAD) deploys to staging, never to production.
+# Paths use $HOME, so no account name appears in this public repo. Staging lives inside public_html
+# because this host only allows document roots there.
+# Each folder is copied to .new first and then swapped in, so the live site never serves half-copied files.
+deployment:
+  tasks:
+    - export BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    - if [ "$BRANCH" = "main" ]; then export DOCROOT=$HOME/public_html; else export DOCROOT=$HOME/public_html/staging.internfeel.com; fi
+    - /bin/mkdir -p $DOCROOT/wp-content/themes/internfeel $DOCROOT/wp-content/plugins/internfeel-core $DOCROOT/wp-content/mu-plugins
+    - /bin/rm -rf $DOCROOT/wp-content/themes/internfeel.new $DOCROOT/wp-content/plugins/internfeel-core.new
+    - /bin/cp -R wp-content/themes/internfeel $DOCROOT/wp-content/themes/internfeel.new
+    - /bin/cp -R wp-content/plugins/internfeel-core $DOCROOT/wp-content/plugins/internfeel-core.new
+    - /bin/rm -rf $DOCROOT/wp-content/themes/internfeel && /bin/mv $DOCROOT/wp-content/themes/internfeel.new $DOCROOT/wp-content/themes/internfeel
+    - /bin/rm -rf $DOCROOT/wp-content/plugins/internfeel-core && /bin/mv $DOCROOT/wp-content/plugins/internfeel-core.new $DOCROOT/wp-content/plugins/internfeel-core
+    - /bin/cp wp-content/mu-plugins/internfeel-hardening.php $DOCROOT/wp-content/mu-plugins/

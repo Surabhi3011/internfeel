@@ -1,0 +1,2448 @@
+/*
+Theme Name:        InternFeel
+Theme URI:         https://internfeel.com
+Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
+Author:            InternFeel
+Version:           0.3.0
+Requires at least: 7.1
+Tested up to:      7.1
+Requires PHP:      8.3
+License:           Proprietary
+Text Domain:       internfeel
+*/
+
+/*
+ * Theme layer. Loads after assets/css/fonts.css, tokens.css and components.css (the approved design
+ * system in docs/approved-designs/system/). Only rules the components do not cover live here; every
+ * value comes from the tokens. Page-level helpers from the mock-ups (pg-*) become if-* rules here.
+ */
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+.screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link:focus {
+	position: fixed;
+	top: var(--if-space-2);
+	left: var(--if-space-2);
+	z-index: 100;
+	width: auto;
+	height: auto;
+	padding: var(--if-space-2) var(--if-space-4);
+	clip: auto;
+	background: var(--if-surface);
+}
+
+.if-container {
+	width: 100%;
+	max-width: var(--if-content);
+	margin-inline: auto;
+	padding-inline: var(--if-space-4);
+}
+
+.if-main {
+	padding-block: var(--if-space-12) 72px;
+}
+
+/* Header: shrinks from 72 to 56 px once the page scrolls (assets/js/main.js). */
+.if-header__inner {
+	transition: height 0.15s ease;
+}
+
+.if-header.is-compact .if-header__inner {
+	height: var(--if-header-h-compact);
+}
+
+/* Phone and wide-only pieces (the mock-ups' pg-narrow and pg-wide). */
+.if-show-mobile {
+	display: none;
+}
+
+@media (max-width: 640px) {
+	.if-hide-mobile {
+		display: none;
+	}
+
+	.if-show-mobile {
+		display: inline;
+	}
+
+	.if-header__logo img {
+		height: 28px;
+	}
+
+	.if-header__inner {
+		gap: var(--if-space-3);
+	}
+}
+
+/* ---------- Sign-up, log-in and first sign-in (docs/approved-designs/signup.html) ---------- */
+
+.if-auth {
+	display: grid;
+	gap: var(--if-space-8);
+	max-width: 36rem;
+}
+
+.if-auth__intro {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-auth__intro h1,
+.if-auth__intro p {
+	margin: 0;
+}
+
+.if-auth__intro p {
+	color: var(--if-muted);
+}
+
+.if-auth__card {
+	display: grid;
+	gap: 20px;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-auth__card h2 {
+	margin: 0;
+}
+
+.if-auth__head {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-auth__head .label,
+.if-auth__fine-print {
+	margin: 0;
+	color: var(--if-muted);
+}
+
+.if-auth__or {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+	font-size: 14px;
+	color: var(--if-muted);
+}
+
+.if-auth__or::before,
+.if-auth__or::after {
+	flex: 1;
+	height: 1px;
+	content: "";
+	background: var(--if-line);
+}
+
+.if-form {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+.if-form__two {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--if-space-4);
+}
+
+.if-btn--block {
+	width: 100%;
+}
+
+/* The fieldset reset the mock-up does inline. */
+fieldset.if-field {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+fieldset.if-field legend {
+	margin-bottom: 6px;
+}
+
+/* A single checkbox with its label, outside the full-width .if-field inputs. */
+.if-check {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--if-space-2);
+	min-height: 44px;
+	justify-self: start;
+	cursor: pointer;
+}
+
+.if-check input {
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	accent-color: var(--if-teal-700);
+}
+
+/* Form-level status box: styled like a field error (README: "keep a form-level status box"). */
+.if-form__status:empty {
+	display: none;
+}
+
+/* The Sign up / Log in switch is a pair of links styled as the segment control. */
+.if-segment a {
+	padding: 6px 16px;
+	font-weight: 700;
+	color: var(--if-ink);
+	text-decoration: none;
+	border-radius: var(--if-radius-pill);
+}
+
+.if-segment a[aria-current="page"] {
+	color: var(--if-on-teal);
+	background: var(--if-teal-700);
+}
+
+.if-segment a:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+/* Honeypot: off-screen rather than display:none, which some bots detect. */
+.if-honeypot {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+@media (max-width: 640px) {
+	.if-form__two {
+		grid-template-columns: 1fr;
+	}
+
+	.if-auth__card {
+		padding: 20px;
+	}
+}
+
+/* ---------- Newsletter band, above the footer on every page ---------- */
+
+.if-newsletter {
+	padding-block: var(--if-space-8);
+	background: var(--if-surface);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-newsletter__inner {
+	display: grid;
+	gap: var(--if-space-4);
+	align-items: end;
+}
+
+@media (min-width: 900px) {
+	.if-newsletter__inner {
+		grid-template-columns: 1fr minmax(0, 28rem);
+	}
+}
+
+.if-newsletter h2,
+.if-newsletter p {
+	margin: 0;
+}
+
+.if-newsletter p {
+	color: var(--if-muted);
+}
+
+.if-newsletter form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+	align-items: end;
+}
+
+.if-newsletter .if-field {
+	flex: 1;
+	min-width: 14rem;
+}
+
+/* ---------- Submission form (docs/approved-designs/submit-step-1.html) ---------- */
+
+.if-submit {
+	display: grid;
+	gap: 28px;
+}
+
+.if-submit__intro {
+	display: grid;
+	gap: var(--if-space-2);
+	max-width: 46rem;
+}
+
+.if-submit__intro h1,
+.if-submit__intro p {
+	margin: 0;
+}
+
+.if-submit__intro p {
+	color: var(--if-muted);
+}
+
+.if-submit__stepper {
+	max-width: 46rem;
+}
+
+.if-submit__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 340px;
+	gap: var(--if-space-12);
+	align-items: start;
+}
+
+.if-submit__card,
+.if-submit__done {
+	display: grid;
+	gap: var(--if-space-6);
+	min-width: 0;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__step {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+.if-submit__step[hidden],
+.if-submit__card[hidden],
+.if-submit__done[hidden],
+.if-submit__aside[hidden],
+.if-submit__stepper[hidden] {
+	display: none;
+}
+
+/* After submitting, the confirmation uses the full width; the tips no longer apply. */
+.if-submit__layout.is-done {
+	grid-template-columns: minmax(0, 46rem);
+}
+
+.if-submit__head {
+	display: grid;
+	gap: var(--if-space-1);
+}
+
+.if-submit__head h2,
+.if-submit__head p,
+.if-submit__done h2,
+.if-submit__done p {
+	margin: 0;
+}
+
+.if-submit__head p {
+	color: var(--if-muted);
+}
+
+.if-submit__head h2:focus,
+.if-submit__done h2:focus {
+	outline: none;
+}
+
+.if-submit__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-3);
+	padding-top: 20px;
+	border-top: 1px solid var(--if-line);
+}
+
+.if-submit__actions .small {
+	color: var(--if-muted);
+}
+
+.if-submit__buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+}
+
+.if-submit__aside {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+
+.if-submit__tip,
+.if-submit__questions {
+	display: grid;
+	gap: var(--if-space-3);
+	padding: var(--if-space-6);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__tip {
+	background: var(--if-surface-tint);
+}
+
+.if-submit__questions {
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+}
+
+.if-submit__tip h2,
+.if-submit__questions h2 {
+	margin: 0;
+}
+
+.if-submit__tip ul,
+.if-submit__questions ol {
+	display: grid;
+	gap: 10px;
+	margin: 0;
+	padding-left: 20px;
+}
+
+/* Rupee prefix on the stipend field. */
+.if-money {
+	display: flex;
+	align-items: center;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-money span {
+	padding: 0 4px 0 14px;
+	font-weight: 700;
+	color: var(--if-muted);
+}
+
+.if-field .if-money input {
+	border: 0;
+}
+
+/* Type chips are radio buttons styled as the chips in the design. */
+.if-chip input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.if-chip {
+	position: relative;
+}
+
+.if-chip:has(input:checked) {
+	font-weight: 700;
+	color: var(--if-teal-800);
+	background: var(--if-surface-tint);
+	border-color: var(--if-teal-700);
+}
+
+.if-chip:has(input:focus-visible) {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-proofs {
+	display: grid;
+	gap: var(--if-space-2);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-proofs:empty {
+	display: none;
+}
+
+.if-proofs li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-3);
+	padding: var(--if-space-2) var(--if-space-3);
+	background: var(--if-canvas);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-submit__preview {
+	display: grid;
+	gap: var(--if-space-4);
+	padding-top: var(--if-space-6);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-submit__preview > h3 {
+	margin: 0;
+}
+
+.if-submit__preview [data-if-preview] {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+@media (max-width: 1000px) {
+	.if-submit__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-submit__title {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	/* On phones only the current step's name shows. */
+	.if-submit__stepper li span {
+		font-size: 0;
+	}
+
+	.if-submit__stepper li[aria-current="step"] span {
+		font-size: 13px;
+	}
+
+	.if-submit__card,
+	.if-submit__done {
+		padding: 20px;
+	}
+
+	.if-submit__actions {
+		flex-direction: column-reverse;
+		align-items: stretch;
+	}
+
+	/* Buttons stack full width, Next on top. */
+	.if-submit__buttons {
+		flex-direction: column-reverse;
+	}
+
+	.if-submit__buttons .if-btn {
+		width: 100%;
+	}
+}
+
+/* ---------- Shared helpers ---------- */
+
+.if-muted {
+	color: var(--if-muted);
+}
+
+.if-ink {
+	color: var(--if-ink);
+}
+
+.if-btn.if-danger {
+	color: var(--if-danger);
+}
+
+.if-link {
+	padding: 0;
+	font: inherit;
+	color: var(--if-teal-700);
+	text-decoration: underline;
+	cursor: pointer;
+	background: none;
+	border: 0;
+}
+
+.if-avatar--lg {
+	flex: none;
+	width: 56px;
+	height: 56px;
+	font-size: 20px;
+}
+
+/* ---------- Student dashboard (docs/approved-designs/dashboard.html) ---------- */
+
+.if-dash {
+	display: grid;
+	gap: 28px;
+}
+
+.if-dash__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-4);
+}
+
+.if-dash__who {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-4);
+	min-width: 0;
+}
+
+.if-dash__name {
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+
+.if-dash__title {
+	margin: 0;
+}
+
+.if-dash__byline {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 10px;
+}
+
+.if-dash__counters {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--if-space-4);
+}
+
+.if-dash__counter {
+	display: grid;
+	gap: 2px;
+	padding: 18px 20px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__number {
+	font: 800 32px/38px var(--font-display);
+	font-variant-numeric: tabular-nums;
+}
+
+.if-dash__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	gap: var(--if-space-8);
+	align-items: start;
+}
+
+.if-dash__main,
+.if-dash__panel {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+
+.if-dash__panel[hidden] {
+	display: none;
+}
+
+.if-dash__tabs {
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	border-bottom: 1px solid var(--if-line);
+}
+
+.if-dash__tab {
+	min-height: 44px;
+	padding: 0 var(--if-space-4);
+	font: 700 16px/1 var(--font-body);
+	color: var(--if-muted);
+	white-space: nowrap;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-bottom: 3px solid transparent;
+}
+
+.if-dash__tab[aria-selected="true"] {
+	color: var(--if-ink);
+	border-bottom-color: var(--if-teal);
+}
+
+.if-dash__tab:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: -3px;
+}
+
+.if-dash__item,
+.if-dash__empty {
+	display: grid;
+	gap: var(--if-space-3);
+	padding: 20px 24px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__item h2,
+.if-dash__item p,
+.if-dash__empty p {
+	margin: 0;
+}
+
+.if-dash__item h2 a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.if-dash__item h2 a:hover {
+	text-decoration: underline;
+}
+
+.if-dash__pills,
+.if-dash__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+}
+
+.if-dash__title-block {
+	display: grid;
+	gap: 4px;
+}
+
+.if-dash__counts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 18px;
+	color: var(--if-muted);
+}
+
+.if-dash__actions {
+	padding-top: var(--if-space-3);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-dash__note,
+.if-dash__proof.is-rejected {
+	padding: var(--if-space-4);
+	background: var(--if-danger-soft);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__note strong,
+.if-dash__proof strong {
+	color: var(--if-danger);
+}
+
+.if-dash__proof {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-dash__drop {
+	display: grid;
+	justify-items: start;
+	gap: var(--if-space-2);
+	padding: var(--if-space-4);
+	background: var(--if-canvas);
+	border: 2px dashed var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__drop-title {
+	font-weight: 700;
+}
+
+.if-dash__file {
+	position: relative;
+}
+
+.if-dash__file input {
+	position: absolute;
+	inset: 0;
+	cursor: pointer;
+	opacity: 0;
+}
+
+.if-dash__file:focus-within {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-dash__comment-by {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+	align-items: baseline;
+}
+
+.if-dash__comment p {
+	margin: 0 0 var(--if-space-2);
+}
+
+.if-dash__aside {
+	display: grid;
+	gap: var(--if-space-6);
+	min-width: 0;
+}
+
+.if-dash__updates {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-dash__aside-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--if-space-2);
+}
+
+.if-dash__aside h2 {
+	margin: 0;
+}
+
+.if-dash__invite {
+	display: grid;
+	gap: 14px;
+	padding: var(--if-space-6);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__invite p {
+	margin: 0;
+}
+
+.if-dash__invite > div {
+	display: grid;
+	gap: 4px;
+}
+
+.if-dash__credits {
+	display: flex;
+	align-items: baseline;
+	gap: var(--if-space-2);
+}
+
+.if-dash__credits-number {
+	font: 800 32px/38px var(--font-display);
+	color: var(--if-teal-800);
+}
+
+@media (max-width: 1000px) {
+	.if-dash__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-dash__title {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	.if-dash__counters {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--if-space-3);
+	}
+
+	.if-dash__item,
+	.if-dash__empty {
+		padding: var(--if-space-4);
+	}
+}
+
+/* ---------- Verify a certificate ---------- */
+
+.if-verify {
+	display: grid;
+	gap: var(--if-space-6);
+	max-width: 46rem;
+}
+
+.if-verify h1 {
+	margin: 0;
+}
+
+.if-verify__card {
+	display: grid;
+	gap: var(--if-space-4);
+	justify-items: start;
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-verify__card > p {
+	margin: 0;
+}
+
+.if-verify__facts {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: var(--if-space-2) var(--if-space-6);
+	margin: 0;
+}
+
+.if-verify__facts dt {
+	color: var(--if-muted);
+}
+
+.if-verify__facts dd {
+	margin: 0;
+	font-weight: 700;
+}
+
+.if-verify__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+	align-items: end;
+	width: 100%;
+	padding-top: var(--if-space-4);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-verify__form .if-field {
+	flex: 1;
+	min-width: 12rem;
+}
+
+@media (max-width: 640px) {
+	.if-verify__card {
+		padding: 20px;
+	}
+
+	.if-verify__facts {
+		grid-template-columns: 1fr;
+		gap: 2px;
+	}
+
+	.if-verify__facts dd {
+		margin-bottom: var(--if-space-2);
+	}
+}
+
+.if-teal-text {
+	color: var(--if-teal-800);
+}
+
+.if-avatar--anon {
+	background: var(--if-line-strong);
+}
+
+/* ---------- Card grid and rows (home, archive, experience page) ---------- */
+
+.if-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--if-space-6);
+}
+
+[data-if-default][hidden],
+.if-results[hidden],
+.if-results__more[hidden],
+.if-results__empty[hidden],
+.if-browse__submit a[hidden] {
+	display: none;
+}
+
+.if-card__marks,
+.if-card__views,
+.if-card__credit {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.if-card__marks {
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.if-card__credit svg {
+	color: var(--if-teal-700);
+}
+
+.if-row {
+	display: grid;
+	gap: 20px;
+	padding-top: 40px;
+}
+
+.if-row__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--if-space-2);
+}
+
+.if-row__head > div {
+	display: grid;
+	gap: 4px;
+}
+
+.if-row__head h2 {
+	margin: 0;
+}
+
+.if-row__all {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 700;
+}
+
+/* ---------- Home: hero ---------- */
+
+.if-main:has(.if-hero) {
+	padding-top: 0;
+}
+
+.if-hero {
+	padding: 56px 0 64px;
+}
+
+.if-hero__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+	gap: 56px;
+	align-items: center;
+}
+
+.if-hero__text {
+	display: grid;
+	gap: 20px;
+}
+
+.if-hero__text > * {
+	margin: 0;
+}
+
+.if-hero__label {
+	color: var(--if-teal-800);
+}
+
+.if-hero__search {
+	display: flex;
+	gap: var(--if-space-2);
+	max-width: 36rem;
+}
+
+.if-hero__search .if-search {
+	flex: 1;
+	min-width: 0;
+}
+
+.if-hero__popular {
+	margin-top: -8px;
+}
+
+.if-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+	padding-top: var(--if-space-2);
+}
+
+/* The brand block and its card share one grid cell, the card sitting at the bottom left. */
+.if-hero__art,
+.if-hero__card {
+	grid-column: 2;
+	grid-row: 1;
+}
+
+.if-hero__art {
+	position: relative;
+	height: 440px;
+}
+
+.if-hero__art svg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.if-art-tint {
+	fill: var(--if-surface-tint);
+}
+
+.if-art-teal {
+	fill: var(--if-teal);
+}
+
+.if-art-teal-700 {
+	fill: var(--if-teal-700);
+}
+
+.if-art-charcoal {
+	fill: var(--if-charcoal);
+}
+
+.if-art-canvas {
+	fill: var(--if-canvas);
+}
+
+.if-hero__card {
+	position: relative;
+	align-self: end;
+	width: min(330px, 100% - 48px);
+	margin: 0 0 24px 24px;
+}
+
+/* ---------- Browse band and results ---------- */
+
+.if-browse {
+	padding: var(--if-space-8) 0;
+	background: var(--if-surface);
+	border-block: 1px solid var(--if-line);
+}
+
+.if-browse__inner,
+.if-browse__form {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+.if-browse__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--if-space-2);
+}
+
+.if-browse__head h2 {
+	margin: 0;
+}
+
+.if-browse__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+	align-items: center;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.if-browse__search {
+	flex: 1 1 14rem;
+	max-width: 22rem;
+	padding: 3px 3px 3px 14px;
+}
+
+.if-browse__search input {
+	font-size: 15px;
+	line-height: 22px;
+}
+
+/* A native select dressed as a menu chip, so keyboards and screen readers get the platform menu. */
+.if-chip--select {
+	position: relative;
+	padding: 0;
+}
+
+.if-chip--select select {
+	min-height: 40px;
+	padding: 0 34px 0 14px;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-radius: inherit;
+	appearance: none;
+}
+
+.if-chip--select::after {
+	position: absolute;
+	right: 14px;
+	pointer-events: none;
+}
+
+.if-chip--select:focus-within,
+.if-chip--toggle:focus-within {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-chip--toggle {
+	position: relative;
+	cursor: pointer;
+}
+
+.if-chip--toggle input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.if-browse__submit {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+	align-items: center;
+}
+
+.if-results {
+	display: grid;
+	gap: var(--if-space-6);
+	padding-top: var(--if-space-8);
+}
+
+.if-results__status:empty {
+	display: none;
+}
+
+.if-results__status,
+.if-results__empty {
+	margin: 0;
+	color: var(--if-muted);
+}
+
+.if-results__more {
+	justify-self: center;
+}
+
+.if-archive__intro {
+	display: grid;
+	gap: var(--if-space-2);
+	padding-bottom: var(--if-space-8);
+}
+
+.if-archive__intro > * {
+	margin: 0;
+}
+
+/* ---------- Trust strip, How it works, invite banner ---------- */
+
+.if-trust {
+	padding-top: var(--if-space-8);
+}
+
+.if-trust__box {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-trust__stat {
+	display: grid;
+	gap: 2px;
+	padding: 20px 24px;
+}
+
+.if-trust__stat + .if-trust__stat {
+	border-left: 1px solid var(--if-line);
+}
+
+.if-trust__number {
+	font: 800 36px/42px var(--font-display);
+	font-variant-numeric: tabular-nums;
+	color: var(--if-teal-800);
+}
+
+.if-how {
+	display: grid;
+	gap: var(--if-space-6);
+	justify-items: start;
+	padding-block: 64px;
+}
+
+.if-how h2 {
+	margin: 0;
+}
+
+.if-how__steps {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--if-space-6);
+	width: 100%;
+}
+
+.if-how__step {
+	display: grid;
+	align-content: start;
+	gap: var(--if-space-2);
+	padding: var(--if-space-6);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-how__step h3,
+.if-how__step p {
+	margin: 0;
+}
+
+.if-how__icon {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	color: var(--if-teal-800);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-invite-banner {
+	padding: var(--if-space-8) 0;
+	margin-bottom: var(--if-space-8);
+	background: var(--if-surface-tint);
+}
+
+.if-invite-banner__inner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-4);
+}
+
+.if-invite-banner h2,
+.if-invite-banner p {
+	margin: 0;
+}
+
+/* ---------- Experience page ---------- */
+
+.if-exp__head {
+	display: grid;
+	gap: var(--if-space-4);
+	padding-bottom: var(--if-space-6);
+}
+
+.if-crumbs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	color: var(--if-muted);
+}
+
+.if-exp__labels,
+.if-exp__author {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--if-space-2) var(--if-space-4);
+}
+
+.if-exp__title {
+	max-width: 52rem;
+	margin: 0;
+	text-wrap: balance;
+}
+
+.if-exp__who {
+	display: grid;
+	gap: 2px;
+}
+
+.if-exp__linkedin {
+	display: inline-flex;
+	margin-left: 6px;
+	color: var(--if-muted);
+}
+
+.if-exp__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--if-space-3);
+	padding-top: var(--if-space-3);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-exp__stats {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 4px 14px;
+}
+
+.if-share {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+}
+
+.if-share__label {
+	margin-right: 4px;
+	font-weight: 700;
+}
+
+.if-exp__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: var(--if-space-12);
+	align-items: start;
+	padding-top: 40px;
+}
+
+.if-exp__story,
+.if-exp__side {
+	min-width: 0;
+}
+
+.if-qa--legacy .if-qa__a img {
+	height: auto;
+	border-radius: var(--if-radius);
+}
+
+.if-qa--legacy .if-qa__a h2,
+.if-qa--legacy .if-qa__a h3 {
+	margin: var(--if-space-8) 0 var(--if-space-3);
+	font: 700 20px/26px var(--font-display);
+}
+
+.if-exp__advice {
+	display: grid;
+	gap: var(--if-space-2);
+	max-width: var(--if-reading);
+	margin-top: 40px;
+	padding: var(--if-space-6);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-exp__advice p {
+	margin: 0 0 var(--if-space-3);
+}
+
+.if-exp__advice p:last-child {
+	margin-bottom: 0;
+}
+
+.if-exp__ratings {
+	display: grid;
+	gap: var(--if-space-4);
+	padding: var(--if-space-6);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-exp__ratings h2,
+.if-exp__overall {
+	margin: 0;
+}
+
+.if-exp__overall {
+	display: flex;
+	align-items: baseline;
+	gap: var(--if-space-2);
+}
+
+.if-exp__overall-number {
+	font: 800 40px/44px var(--font-display);
+	font-variant-numeric: tabular-nums;
+	color: var(--if-teal-800);
+}
+
+/* ---------- Comments ---------- */
+
+.if-comments {
+	display: grid;
+	gap: var(--if-space-6);
+	padding-top: 56px;
+}
+
+/* Centred with the page like every section, but the text stays at reading width. */
+.if-comments > * {
+	max-width: var(--if-reading);
+}
+
+.if-comments h2 {
+	margin: 0;
+}
+
+.if-comments__signin {
+	display: grid;
+	justify-items: start;
+	gap: var(--if-space-3);
+	padding: 20px 24px;
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-comments__signin p,
+.if-comments__form .form-submit {
+	margin: 0;
+}
+
+.if-comments__list,
+.if-comments__list .children {
+	display: grid;
+	gap: var(--if-space-6);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-comments__list .children {
+	margin-top: var(--if-space-6);
+	padding-left: var(--if-space-6);
+	border-left: 1px solid var(--if-line);
+}
+
+.if-comment {
+	display: grid;
+	grid-template-columns: 36px minmax(0, 1fr);
+	gap: var(--if-space-3);
+}
+
+.if-comment > .children {
+	grid-column: 1 / -1;
+}
+
+.if-comment__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 10px;
+}
+
+.if-comment__text p {
+	margin: var(--if-space-2) 0 0;
+}
+
+.if-comment__actions {
+	margin-top: var(--if-space-2);
+}
+
+.if-comment__actions a {
+	font-size: 14px;
+	font-weight: 700;
+}
+
+@media (max-width: 1000px) {
+	.if-exp__layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 900px) {
+	.if-hero__inner {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.if-hero__art,
+	.if-hero__card {
+		grid-column: 1;
+		grid-row: 2;
+	}
+
+	.if-grid,
+	.if-how__steps {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	.if-hero {
+		padding: 32px 0 40px;
+	}
+
+	.if-hero__title {
+		font-size: 34px;
+		line-height: 40px;
+	}
+
+	.if-hero__art,
+	.if-hero__card {
+		display: none;
+	}
+
+	.if-hero__search {
+		flex-direction: column;
+	}
+
+	.if-grid,
+	.if-how__steps,
+	.if-trust__box {
+		grid-template-columns: 1fr;
+	}
+
+	.if-trust__stat + .if-trust__stat {
+		border-top: 1px solid var(--if-line);
+		border-left: 0;
+	}
+
+	.if-browse__types {
+		flex-wrap: nowrap;
+		padding-bottom: 4px;
+		overflow-x: auto;
+	}
+
+	.if-browse__types .if-chip {
+		flex: none;
+	}
+
+	.if-exp__title {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	.if-share__name {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+	}
+}
+
+/* ---------- Invites: dashboard panel and table, /join ---------- */
+
+.if-dash__link,
+.if-dash__actions-plain {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-2);
+}
+
+.if-dash__link input {
+	flex: 1;
+	min-width: 0;
+	font-family: var(--font-mono);
+	font-size: 14px;
+}
+
+.if-dash__link .if-btn {
+	min-height: 44px;
+}
+
+.if-dash__invite-stats {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 6px 12px;
+	margin: 0;
+	padding-top: var(--if-space-3);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-dash__invite-stats dt {
+	color: var(--if-muted);
+}
+
+.if-dash__invite-stats dd {
+	margin: 0;
+	font-weight: 700;
+	text-align: right;
+}
+
+.if-dash__table-wrap {
+	overflow-x: auto;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__table {
+	width: 100%;
+	font-size: 14px;
+	border-collapse: collapse;
+}
+
+.if-dash__table th,
+.if-dash__table td {
+	padding: 10px 16px;
+	text-align: left;
+	border-bottom: 1px solid var(--if-line);
+}
+
+.if-dash__table tr:last-child td {
+	border-bottom: 0;
+}
+
+.if-dash__table th {
+	font-weight: 700;
+	color: var(--if-muted);
+}
+
+.if-join {
+	max-width: 46rem;
+}
+
+.if-join__card {
+	display: grid;
+	justify-items: start;
+	gap: var(--if-space-4);
+	padding: var(--if-space-8);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-join__card > * {
+	margin: 0;
+}
+
+.if-join__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+}
+
+@media (max-width: 640px) {
+	.if-join__card {
+		padding: 20px;
+	}
+}
+
+/* ---------- Reports, comment editing, listicles ---------- */
+
+.if-dialog {
+	width: min(30rem, 100% - 32px);
+	padding: var(--if-space-6);
+	color: var(--if-ink);
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-dialog::backdrop {
+	background: rgb(29 28 28 / 0.45);
+}
+
+.if-dialog h2 {
+	margin: 0;
+}
+
+.if-dialog__reasons {
+	display: grid;
+	gap: 2px;
+}
+
+.if-dialog__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: var(--if-space-2);
+}
+
+.if-exp__report {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--if-space-2);
+	margin: var(--if-space-6) 0 0;
+}
+
+.if-comment__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--if-space-2);
+}
+
+.if-comment__editor {
+	display: grid;
+	gap: var(--if-space-2);
+	margin-top: var(--if-space-2);
+}
+
+.if-comment__editor textarea {
+	width: 100%;
+	padding: 10px 14px;
+	font: inherit;
+	border: 1px solid var(--if-line-strong);
+	border-radius: var(--if-radius);
+}
+
+.if-comment__editor p {
+	margin: 0;
+}
+
+.if-list {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+.if-list h1,
+.if-list > p {
+	margin: 0;
+}
+
+.if-list__intro {
+	max-width: var(--if-reading);
+}
+
+.if-list__intro p {
+	margin: 0 0 var(--if-space-3);
+}
+
+.if-list__all {
+	display: grid;
+	gap: var(--if-space-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-list__item {
+	display: grid;
+	gap: var(--if-space-2);
+	padding: 20px 24px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-list__item h2,
+.if-list__item p {
+	margin: 0;
+}
+
+/* ---------- Header: compact search, avatar menu, phone menu ---------- */
+
+.if-header__search {
+	width: 240px;
+	padding: 3px 3px 3px 14px;
+}
+
+.if-header__search input {
+	font-size: 15px;
+	line-height: 22px;
+}
+
+.if-menu {
+	position: relative;
+}
+
+.if-menu__toggle {
+	display: grid;
+	place-items: center;
+	min-width: 44px;
+	min-height: 44px;
+	list-style: none;
+	cursor: pointer;
+	border-radius: 50%;
+}
+
+.if-menu__toggle::-webkit-details-marker {
+	display: none;
+}
+
+.if-menu__toggle:focus-visible {
+	outline: 3px solid var(--if-focus);
+	outline-offset: 2px;
+}
+
+.if-menu__list {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	z-index: 60;
+	display: grid;
+	gap: var(--if-space-2);
+	min-width: 14rem;
+	padding: var(--if-space-2);
+	margin: 0;
+	list-style: none;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-menu__list ul {
+	display: grid;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-menu__list ul + ul {
+	padding-top: var(--if-space-2);
+	border-top: 1px solid var(--if-line);
+}
+
+.if-menu__list a {
+	display: block;
+	padding: 10px 12px;
+	font-weight: 700;
+	color: var(--if-ink);
+	text-decoration: none;
+	border-radius: var(--if-radius-sm);
+}
+
+.if-menu__list a:hover,
+.if-menu__list a:focus-visible {
+	color: var(--if-teal-800);
+	background: var(--if-surface-tint);
+}
+
+.if-header__phone {
+	display: none;
+}
+
+@media (max-width: 1000px) {
+	.if-header__search,
+	.if-header__wide {
+		display: none;
+	}
+
+	.if-header__phone {
+		display: block;
+	}
+
+	.if-header__phone .if-menu__list {
+		position: fixed;
+		top: var(--if-header-h-compact);
+		right: var(--if-space-4);
+		left: var(--if-space-4);
+	}
+}
+
+/* ---------- Hub pages and the programmes index ---------- */
+
+.if-hub {
+	display: grid;
+	gap: var(--if-space-6);
+}
+
+.if-hub__head {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-hub__head > *,
+.if-hub__programmes h2 {
+	margin: 0;
+}
+
+.if-hub__at {
+	display: block;
+	font-size: 0.6em;
+	line-height: 1.3;
+	color: var(--if-muted);
+}
+
+.if-hub__programmes {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+ul.if-chips {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+a.if-chip {
+	color: var(--if-ink);
+	text-decoration: none;
+}
+
+/* ---------- Ad slots (plan.md 5.6): each reserves its height, so nothing jumps ---------- */
+
+.if-ad .if-ad__box {
+	min-height: var(--if-ad-h, 250px);
+}
+
+.if-ad--inline,
+.if-ad--end {
+	max-width: var(--if-reading);
+	margin: var(--if-space-8) 0;
+}
+
+.if-ad--sidebar {
+	margin-top: var(--if-space-6);
+}
+
+.if-ad--card .if-ad__box {
+	height: 100%;
+}
+
+@media (max-width: 1000px) {
+	.if-ad--sidebar {
+		display: none;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-ad .if-ad__box {
+		min-height: var(--if-ad-h-phone, 250px);
+	}
+}
+
+/* ---------- Legal pages ---------- */
+
+.if-legal {
+	display: grid;
+	gap: var(--if-space-3);
+}
+
+.if-legal > * {
+	max-width: var(--if-reading);
+}
+
+.if-legal h1,
+.if-legal > p {
+	margin: 0;
+}
+
+.if-legal__body {
+	font-size: 18px;
+	line-height: 30px;
+}
+
+.if-legal__body h2 {
+	margin: var(--if-space-8) 0 var(--if-space-3);
+	font: 700 22px/28px var(--font-display);
+}
+
+.if-legal__body p,
+.if-legal__body ul {
+	margin: 0 0 var(--if-space-4);
+}
+
+/* ---------- Header: the logo never shrinks; Dashboard link (UI review, 1 November 2026) ---------- */
+
+/* Inner pages add the search box; without this the flex row squeezed the logo narrower. */
+.if-header__logo {
+	flex: none;
+}
+
+.if-header__logo img {
+	width: auto;
+	max-width: none;
+	height: 36px;
+}
+
+.if-header__dashboard {
+	white-space: nowrap;
+}
+
+/* Signed in, the header holds navigation, search, Submit, Dashboard, the bell and the avatar: the
+   search gives way first, so nothing runs off the edge. */
+.if-header__actions {
+	min-width: 0;
+}
+
+.if-header__search {
+	flex: 0 1 240px;
+	min-width: 120px;
+	width: auto;
+}
+
+.if-header__actions > :not(.if-header__search) {
+	flex: none;
+}
+
+@media (max-width: 1180px) {
+	.if-header__inner {
+		gap: var(--if-space-4);
+	}
+
+	/* No room for it next to everything else; search stays on the home page, /experiences/ and,
+	   below 1000 px, in the Menu. */
+	.if-header__search {
+		display: none;
+	}
+
+	.if-nav a {
+		padding-inline: 10px;
+	}
+}
+
+@media (max-width: 640px) {
+	.if-header__logo img {
+		height: 28px;
+	}
+}
+
+/* ---------- Filters: one height, one border, equal widths (UI review, 1 November 2026) ---------- */
+
+.if-browse__row:not(.if-browse__types) {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--if-space-2);
+}
+
+.if-browse__search {
+	grid-column: span 2;
+	max-width: none;
+}
+
+.if-browse__row .if-search,
+.if-browse__row .if-chip {
+	box-sizing: border-box;
+	min-width: 0;
+	height: 44px;
+	min-height: 44px;
+	border-width: 1px;
+	font-size: 15px;
+}
+
+.if-browse__row .if-search {
+	padding: 0 6px 0 16px;
+}
+
+.if-browse__row .if-chip--select select {
+	width: 100%;
+	min-height: 42px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.if-browse__row .if-chip--toggle {
+	justify-content: center;
+}
+
+.if-browse__types .if-chip {
+	min-height: 40px;
+	font-size: 15px;
+}
+
+@media (max-width: 900px) {
+	.if-browse__row:not(.if-browse__types) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* Unread updates on the Dashboard link and, on phones, the Menu button (replaces the bell). */
+.if-header__dashboard {
+	gap: 6px;
+}
+
+.if-header__count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	font: 700 12px/1 var(--font-body);
+	color: var(--if-on-teal);
+	background: var(--if-teal-700);
+	border-radius: var(--if-radius-pill);
+}
+
+.if-menu__toggle {
+	position: relative;
+}
+
+.if-header__count--dot {
+	position: absolute;
+	top: 2px;
+	right: -2px;
+	min-width: 18px;
+	height: 18px;
+	font-size: 11px;
+}
+
+/* ---------- Dashboard: profile reminder, older updates (1 November 2026) ---------- */
+
+.if-dash__reminder {
+	margin: 0;
+	padding: var(--if-space-3) var(--if-space-4);
+	background: var(--if-surface-tint);
+	border-radius: var(--if-radius);
+}
+
+.if-dash__reminder a {
+	margin-left: var(--if-space-2);
+	font-weight: 700;
+}
+
+.if-dash__panel > h2 {
+	margin: var(--if-space-2) 0 0;
+}
+
+.if-dash__more-notes {
+	justify-self: start;
+}
+
+/* Anonymous sharing: a small note under Share buttons and a callout on the submit form. */
+.if-anon-note {
+	display: flex;
+	gap: var(--if-space-2, 8px);
+	align-items: center;
+	margin: var(--if-space-2, 8px) 0 0;
+	font-size: 0.875rem;
+	color: var(--if-teal-700);
+}
+
+.if-anon-note .if-icon {
+	flex: none;
+	width: 16px;
+	height: 16px;
+}
+
+.if-anon-callout {
+	margin-top: var(--if-space-4, 16px);
+	padding: var(--if-space-3, 12px) var(--if-space-4, 16px);
+	border-left: 4px solid var(--if-teal-700);
+	border-radius: 8px;
+	background: color-mix(in srgb, var(--if-teal) 10%, transparent);
+}
+
+.if-anon-callout p {
+	margin: 0;
+}
+
+.if-anon-callout p + p {
+	margin-top: var(--if-space-2, 8px);
+}
+
+/* Segmented radios inside a form field: one line per option, none of the text-input sizing. */
+.if-segment label {
+	display: inline-flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.if-field .if-segment input {
+	min-height: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* The month field shows a placeholder while empty and not being edited. */
+.if-month {
+	position: relative;
+	display: block;
+}
+
+.if-month.is-empty:not(:focus-within)::before {
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	content: attr(data-placeholder);
+	color: var(--if-muted);
+	pointer-events: none;
+	transform: translateY(-50%);
+}
+
+.if-month.is-empty:not(:focus-within) input::-webkit-datetime-edit {
+	color: transparent;
+}
+
+/* A fieldset beside a taller field keeps its rows at their own height instead of stretching. */
+fieldset.if-field {
+	align-content: start;
+}
+
+/* ---------- 404: "You leapt before you peeped" ---------- */
+.if-404 {
+	padding: 40px 0 56px;
+}
+
+.if-404__inner {
+	display: grid;
+	gap: 48px;
+	align-items: center;
+}
+
+.if-404__text {
+	display: grid;
+	gap: 20px;
+}
+
+.if-404__text > * {
+	margin: 0;
+}
+
+.if-404__label {
+	color: var(--if-teal-800);
+}
+
+.if-404__title {
+	font-size: 36px;
+	line-height: 42px;
+	text-wrap: balance;
+}
+
+.if-404__search {
+	display: flex;
+	gap: var(--if-space-2);
+	max-width: 36rem;
+}
+
+.if-404__search .if-search {
+	flex: 1;
+	min-width: 0;
+}
+
+.if-404__types {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-404__types .if-chips {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-404__types .if-chip {
+	text-decoration: none;
+}
+
+.if-404__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--if-space-3);
+}
+
+/* The card for the internship that never happened, slightly askew, with eyes peeping over its top edge. */
+.if-404__art {
+	position: relative;
+	justify-self: center;
+	width: min(100%, 380px);
+	padding-top: 60px;
+}
+
+.if-404__card {
+	transform: rotate(-2deg);
+	box-shadow: var(--if-shadow-raise);
+}
+
+.if-404__card:hover {
+	border-color: var(--if-line);
+}
+
+.if-404__eyes {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	z-index: 0;
+	width: 156px;
+	height: 65px;
+	transform: translateX(-50%);
+	overflow: visible;
+}
+
+.if-404__card {
+	position: relative;
+	z-index: 1;
+}
+
+.if-404__brow {
+	fill: none;
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+	stroke-linecap: round;
+}
+
+.if-404__eye {
+	fill: var(--if-surface);
+	stroke: var(--if-teal-700);
+	stroke-width: 3;
+}
+
+.if-404__pupil {
+	fill: var(--if-ink);
+}
+
+.if-404__lids {
+	transform-box: fill-box;
+	transform-origin: center bottom;
+}
+
+.if-404__rating {
+	display: flex;
+	align-items: center;
+	gap: var(--if-space-3);
+}
+
+.if-404__score {
+	flex: none;
+	font: 800 32px/1 var(--font-display);
+	color: var(--if-danger);
+}
+
+.if-404__score span {
+	font-size: 16px;
+	color: var(--if-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.if-404__eyes {
+		animation: if-404-peep 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms both;
+	}
+
+	.if-404__lids {
+		animation: if-404-blink 5s ease-in-out 1.4s infinite;
+	}
+
+	.if-404__pupil {
+		animation: if-404-look 7s ease-in-out 1.8s infinite;
+	}
+}
+
+@keyframes if-404-peep {
+	from {
+		transform: translate(-50%, 60px);
+	}
+	to {
+		transform: translate(-50%, 0);
+	}
+}
+
+@keyframes if-404-blink {
+	0%,
+	92%,
+	100% {
+		transform: scaleY(1);
+	}
+	95% {
+		transform: scaleY(0.1);
+	}
+}
+
+@keyframes if-404-look {
+	0%,
+	30%,
+	100% {
+		transform: translateX(0);
+	}
+	40%,
+	60% {
+		transform: translateX(-8px);
+	}
+	70%,
+	90% {
+		transform: translateX(2px);
+	}
+}
+
+@media (min-width: 900px) {
+	.if-404 {
+		padding: 64px 0 80px;
+	}
+
+	.if-404__inner {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: 56px;
+	}
+
+	.if-404__title {
+		font-size: 48px;
+		line-height: 52px;
+	}
+}
+
+@media (max-width: 480px) {
+	.if-404__search {
+		flex-direction: column;
+	}
+}

@@ -1,0 +1,24 @@
+[
+ {
+  "id": 9001,
+  "post": 101,
+  "parent": 0,
+  "author_name": "Meera J.",
+  "date": "2016-05-02T10:00:00",
+  "date_gmt": "2016-05-02T10:00:00",
+  "content": {
+   "rendered": "<p>Very helpful, thank you!</p>"
+  }
+ },
+ {
+  "id": 9002,
+  "post": 101,
+  "parent": 9001,
+  "author_name": "Asha",
+  "date": "2016-05-03T10:00:00",
+  "date_gmt": "2016-05-03T10:00:00",
+  "content": {
+   "rendered": "<p>Glad it helped.</p>"
+  }
+ }
+]

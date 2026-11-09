@@ -4,7 +4,7 @@
 **Owners:** Surabhi Gupta, Arjit Raj
 **Related:** [plan.md](plan.md) (scope, schedule, decisions) · [development.md](development.md) (how to build, test and deploy)
 
-InternFeel is a fresh WordPress 7.0 site on PHP 8.5, hosted on the existing VaporHost cPanel plan. All custom behaviour lives in two pieces of code kept in GitHub: a custom theme for every page visitors and students see, and one plugin, `internfeel-core`, for accounts, submissions, verification, invites, badges, certificates and moderation. Nothing from the old WordPress install is reused except its exported content.
+InternFeel is a fresh WordPress 7.1 site on PHP 8.5, hosted on the existing VaporHost cPanel plan. All custom behaviour lives in two pieces of code kept in GitHub: a custom theme for every page visitors and students see, and one plugin, `internfeel-core`, for accounts, submissions, verification, invites, badges, certificates and moderation. Nothing from the old WordPress install is reused except its exported content.
 
 ---
 
@@ -15,7 +15,7 @@ InternFeel is a fresh WordPress 7.0 site on PHP 8.5, hosted on the existing Vapo
 | Next.js + Supabase on Vercel | Rejected: Vercel's free plan forbids sites that show ads, and it adds three new services to run. |
 | Next.js on Cloudflare Workers | Rejected: the team prefers to stay on the hosting already paid for. |
 | Node.js on VaporHost | Not possible: the cPanel plan has no "Setup Node.js App". |
-| **Fresh WordPress on VaporHost** | **Chosen.** PHP 8.5 is available and fully supported by WordPress 7.0. Users, roles, comments, the admin panel, media and SEO come built in. |
+| **Fresh WordPress on VaporHost** | **Chosen.** PHP 8.5 is available and fully supported by WordPress 7.1. Users, roles, comments, the admin panel, media and SEO come built in. |
 
 The cost of this choice is that security becomes our job, which is covered in section 9.
 
@@ -106,7 +106,6 @@ Front-end JavaScript is plain ES modules with no build step. CSS uses custom pro
 | --- | --- |
 | LiteSpeed Cache | Page and object caching, image optimisation (WebP/AVIF) |
 | Wordfence | Firewall, malware scan, login protection |
-| Two-Factor | Two-step sign-in for administrators |
 | Yoast SEO | Titles, meta descriptions, sitemaps, schema |
 | Nextend Social Login | "Sign in with Google" |
 | CookieYes | Cookie consent; a Google-certified consent platform, needed for AdSense in the EEA and UK |
@@ -184,7 +183,7 @@ Post meta (prefix `_if_`; the leading underscore hides it from the custom-fields
 | Group | Keys |
 | --- | --- |
 | Where and what | `organisation_term`, `programme_term`, `field_term` (if_master term IDs), `type` (research, industry, government, NGO, virtual), `mode` (on-site, remote, hybrid), `city`, `country`, `start_month` (YYYY-MM), `duration_weeks` |
-| Money | `paid` (required, bool), `stipend_amount_inr` (optional, monthly), `selection_difficulty` (1–5) |
+| Money | `paid` (required; stored as "1" paid or "0" unpaid, empty until answered), `stipend_amount_inr` (optional, monthly), `selection_difficulty` (1–5) |
 | Story | `story` (JSON keyed by the standard questions), `advice` |
 | Ratings (required) | `rating_overall`, `rating_learning`, `rating_mentorship`, `rating_culture` (1–5) |
 | Identity | `is_anonymous` (hides name, photo and LinkedIn only) |
@@ -192,8 +191,10 @@ Post meta (prefix `_if_`; the leading underscore hides it from the custom-fields
 | Counters | `view_count`, `report_count`, `flagged` |
 | Verification (private) | `proof_files` (JSON list of private file names), `verification_status` (not_submitted, pending, verified, rejected), `verified_by`, `verified_at`, `verification_note` |
 | Certificate | `certificate_no`, `certificate_issued_at`, `certificate_revoked_at` |
+| Moderation (private) | `moderation_note` (the admin's reason when changes are requested or the experience is rejected), `submitted_at` (latest submission, for the 24-hour highlight), `verified_counted` (set once the experience has counted towards the author's `verified_count`) |
 | Editing | `edit_count` (max 1 after publishing) |
-| Legacy | `legacy_wp_id`, `legacy_student_name`, `legacy_published_year` |
+| Suggestions (private) | `organisation_suggestion`, `programme_suggestion`, `field_suggestion`: names a student typed that are not on the master list yet; an admin adds or matches them |
+| Legacy | `legacy_wp_id`, `legacy_student_name`, `legacy_published_year`, `import_kind` (experience or article) |
 
 **Private meta never leaves the server.** `proof_files`, `verification_note` and `verified_by` are registered with `show_in_rest => false`, and the theme never prints them.
 
@@ -298,6 +299,14 @@ sequenceDiagram
 
 - **Credit line on the post:** "Shared through an invite from {referrer name}, {college}". It appears even when the author is anonymous; only the author is hidden.
 - **Abuse rules:** self-referral is blocked; sign-ups from the inviter's own IP or device within 24 hours are flagged for review; invites are limited to credits held; an admin can remove a credit, and the removal is logged.
+- **As built (day 8):** `InternFeel\Invites\Invites`. Credits arrive on `if_experience_verified` (3 each). `POST invites` spends one credit on an 8-character code, stored in `_if_invite_codes` and indexed as one `_if_invite_code` user meta row per code. `/join/?ref=CODE` (`page-join.php`, never cached) sets the `if_ref` cookie (30 days, HttpOnly, SameSite Lax) only for an unused code, and never for the inviter's own link. On `user_register` (email or Google) the cookie sets `referred_by_user_id` once, marks the code used, adds to `invites_joined` and notifies the inviter. Submissions take the referrer from `referred_by_user_id`, so every one is credited.
+- **Abuse rules as built:** the inviter's IP is kept only as a salted hash (`wp_hash`) on each code. A sign-up from the same IP within 24 hours of the invite is flagged (`_if_referral_flagged`, logged as `referral` / `flag`). Admins see these under **Review → Flagged referrals** and keep or remove them. A student's edit screen has **Remove one credit**. Both decisions are logged. Device matching is not built: there is no device fingerprinting, by design, for privacy.
+- **Credit line:** a student can tick "Keep my name off invite credits" in Profile (`_if_hide_invite_credit`); their invitees' posts then say "Shared through an InternFeel student invite".
+
+### 5.3.1 Share previews and hub pages (as built, day 10)
+
+- **Share previews:** `InternFeel\Share\Share` prints Open Graph and Twitter tags. Each experience gets a 1200 × 630 PNG drawn with GD from the brand fonts: the logo, the title (up to three lines) and the organisation and type, never the author. It is made on first view and kept in `uploads/internfeel-share/`, named with a hash of what it shows, so editing the title makes a new one and removes the old. Other pages use one site image. Once Yoast SEO is installed (day 11), Yoast prints the tags and only borrows the experience image.
+- **Hub pages:** `/org/{organisation}/` and `/org/{organisation}/{programme}/` (the `if_master` taxonomy, also fields) show key facts: published experiences, average overall rating, the median stipend's band and the most common start months. Then an organisation's programmes, and up to 24 cards. `/org/` lists organisations A to Z with their programmes.
 
 ### 5.4 Badges
 
@@ -308,6 +317,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **Issued on publish.** Dompdf renders the template with the student's real name, experience title, organisation, date, certificate number (`IF-YYYY-NNNNN`) and a QR code linking to `/verify/IF-YYYY-NNNNN`. Footer: "Issued by InternFeel".
 - **Storage and download:** the PDF is stored in the private folder, and the student downloads it from the dashboard through a permission-checked endpoint.
 - **Removal:** if the experience is removed, the verify page shows "revoked".
+- **As built (day 6):** numbers come from a per-year counter increased in one SQL statement (`if_certificate_seq_YYYY`), so two approvals never share one. Imported experiences get none (no student account). Removing or trashing a published experience revokes it; republishing reinstates the same number. The PDF is rendered on first download from `templates/certificate.php` with Dompdf, using TTF copies of the brand fonts in the plugin's `assets/fonts/` (Dompdf cannot read WOFF2), and a QR code from `chillerlan/php-qrcode` (needs PHP's GD extension). It is kept in the private `certificates/` folder under a name that includes a hash of what it prints, so a changed name or title produces a fresh file. `GET certificates/{id}` downloads it (author or admin); `GET verify/{number}` and `/verify/{number}/` are public. For anonymous experiences both leave out the title and organisation (plan.md section 4).
 
 ### 5.6 View counting
 
@@ -315,6 +325,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **What the endpoint skips:** bots (by user agent), the author, and repeat visits from a browser that already holds the `if_v_{id}` cookie (one day).
 - **How it counts:** an atomic SQL `UPDATE` on `view_count`, so simultaneous visits don't lose counts.
 - **Trade-off:** with no per-day history stored, dashboards show total views only.
+- **As built (day 12):** `views.js` posts once the page has loaded. Because cached pages carry no REST nonce, the endpoint reads the sign-in cookie directly, only to skip the author. Link previewers (WhatsApp, Facebook), headless browsers and Lighthouse count as bots.
 
 ### 5.7 Search and filters
 
@@ -322,11 +333,18 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **Shareable results:** filters live in the URL query string, so any filtered view can be shared and cached.
 - **Live updates:** results refresh through `GET /wp-json/internfeel/v1/experiences` without a page reload.
 - **Scale:** fine for a few thousand experiences. Beyond that, add a dedicated search index.
+- **As built (day 7):** `InternFeel\Search\Search` cleans the query string (`q`, `field`, `type`, `organisation`, `location`, `year`, `pay` as paid, unpaid or a stipend band, `verified`, `sort`, `page`) and builds the one `WP_Query`. The home page, `/experiences/` and `GET experiences` all use it, so a filtered URL renders the same results with or without JavaScript. Year matches the internship's start month, or the original publication year for migrated posts. Card data (`Search\Cards`) carries only public fields and never the author. The trust-strip counts and the filter menus' choices are cached for 10 minutes and an hour, and cleared whenever an experience is saved.
+- **Anonymous comments:** on an anonymous experience, the author's own comments show "Anonymous" everywhere: on the page, in reply links, and in the core comments REST route, which also drops the user ID and avatar.
 
 ### 5.8 Moderation
 
 - **Queues:** a wp-admin page lists submissions, proofs, edits, reports and organisation suggestions, oldest first. Anything waiting more than 18 hours is highlighted, against the 24-hour promise.
 - **Auto-flagging:** an item with 3 reports is hidden from listings until an admin decides.
+- **Reports as built (day 9):** `POST report` (signed in, 20 an hour) takes `experience` or `comment`, an ID and a reason. Each reader reports an item once, checked against the moderation log, and nobody can report their own writing. The third report flags the item: a flagged experience drops out of every listing, and a flagged comment is held. **Review → Reports** lists reported items, flagged first, with each reason. **Keep** clears the reports (and re-approves a held comment); **Remove** moves an experience to Removed (its certificate is revoked) or trashes a comment. Both are logged.
+- **Comments as built:** `PATCH comments/{id}` lets a comment's author edit it once (`_if_edit_count`, `_if_edited_at`; the comment then shows "edited"). Every approved comment by someone other than the experience's author raises one `new_comment` notification.
+- **Listicles as built:** the Listicle edit screen has an "Experiences in this listicle" box. Paste one experience link or ID per line, in order, and set the home page position (0 keeps it off). `/lists/` lists them, and `/lists/{slug}/` shows the cards in order; experiences that aren't published are skipped.
+- **As built (day 5):** wp-admin → **Review** has tabs for New submissions, Imported (the migrated posts, kept apart so they don't bury new ones), Proof, Suggestions and Log. Approve, request changes and reject apply to pending experiences; verify and reject proof apply when proof is pending. Requesting changes, rejecting and rejecting proof need a note, which the student sees in their notification. Imported posts have no student, so they can only be approved, rejected or edited. Each decision writes one log row and one notification. Adding a suggestion creates the master-list entry (or matches one with the same name) and links the experience; programmes need their organisation first.
+- **Hooks for later modules:** `if_experience_published` (certificates) fires on approval; `if_experience_verified` fires once when an experience is both published and verified, after `verified_count` goes up (badges, invite credits).
 
 ---
 
@@ -401,7 +419,7 @@ The old install was probably compromised, so the new site starts clean and stays
 
 1. **Clean slate.** Fresh WordPress, no files from the old install, new database, new salts, new admin accounts. Once its content is exported, the old install is removed from the hosting account and the cPanel password is changed.
 2. **Least privilege.** Students hold only `read` plus custom capabilities for their own content. The plugin checks ownership on every write.
-3. **Admin protection.** Two-step sign-in, Wordfence login limits, no `admin` username.
+3. **Admin protection.** Wordfence login limits, strong unique passwords, no `admin` username. Two-step sign-in is not used (decided 9 November 2026).
 4. **Private files.** Proofs and certificates live outside the web root and are streamed only after a permission check, with `Content-Disposition: attachment`. Uploads accept only PDF, JPG and PNG, up to 5 MB, maximum 3 files, checked by real MIME type.
 5. **Hardening, in the plugin and wp-config.** `DISALLOW_FILE_EDIT`, XML-RPC off, `/wp/v2/users` closed to the public, author-enumeration redirects blocked, and security headers set: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, and a starter Content-Security-Policy.
 6. **Input and output.** Everything is sanitised on the way in and escaped on the way out. `$wpdb->prepare` is used for all SQL, and nonces protect every form and REST write.
@@ -437,6 +455,10 @@ The old install was probably compromised, so the new site starts clean and stays
 
 ---
 
+### 11.1 Performance pass (day 12)
+
+The theme drops WordPress's emoji script, the block editor's front-end CSS (whole-library and per-block) and theme.json's global styles: the design system's CSS covers everything, and legal pages' simple blocks are styled in `style.css`. Measured in Playground, this took an experience page from 249 KB to 206 KB and the home page from 283 KB to 241 KB. What remains is the brand fonts (64–90 KB, preloaded), the design system's CSS (52 KB) and CookieYes's banner (about 35 KB inline, set by the plugin). Lighthouse mobile scores are to be taken on staging, where LiteSpeed caching and HTTP/2 apply, before launch.
+
 ## 12. Decisions log
 
 | Date | Decision | Reason |
@@ -451,3 +473,4 @@ The old install was probably compromised, so the new site starts clean and stays
 | 25 Oct 2026 | Public GitHub repo | The hosting plan has no SSH access, so cPanel can only pull a public repo; secrets and private details are kept out of it |
 | 25 Oct 2026 | No CAPTCHA at launch | Deferred by the team; rate limits and a honeypot cover simple bots until Turnstile is added |
 | 25 Oct 2026 | Email-and-password or Google sign-in, no email verification, no notification emails | Updates are shown on the dashboard; no Resend account needed. The password reset is the only email, through cPanel mail |
+| 26 Oct 2026 | WordPress 7.1 instead of 7.0 | 7.1.3 is the current release and WordPress.org lists 7.0.x as outdated; a fresh install should start on the supported branch. Replaces the 7.0 version in the 25 Oct platform decision |

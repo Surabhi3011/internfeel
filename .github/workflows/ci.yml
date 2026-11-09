@@ -1,0 +1,170 @@
+# Continuous integration (docs/development.md section 7).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Public-repo check (no emails, /home/ paths or keys)
+        run: bash tools/check-public.sh
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer
+          coverage: none
+
+      - name: Install dev tools
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: php -l (PHP 8.5)
+        run: composer run syntax
+
+      - name: PHPCS (WordPress Coding Standards)
+        run: vendor/bin/phpcs
+
+      - name: PHPStan (level 6)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+  unit:
+    name: unit
+    runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # PHPUnit 9.6 and the PHPUnit Polyfills come from the repo's Composer dev tools; they run inside
+      # the wp-env cli container, which also provides the WordPress test suite (WP_TESTS_DIR).
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer
+          coverage: none
+
+      - name: Install dev tools
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Start wp-env (WordPress 7.1, PHP 8.5)
+        run: npx wp-env start
+
+      - name: Environment check
+        run: |
+          npx wp-env run cli php -v
+          npx wp-env run cli wp core version
+          npx wp-env run cli wp theme list
+          npx wp-env run cli wp plugin list
+
+      - name: PHPUnit
+        run: npm run test:unit
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      # Browser only, cached between runs. No --with-deps: the runner image already has Chromium's
+      # libraries, and the extra fonts that apt pulled hung on slow mirrors and left apt holding its
+      # lock, so retries could never succeed. Without apt, a timed-out attempt can be retried cleanly.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium for Playwright
+        timeout-minutes: 16
+        run: |
+          for attempt in 1 2 3; do
+            timeout 300 npx playwright install chromium && exit 0
+            echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
+          done
+          exit 1
+      - run: npx wp-env start
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-report
+          path: playwright-report/
+          retention-days: 7
+
+  a11y:
+    name: a11y
+    runs-on: ubuntu-latest
+    # A hung step fails the job instead of holding it for GitHub's 6-hour limit.
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      # Browser only, cached between runs. No --with-deps: the runner image already has Chromium's
+      # libraries, and the extra fonts that apt pulled hung on slow mirrors and left apt holding its
+      # lock, so retries could never succeed. Without apt, a timed-out attempt can be retried cleanly.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium for Playwright
+        timeout-minutes: 16
+        run: |
+          for attempt in 1 2 3; do
+            timeout 300 npx playwright install chromium && exit 0
+            echo "::warning::Playwright install attempt ${attempt} failed or timed out; retrying."
+          done
+          exit 1
+      - run: npx wp-env start
+      - run: npm run test:a11y
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: a11y-report
+          path: playwright-report/
+          retention-days: 7

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · InternFeel approved design</title>
+<link rel="stylesheet" href="system/tokens.css">
+<link rel="stylesheet" href="system/bundle.css">
+<style>
+body{margin:0}
+a{color:#297777}a:hover{color:#1f5c5c}
+.pg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pg-wrap{max-width:var(--if-content);margin-inline:auto;padding-inline:var(--if-space-4)}
+.pg-narrow{display:none}
+.pg-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center}
+.pg-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.pg-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.pg-stat+.pg-stat{border-left:1px solid var(--if-line)}
+.pg-news{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:end}
+.pg-newsform{display:flex;gap:8px}
+.pg-chiprow{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:900px){.pg-hero{grid-template-columns:minmax(0,1fr)}.pg-grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.pg-news{grid-template-columns:1fr}}
+@media (max-width:640px){
+.pg-wide{display:none}.pg-narrow{display:inline-flex}
+.pg-grid3{grid-template-columns:1fr}
+.pg-art{display:none}
+.display.pg-display{font-size:34px;line-height:40px}
+.pg-stats{grid-template-columns:1fr}
+.pg-stat+.pg-stat{border-left:0;border-top:1px solid var(--if-line)}
+.pg-chiprow{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.pg-chiprow .if-chip{flex:none}
+.pg-newsform{flex-direction:column}
+.pg-steps{grid-template-columns:1fr}
+}
+@media (max-width:1000px){.if-bell.pg-narrow{display:inline-grid}}
+</style>
+</head>
+<body>
+<div style="background: var(--if-canvas); color: var(--if-ink); font-family: var(--font-body); min-height: 100vh">
+
+<header class="if-header"><div class="if-header__inner">
+<a class="if-header__logo" href="home.html"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"></a>
+<nav class="if-nav" aria-label="Main"><a href="#browse">Experiences</a><a href="#browse">Programmes</a><a href="#lists">Listicles</a><a href="#how">About</a></nav>
+<div class="if-header__actions">
+<a class="if-btn if-btn--ghost if-btn--sm pg-wide" href="signup.html">Log in</a>
+<a class="if-btn if-btn--sm pg-wide" href="signup.html">Sign up</a>
+<a class="if-btn if-btn--primary if-btn--sm" href="submit-step-1.html"><span class="pg-wide">Submit experience</span><span class="pg-narrow">Submit</span></a>
+<button class="if-bell pg-narrow" type="button" aria-label="Menu"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+</div></header>
+
+<main>
+<section style="padding: 56px 0 64px">
+<div class="pg-wrap pg-hero">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; min-width: 0">
+<span class="label" style="color: var(--if-teal-800)">Written by students, for students</span>
+<h1 class="display pg-display" style="margin: 0; text-wrap: balance">Real internship experiences from students who've been there</h1>
+<p class="body-lg" style="margin: 0; color: var(--if-muted); max-width: 34rem">Read how students got in, what the work was like and what they were paid. Then share your own and get a certificate.</p>
+<form class="if-search" role="search" action="#browse">
+<svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+<label class="pg-sr" for="home-q">Search experiences</label>
+<input id="home-q" type="search" placeholder="Organisation, programme or field">
+<button class="if-btn" type="submit">Search</button>
+</form>
+<p class="small" style="margin: -8px 0 0; color: var(--if-muted)">Popular: <a href="#browse">IAS summer fellowship</a> · <a href="#browse">IIT summer research</a> · <a href="#browse">RBI internship</a> · <a href="#browse">Paid internships abroad</a></p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 8px">
+<a class="if-btn if-btn--primary" href="submit-step-1.html">Submit your experience</a>
+<a class="if-btn if-btn--ghost" href="#how">How it works</a>
+</div>
+</div>
+<div class="pg-art" style="position: relative; height: 440px; min-width: 0">
+<svg viewBox="0 0 560 440" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%">
+<rect x="0" y="48" width="200" height="392" style="fill: var(--if-surface-tint)"/>
+<rect x="200" y="0" width="360" height="240" style="fill: var(--if-teal)"/>
+<rect x="200" y="240" width="176" height="200" style="fill: var(--if-charcoal)"/>
+<rect x="376" y="240" width="184" height="200" style="fill: var(--if-teal-700)"/>
+<rect x="70" y="150" width="520" height="36" rx="18" transform="rotate(-7 330 168)" style="fill: var(--if-canvas)"/>
+<rect x="120" y="236" width="470" height="36" rx="18" transform="rotate(-7 355 254)" style="fill: var(--if-canvas)"/>
+</svg>
+<article class="if-card" style="position: absolute; left: 24px; bottom: 24px; width: 330px">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">I</span><span class="if-card__orgname"><strong>Indian Institute of Science</strong>Bengaluru, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">Eight weeks in an ecology lab through the IAS summer fellowship</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Ecology</li><li>2026 · 8 weeks</li><li>Paid · ₹10k–25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4.5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i></span><span class="if-rating__value">4.5</span><span class="if-rating__of">/ 5</span></span><span class="if-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified</span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 1,240<span class="pg-sr"> views</span></span></div>
+</article>
+</div>
+</div>
+</section>
+
+<section id="browse" style="background: var(--if-surface); border-top: 1px solid var(--if-line); border-bottom: 1px solid var(--if-line); padding: 32px 0">
+<div class="pg-wrap" style="display: grid; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+<h2 class="heading-2" style="margin: 0">Browse experiences</h2>
+<span class="small" style="color: var(--if-muted)">217 experiences</span>
+</div>
+<div class="pg-chiprow" role="group" aria-label="Filters">
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Field</button>
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Type</button>
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Organisation</button>
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Location</button>
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Year</button>
+<button class="if-chip if-chip--menu" type="button" aria-haspopup="true">Paid or unpaid</button>
+<button class="if-chip" type="button" aria-pressed="false"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified only</button>
+</div>
+<div class="pg-chiprow" role="group" aria-label="Type">
+<button class="if-chip" type="button" aria-pressed="true">All types</button>
+<button class="if-chip" type="button" aria-pressed="false">Research</button>
+<button class="if-chip" type="button" aria-pressed="false">Industry</button>
+<button class="if-chip" type="button" aria-pressed="false">Government</button>
+<button class="if-chip" type="button" aria-pressed="false">NGO</button>
+<button class="if-chip" type="button" aria-pressed="false">Virtual</button>
+</div>
+</div>
+</section>
+
+<section aria-label="InternFeel in numbers" style="padding: 32px 0 8px">
+<div class="pg-wrap">
+<div class="pg-stats" style="border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface)">
+<div class="pg-stat" style="padding: 20px 24px; display: grid; gap: 2px"><span style="font: 800 36px/42px var(--font-display); color: var(--if-teal-800); font-variant-numeric: tabular-nums">217</span><span class="small" style="color: var(--if-muted)">experiences shared</span></div>
+<div class="pg-stat" style="padding: 20px 24px; display: grid; gap: 2px"><span style="font: 800 36px/42px var(--font-display); color: var(--if-teal-800); font-variant-numeric: tabular-nums">38</span><span class="small" style="color: var(--if-muted)">verified with proof</span></div>
+<div class="pg-stat" style="padding: 20px 24px; display: grid; gap: 2px"><span style="font: 800 36px/42px var(--font-display); color: var(--if-teal-800); font-variant-numeric: tabular-nums">120</span><span class="small" style="color: var(--if-muted)">colleges contributing</span></div>
+</div>
+</div>
+</section>
+
+<div id="lists">
+
+<section style="padding: 40px 0 8px">
+<div class="pg-wrap" style="display: grid; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+<div style="display: grid; gap: 4px"><h2 class="heading-2" style="margin: 0">Latest experiences</h2><span class="small" style="color: var(--if-muted)">Newly published and reviewed by InternFeel</span></div>
+<a href="#lists" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700">See all<svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+<div class="pg-grid3">
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">R</span><span class="if-card__orgname"><strong>Reserve Bank of India</strong>Mumbai, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">What the RBI summer internship is really like</a></h3>
+<ul class="if-card__facts"><li>Government</li><li>Economics</li><li>2026 · 8 weeks</li><li>Paid · above ₹25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><span class="if-rating__value">4.0</span><span class="if-rating__of">/ 5</span></span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 986<span class="pg-sr"> views</span></span></div>
+<span class="if-card__credit" style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--if-teal-700)"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M19 8v6M16 11h6"/></svg>Shared through an invite</span>
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">I</span><span class="if-card__orgname"><strong>IIT Bombay</strong>Mumbai, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">Building a compiler module in the Eklavya programme</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Computer science</li><li>2026 · 6 weeks</li><li>Unpaid</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4.5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i></span><span class="if-rating__value">4.5</span><span class="if-rating__of">/ 5</span></span><span class="if-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified</span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 742<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">H</span><span class="if-card__orgname"><strong>HDFC Bank</strong>Gurugram, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">Two months in retail banking operations</a></h3>
+<ul class="if-card__facts"><li>Industry</li><li>Management</li><li>2026 · 8 weeks</li><li>Paid · ₹10k–25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 3.5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i><i class=""></i></span><span class="if-rating__value">3.5</span><span class="if-rating__of">/ 5</span></span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 431<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+</div>
+</div>
+</section>
+
+<section style="padding: 40px 0 8px">
+<div class="pg-wrap" style="display: grid; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+<div style="display: grid; gap: 4px"><h2 class="heading-2" style="margin: 0">Top research internships</h2><span class="small" style="color: var(--if-muted)">Chosen by the InternFeel team</span></div>
+<a href="#lists" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700">See all<svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+<div class="pg-grid3">
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">N</span><span class="if-card__orgname"><strong>National Centre for Biological Sciences</strong>Bengaluru, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">A summer at NCBS: getting in without a lab contact</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Life sciences</li><li>2025 · 8 weeks</li><li>Paid · ₹10k–25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="if-rating__value">5.0</span><span class="if-rating__of">/ 5</span></span><span class="if-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified</span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 2,108<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">I</span><span class="if-card__orgname"><strong>IIT Madras</strong>Chennai, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">Ship-hull modelling in the ocean engineering department</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Naval architecture</li><li>2025 · 7 weeks</li><li>Unpaid</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><span class="if-rating__value">4.0</span><span class="if-rating__of">/ 5</span></span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 1,377<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">I</span><span class="if-card__orgname"><strong>IIT Kanpur</strong>Kanpur, India</span></div>
+<h3 class="if-card__title"><a href="experience.html">Cyber security research, from cold email to final report</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Computer science</li><li>2025 · 8 weeks</li><li>Paid · under ₹10k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4.5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i></span><span class="if-rating__value">4.5</span><span class="if-rating__of">/ 5</span></span><span class="if-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified</span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 1,915<span class="pg-sr"> views</span></span></div>
+<span class="if-card__credit" style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--if-teal-700)"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M19 8v6M16 11h6"/></svg>Shared through an invite</span>
+</article>
+
+</div>
+</div>
+</section>
+
+
+<section aria-label="Advertisement" style="padding: 40px 0 8px">
+<div class="pg-wrap">
+<div class="if-ad">
+<span class="if-ad__label">Advertisement</span>
+<div class="if-ad__box" style="min-height: 180px">Featured opportunity · ad space reserved</div>
+</div>
+</div>
+</section>
+
+
+<section style="padding: 40px 0 8px">
+<div class="pg-wrap" style="display: grid; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px">
+<div style="display: grid; gap: 4px"><h2 class="heading-2" style="margin: 0">Internships abroad</h2><span class="small" style="color: var(--if-muted)">Programmes outside India that students have written about</span></div>
+<a href="#lists" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700">See all<svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+<div class="pg-grid3">
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">U</span><span class="if-card__orgname"><strong>University of Southern California</strong>Los Angeles, USA</span></div>
+<h3 class="if-card__title"><a href="experience.html">IUSSTF-Viterbi at USC: the application, the visa and the lab</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Electrical engineering</li><li>2025 · 10 weeks</li><li>Paid · above ₹25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4.5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i></span><span class="if-rating__value">4.5</span><span class="if-rating__of">/ 5</span></span><span class="if-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>Verified</span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 3,260<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">U</span><span class="if-card__orgname"><strong>University of Padova</strong>Padua, Italy</span></div>
+<h3 class="if-card__title"><a href="experience.html">Civil engineering research in Padova on an exchange grant</a></h3>
+<ul class="if-card__facts"><li>Research</li><li>Civil engineering</li><li>2025 · 12 weeks</li><li>Paid · above ₹25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 4 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span><span class="if-rating__value">4.0</span><span class="if-rating__of">/ 5</span></span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 1,042<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+<article class="if-card">
+<div class="if-card__top"><span class="if-card__org" aria-hidden="true">I</span><span class="if-card__orgname"><strong>Innovative Solutions in Space</strong>Delft, Netherlands</span></div>
+<h3 class="if-card__title"><a href="experience.html">Building satellite subsystems at a space start-up</a></h3>
+<ul class="if-card__facts"><li>Industry</li><li>Aerospace</li><li>2025 · 12 weeks</li><li>Paid · above ₹25k</li></ul>
+<div class="if-card__foot"><span style="display: inline-flex; align-items: center; gap: 10px"><span class="if-rating" aria-label="Rated 5 out of 5"><span class="if-rating__bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="if-rating__value">5.0</span><span class="if-rating__of">/ 5</span></span></span><span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> 2,486<span class="pg-sr"> views</span></span></div>
+
+</article>
+
+</div>
+</div>
+</section>
+
+</div>
+
+<section id="how" style="padding: 64px 0">
+<div class="pg-wrap" style="display: grid; gap: 32px">
+<div style="display: grid; gap: 8px; max-width: 42rem">
+<h2 class="heading-2" style="margin: 0">How InternFeel works</h2>
+<p style="margin: 0; color: var(--if-muted)">Every experience is written by the student who did the internship and checked by us before it goes live.</p>
+</div>
+<ol class="pg-grid3 pg-steps" style="margin: 0; padding: 0; list-style: none">
+<li style="display: grid; gap: 12px; align-content: start; padding: 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface)">
+<span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--if-radius); background: var(--if-surface-tint); color: var(--if-teal-800)"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg></span>
+<h3 class="heading-3" style="margin: 0">1. Read</h3>
+<p style="margin: 0; color: var(--if-muted)">Search by organisation, field, city or stipend. Every story answers the same questions, so they are easy to compare.</p>
+</li>
+<li style="display: grid; gap: 12px; align-content: start; padding: 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface)">
+<span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--if-radius); background: var(--if-surface-tint); color: var(--if-teal-800)"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+<h3 class="heading-3" style="margin: 0">2. Share</h3>
+<p style="margin: 0; color: var(--if-muted)">Answer the standard questions in about 20 minutes, with your name or anonymously. We review every experience within 24 hours.</p>
+</li>
+<li style="display: grid; gap: 12px; align-content: start; padding: 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface)">
+<span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--if-radius); background: var(--if-surface-tint); color: var(--if-teal-800)"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 8 5-3 5 3-1.5-8"/></svg></span>
+<h3 class="heading-3" style="margin: 0">3. Get certified</h3>
+<p style="margin: 0; color: var(--if-muted)">Download your certificate once it is published. Add your offer letter as proof to earn a Verified badge and 3 invites for friends.</p>
+</li>
+</ol>
+<div><a class="if-btn if-btn--primary" href="submit-step-1.html">Submit your experience</a></div>
+</div>
+</section>
+</main>
+
+<section aria-label="Newsletter" style="background: var(--if-surface); border-top: 1px solid var(--if-line); padding: 40px 0">
+<div class="pg-wrap pg-news">
+<div style="display: grid; gap: 6px">
+<h2 class="heading-3" style="margin: 0">New experiences in your inbox</h2>
+<p class="small" style="margin: 0; color: var(--if-muted)">The newest experiences and listicles, now and then. Unsubscribe any time.</p>
+</div>
+<form class="if-field" action="#">
+<label for="news-email">Email address</label>
+<div class="pg-newsform"><input id="news-email" type="email" placeholder="you@example.com" style="flex: 1"><button class="if-btn" type="submit">Subscribe</button></div>
+</form>
+</div>
+</section>
+
+<footer class="if-footer"><div class="if-footer__inner">
+<div class="if-footer__cols">
+<div><h2>Explore</h2><ul><li><a href="#browse">Experiences</a></li><li><a href="#browse">Programmes</a></li><li><a href="#lists">Listicles</a></li><li><a href="#browse">Verified experiences</a></li></ul></div>
+<div><h2>Contribute</h2><ul><li><a href="submit-step-1.html">Submit experience</a></li><li><a href="dashboard.html">Invite friends</a></li><li><a href="certificate.html">Contributor certificate</a></li><li><a href="#">Content guidelines</a></li></ul></div>
+<div><h2>Company</h2><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Advertise with us</a></li><li><a href="#">Report a problem</a></li></ul></div>
+<div><h2>Legal</h2><ul><li><a href="#">Privacy policy</a></li><li><a href="#">Terms of use</a></li><li><a href="#">Cookie settings</a></li><li><a href="#">Verify a certificate</a></li></ul></div>
+</div>
+<div class="if-footer__base">
+<div class="if-footer__brand"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"><a href="mailto:contact@internfeel.com">contact@internfeel.com</a></div>
+<div class="if-social">
+<a href="#" aria-label="InternFeel on LinkedIn"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-4a2.5 2.5 0 0 1 5 0v4M11 10v7"/></svg></a>
+<a href="#" aria-label="InternFeel on Instagram"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/></svg></a>
+<a href="#" aria-label="InternFeel on Facebook"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+<a href="#" aria-label="InternFeel on Threads"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></a>
+</div>
+<span>© 2026 InternFeel</span>
+</div>
+</div></footer>
+
+</div>
+</body>
+</html>

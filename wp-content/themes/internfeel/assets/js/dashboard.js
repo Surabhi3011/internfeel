@@ -1,0 +1,171 @@
+/**
+ * The student dashboard (page-dashboard.php). Plain ES module, no build step.
+ *
+ * - Tabs follow the ARIA tabs pattern: arrow keys, Home and End move between them.
+ * - Proof uploads and draft deletion call the internfeel/v1 routes, then reload the page.
+ * - Opening the dashboard marks the notifications read (plan.md 5.1).
+ */
+
+import { GENERIC_ERROR } from './field-errors.js';
+
+const root = document.querySelector( '[data-if-dashboard]' );
+
+if ( root ) {
+	const status = root.querySelector( '[data-if-status]' );
+	const tabs = [ ...root.querySelectorAll( '[role="tab"]' ) ];
+
+	/**
+	 * Call an internfeel/v1 route; throws an Error with the server's message on failure.
+	 *
+	 * @param {string} path
+	 * @param {object} options
+	 */
+	async function request( path, { method = 'GET', body } = {} ) {
+		const response = await fetch( root.dataset.rest + path, {
+			method,
+			body,
+			headers: { 'X-WP-Nonce': root.dataset.nonce },
+			credentials: 'same-origin',
+		} );
+		const data = await response.json().catch( () => null );
+		if ( ! response.ok ) {
+			throw new Error( data?.message || GENERIC_ERROR );
+		}
+		return data;
+	}
+
+	function showError( error ) {
+		status.textContent = error.message || GENERIC_ERROR;
+		status.scrollIntoView( { block: 'nearest' } );
+	}
+
+	function select( tab, focus = true ) {
+		for ( const other of tabs ) {
+			const selected = other === tab;
+			other.setAttribute( 'aria-selected', String( selected ) );
+			other.tabIndex = selected ? 0 : -1;
+			document.getElementById( other.getAttribute( 'aria-controls' ) ).hidden = ! selected;
+		}
+		if ( focus ) {
+			tab.focus();
+		}
+		history.replaceState( null, '', '#' + tab.id.replace( 'if-tab-', '' ) );
+	}
+
+	for ( const tab of tabs ) {
+		tab.addEventListener( 'click', () => select( tab ) );
+		tab.addEventListener( 'keydown', ( event ) => {
+			const index = tabs.indexOf( tab );
+			const next = {
+				ArrowRight: tabs[ ( index + 1 ) % tabs.length ],
+				ArrowLeft: tabs[ ( index - 1 + tabs.length ) % tabs.length ],
+				Home: tabs[ 0 ],
+				End: tabs[ tabs.length - 1 ],
+			}[ event.key ];
+			if ( next ) {
+				event.preventDefault();
+				select( next );
+			}
+		} );
+	}
+
+	// Open the tab named in the address, such as /dashboard/#profile, now and when the header's
+	// account menu changes the hash on this page.
+	function openLinkedTab() {
+		const linked = document.getElementById( 'if-tab-' + location.hash.slice( 1 ) );
+		if ( linked && tabs.includes( linked ) ) {
+			select( linked, false );
+		}
+	}
+	openLinkedTab();
+	window.addEventListener( 'hashchange', openLinkedTab );
+
+	root.addEventListener( 'change', async ( event ) => {
+		const input = event.target.closest( '[data-if-proof]' );
+		const file = input?.files[ 0 ];
+		if ( ! file ) {
+			return;
+		}
+		const id = input.closest( '[data-id]' ).dataset.id;
+		const body = new FormData();
+		body.append( 'proof', file );
+		status.textContent = '';
+		input.disabled = true;
+		try {
+			await request( `experiences/${ id }/proof`, { method: 'POST', body } );
+			location.reload();
+		} catch ( error ) {
+			showError( error );
+			input.disabled = false;
+			input.value = '';
+		}
+	} );
+
+	root.addEventListener( 'click', async ( event ) => {
+		const remove = event.target.closest( '[data-if-delete]' );
+		if ( remove ) {
+			const item = remove.closest( '[data-id]' );
+			// eslint-disable-next-line no-alert -- a native confirm is accessible and enough here.
+			if ( ! window.confirm( 'Delete this draft? This cannot be undone.' ) ) {
+				return;
+			}
+			try {
+				await request( `experiences/${ item.dataset.id }`, { method: 'DELETE' } );
+				item.remove();
+			} catch ( error ) {
+				showError( error );
+			}
+			return;
+		}
+
+		const share = event.target.closest( '[data-if-share]' );
+		if ( share ) {
+			const url = share.dataset.ifShare;
+			if ( navigator.share ) {
+				navigator.share( { title: share.dataset.title, url } ).catch( () => {} );
+			} else {
+				await navigator.clipboard?.writeText( url );
+				status.textContent = '';
+				share.querySelector( '[data-if-label]' ).textContent = 'Link copied';
+			}
+			return;
+		}
+
+		const invite = event.target.closest( '[data-if-new-invite]' );
+		if ( invite ) {
+			invite.disabled = true;
+			try {
+				await request( 'invites', { method: 'POST' } );
+				location.hash = 'invites';
+				location.reload();
+			} catch ( error ) {
+				showError( error );
+				invite.disabled = false;
+			}
+			return;
+		}
+
+		// Updates show five at first, then ten more per click.
+		const more = event.target.closest( '[data-if-more-notes]' );
+		if ( more ) {
+			const hidden = [ ...root.querySelectorAll( '[data-if-notes] li[hidden]' ) ];
+			hidden.slice( 0, 10 ).forEach( ( item ) => ( item.hidden = false ) );
+			hidden[ 0 ]?.querySelector( 'a, p' )?.setAttribute( 'tabindex', '-1' );
+			hidden[ 0 ]?.querySelector( 'a, p' )?.focus();
+			more.hidden = hidden.length <= 10;
+			return;
+		}
+
+		const open = event.target.closest( '[data-if-open-tab]' );
+		if ( open ) {
+			event.preventDefault();
+			document.getElementById( 'if-tab-' + open.dataset.ifOpenTab )?.click();
+		}
+	} );
+
+	// Seeing the list counts as reading it. The dots stay until the next visit.
+	const notes = root.querySelector( '[data-if-notes]' );
+	if ( notes && Number( notes.dataset.unread ) > 0 ) {
+		request( 'me/notifications/read', { method: 'POST' } ).catch( () => {} );
+	}
+}

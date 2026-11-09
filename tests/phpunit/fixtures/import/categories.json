@@ -1,0 +1,47 @@
+[
+ {
+  "id": 11,
+  "slug": "interviews",
+  "name": "Interviews"
+ },
+ {
+  "id": 12,
+  "slug": "national-internships",
+  "name": "National Interviews"
+ },
+ {
+  "id": 239,
+  "slug": "research-internships",
+  "name": "Research Internships"
+ },
+ {
+  "id": 360,
+  "slug": "engineering",
+  "name": "Engineering"
+ },
+ {
+  "id": 296,
+  "slug": "computer-science",
+  "name": "computer science"
+ },
+ {
+  "id": 10,
+  "slug": "internship-guide",
+  "name": "Internship Guide"
+ },
+ {
+  "id": 161,
+  "slug": "blog",
+  "name": "Blog"
+ },
+ {
+  "id": 268,
+  "slug": "virtual",
+  "name": "Virtual"
+ },
+ {
+  "id": 3,
+  "slug": "anonymous-interviews",
+  "name": "Anonymous Interviews"
+ }
+]

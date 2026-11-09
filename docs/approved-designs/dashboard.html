@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student dashboard · InternFeel approved design</title>
+<link rel="stylesheet" href="system/tokens.css">
+<link rel="stylesheet" href="system/bundle.css">
+<style>
+body{margin:0}
+a{color:#297777}a:hover{color:#1f5c5c}
+.pg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pg-wrap{max-width:var(--if-content);margin-inline:auto;padding-inline:var(--if-space-4)}
+.pg-narrow{display:none}
+.pg-counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pg-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start}
+.pg-tabs{display:flex;gap:4px;border-bottom:1px solid var(--if-line)}
+.pg-tab{min-height:44px;padding:0 16px;border:0;border-bottom:3px solid transparent;background:transparent;font:700 16px/1 var(--font-body);color:var(--if-muted);cursor:pointer;white-space:nowrap}
+.pg-tab[aria-selected="true"]{color:var(--if-ink);border-bottom-color:var(--if-teal)}
+.pg-hsearch{max-width:220px;padding:3px 3px 3px 14px}
+.pg-hsearch input{font-size:15px;line-height:22px}
+.pg-drop{display:grid;justify-items:start;gap:8px;padding:16px;border:2px dashed var(--if-line-strong);border-radius:var(--if-radius);background:var(--if-canvas)}
+@media (max-width:1000px){.pg-layout{grid-template-columns:1fr}.pg-hsearch{display:none}}
+@media (max-width:640px){
+.pg-wide{display:none}.pg-narrow{display:inline-flex}
+.pg-counters{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pg-tabs{overflow-x:auto}
+.heading-1.pg-title{font-size:28px;line-height:34px}
+.pg-item{padding:16px}
+}
+@media (max-width:1000px){.if-bell.pg-narrow{display:inline-grid}}
+</style>
+</head>
+<body>
+<div style="background: var(--if-canvas); color: var(--if-ink); font-family: var(--font-body); min-height: 100vh">
+
+<header class="if-header"><div class="if-header__inner">
+<a class="if-header__logo" href="home.html"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"></a>
+<nav class="if-nav" aria-label="Main"><a href="home.html#browse">Experiences</a><a href="home.html#browse">Programmes</a><a href="home.html#lists">Listicles</a><a href="home.html#how">About</a></nav>
+<div class="if-header__actions">
+<form class="if-search pg-hsearch" role="search" action="home.html"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><label class="pg-sr" for="hdr-q-d">Search experiences</label><input id="hdr-q-d" type="search" placeholder="Search"></form>
+<a class="if-btn if-btn--primary if-btn--sm" href="submit-step-1.html"><span class="pg-wide">Submit experience</span><span class="pg-narrow">Submit</span></a>
+<button class="if-bell" type="button" aria-label="Notifications, 3 unread"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg><span class="if-bell__count">3</span></button>
+<button class="pg-wide" type="button" aria-label="Your account menu" style="border: 0; padding: 0; background: transparent; cursor: pointer; border-radius: 50%"><span class="if-avatar">RM</span></button>
+<button class="if-bell pg-narrow" type="button" aria-label="Menu"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+</div></header>
+
+<main class="pg-wrap" style="padding-top: 32px; padding-bottom: 64px; display: grid; gap: 28px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 16px; min-width: 0">
+<span class="if-avatar" aria-hidden="true" style="width: 56px; height: 56px; font-size: 20px">RM</span>
+<div style="display: grid; gap: 2px; min-width: 0">
+<h1 class="heading-1 pg-title" style="margin: 0">Your dashboard</h1>
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px"><span class="if-byline">Rahul M.<span class="if-badges" role="img" aria-label="1 verified experience"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 8l11 5 9-4.1V15h2V8z"/><path d="M5.5 11.3v3.4c0 1.8 2.9 3.3 6.5 3.3s6.5-1.5 6.5-3.3v-3.4L12 14.2z"/></svg></span></span><span class="small" style="color: var(--if-muted)">B.Sc. Life Sciences, St. Xavier's College, Mumbai · Class of 2027</span></span>
+</div>
+</div>
+<a class="if-btn if-btn--primary" href="submit-step-1.html"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add experience</a>
+</div>
+
+<section class="pg-counters" aria-label="Your numbers">
+<div style="padding: 18px 20px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 2px"><span style="font: 800 32px/38px var(--font-display); font-variant-numeric: tabular-nums">2</span><span class="small" style="color: var(--if-muted)">experiences published</span></div>
+<div style="padding: 18px 20px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 2px"><span style="font: 800 32px/38px var(--font-display); font-variant-numeric: tabular-nums">2,226</span><span class="small" style="color: var(--if-muted)">total views</span></div>
+<div style="padding: 18px 20px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 2px"><span style="font: 800 32px/38px var(--font-display); font-variant-numeric: tabular-nums">8</span><span class="small" style="color: var(--if-muted)">comments received</span></div>
+<div style="padding: 18px 20px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 2px"><span style="font: 800 32px/38px var(--font-display); font-variant-numeric: tabular-nums">2</span><span class="small" style="color: var(--if-muted)">friends who joined through you</span></div>
+</section>
+
+<div class="pg-layout">
+<div style="display: grid; gap: 20px; min-width: 0">
+<div class="pg-tabs" role="tablist" aria-label="Dashboard sections">
+<button class="pg-tab" type="button" role="tab" aria-selected="true">My experiences</button>
+<button class="pg-tab" type="button" role="tab" aria-selected="false">Comments</button>
+<button class="pg-tab" type="button" role="tab" aria-selected="false">Invites</button>
+<button class="pg-tab" type="button" role="tab" aria-selected="false">Profile</button>
+</div>
+
+<article class="pg-item" style="padding: 20px 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="if-status if-status--published">Published</span><span class="if-status if-status--verified">Verified</span></div>
+<div style="display: grid; gap: 4px">
+<h2 class="heading-3" style="margin: 0"><a href="experience.html" style="color: inherit; text-decoration: none">Eight weeks in an ecology lab at IISc through the IAS summer fellowship</a></h2>
+<span class="small" style="color: var(--if-muted)">Indian Institute of Science · IAS Summer Research Fellowship · Published 12 Oct 2026</span>
+</div>
+<div class="small" style="display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--if-muted)">
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>1,240 views</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3 comments</span>
+<span>Certificate <span class="mono" style="color: var(--if-ink)">IF-2026-00412</span></span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--if-line)">
+<a class="if-btn if-btn--sm" href="certificate.html"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download certificate</a>
+<button class="if-btn if-btn--ghost if-btn--sm" type="button"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
+<a class="if-btn if-btn--ghost if-btn--sm" href="experience.html">View</a>
+<a class="if-btn if-btn--ghost if-btn--sm" href="submit-step-1.html">Edit once</a>
+</div>
+</article>
+
+<article class="pg-item" style="padding: 20px 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="if-status if-status--published">Published</span><span class="if-status if-status--rejected">Proof rejected</span></div>
+<div style="display: grid; gap: 4px">
+<h2 class="heading-3" style="margin: 0"><a href="experience.html" style="color: inherit; text-decoration: none">What the RBI summer internship is really like</a></h2>
+<span class="small" style="color: var(--if-muted)">Reserve Bank of India · Summer placement · Published 25 Oct 2026</span>
+</div>
+<div class="small" style="display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--if-muted)">
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>986 views</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>5 comments</span>
+<span>Certificate <span class="mono" style="color: var(--if-ink)">IF-2026-00468</span></span>
+</div>
+<div style="display: grid; gap: 12px; padding: 16px; border-radius: var(--if-radius); background: var(--if-danger-soft)">
+<p style="margin: 0; color: var(--if-ink)"><strong style="color: var(--if-danger)">Note from InternFeel:</strong> The letter you uploaded doesn't show your name. Upload an offer letter or completion certificate that does.</p>
+<div class="pg-drop">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"/></svg>Upload new proof</span>
+<span class="small" style="color: var(--if-muted)">PDF, JPG or PNG, up to 5 MB each, 3 files at most. Only you and InternFeel admins can open them.</span>
+<label class="if-btn if-btn--sm" style="position: relative">Choose files<input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple style="position: absolute; inset: 0; opacity: 0; cursor: pointer"></label>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--if-line)">
+<a class="if-btn if-btn--sm" href="certificate.html"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download certificate</a>
+<button class="if-btn if-btn--ghost if-btn--sm" type="button"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
+<a class="if-btn if-btn--ghost if-btn--sm" href="experience.html">View</a>
+<a class="if-btn if-btn--ghost if-btn--sm" href="submit-step-1.html">Edit once</a>
+</div>
+</article>
+
+<article class="pg-item" style="padding: 20px 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="if-status if-status--review">In review</span><span class="if-status">Proof not added</span></div>
+<div style="display: grid; gap: 4px">
+<h2 class="heading-3" style="margin: 0">Remote content internship at a Pune start-up</h2>
+<span class="small" style="color: var(--if-muted)">Submitted 26 Oct 2026, 9:40 am. We review every experience within 24 hours.</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--if-line)">
+<button class="if-btn if-btn--sm" type="button"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 21h14"/></svg>Add proof</button>
+<a class="if-btn if-btn--ghost if-btn--sm" href="submit-step-1.html">Preview</a>
+</div>
+</article>
+
+<article class="pg-item" style="padding: 20px 24px; border: 1px solid var(--if-line); border-radius: var(--if-radius); background: var(--if-surface); display: grid; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="if-status">Draft</span></div>
+<div style="display: grid; gap: 4px">
+<h2 class="heading-3" style="margin: 0">Field internship with an NGO in Jaipur</h2>
+<span class="small" style="color: var(--if-muted)">Saved 2 minutes ago · step 2 of 4, your story</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--if-line)">
+<a class="if-btn if-btn--primary if-btn--sm" href="submit-step-1.html">Continue draft</a>
+<button class="if-btn if-btn--ghost if-btn--sm" type="button" style="color: var(--if-danger)">Delete draft</button>
+</div>
+</article>
+</div>
+
+<aside style="display: grid; gap: 24px; min-width: 0">
+<section style="display: grid; gap: 12px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><h2 class="heading-3" style="margin: 0">Updates</h2><a class="small" href="#">See all</a></div>
+<ul class="if-notes">
+<li class="if-note is-unread"><div><p>Your experience <strong>What the RBI summer internship is really like</strong> is published.</p><time>3 hours ago</time></div></li>
+<li class="if-note is-unread"><div><p>Your proof for the RBI internship needs another look. See the note and upload new proof.</p><time>3 hours ago</time></div></li>
+<li class="if-note is-unread"><div><p>Ananya K. commented on your IISc experience.</p><time>Yesterday</time></div></li>
+<li class="if-note"><div><p>Neha R. published an experience through your invite.</p><time>21 Oct</time></div></li>
+<li class="if-note"><div><p>Your proof was verified. You earned 3 invites.</p><time>10 Oct</time></div></li>
+</ul>
+</section>
+
+<section style="padding: 24px; border-radius: var(--if-radius); background: var(--if-surface-tint); display: grid; gap: 14px">
+<div style="display: grid; gap: 4px">
+<h2 class="heading-3" style="margin: 0">Invite friends</h2>
+<p class="small" style="margin: 0; color: var(--if-muted)">You earn 3 invites for every experience that is published and verified. Each link works once and never expires.</p>
+</div>
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font: 800 32px/38px var(--font-display); color: var(--if-teal-800)">1</span><span class="small">invite left</span></div>
+<div class="if-field">
+<label for="invite-link">Your invite link</label>
+<div style="display: flex; gap: 8px"><input id="invite-link" class="mono" type="text" readonly value="internfeel.com/join?ref=RM4H8P" style="font-family: var(--font-mono); font-size: 14px; flex: 1; min-width: 0"><button class="if-btn if-btn--primary if-btn--sm" type="button" style="min-height: 44px">Copy</button></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a class="if-btn if-btn--sm" href="#"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.3z"/></svg>WhatsApp</a>
+<a class="if-btn if-btn--sm" href="#"><svg class="if-icon if-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-4a2.5 2.5 0 0 1 5 0v4M11 10v7"/></svg>LinkedIn</a>
+</div>
+<dl class="small" style="display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; padding-top: 12px; border-top: 1px solid var(--if-line)">
+<dt style="color: var(--if-muted)">Links used</dt><dd style="margin: 0; font-weight: 700">2 of 3</dd>
+<dt style="color: var(--if-muted)">Friends who joined</dt><dd style="margin: 0; font-weight: 700">Neha R., Karan S.</dd>
+<dt style="color: var(--if-muted)">Their published experiences</dt><dd style="margin: 0; font-weight: 700">1</dd>
+</dl>
+</section>
+</aside>
+</div>
+</main>
+
+<footer class="if-footer"><div class="if-footer__inner">
+<div class="if-footer__cols">
+<div><h2>Explore</h2><ul><li><a href="home.html#browse">Experiences</a></li><li><a href="home.html#browse">Programmes</a></li><li><a href="home.html#lists">Listicles</a></li><li><a href="home.html#browse">Verified experiences</a></li></ul></div>
+<div><h2>Contribute</h2><ul><li><a href="submit-step-1.html">Submit experience</a></li><li><a href="dashboard.html">Invite friends</a></li><li><a href="certificate.html">Contributor certificate</a></li><li><a href="#">Content guidelines</a></li></ul></div>
+<div><h2>Company</h2><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Advertise with us</a></li><li><a href="#">Report a problem</a></li></ul></div>
+<div><h2>Legal</h2><ul><li><a href="#">Privacy policy</a></li><li><a href="#">Terms of use</a></li><li><a href="#">Cookie settings</a></li><li><a href="#">Verify a certificate</a></li></ul></div>
+</div>
+<div class="if-footer__base">
+<div class="if-footer__brand"><img src="../../wp-content/themes/internfeel/assets/img/internfeel-logo.png" alt="InternFeel, peep before you leap"><a href="mailto:contact@internfeel.com">contact@internfeel.com</a></div>
+<div class="if-social">
+<a href="#" aria-label="InternFeel on LinkedIn"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-4a2.5 2.5 0 0 1 5 0v4M11 10v7"/></svg></a>
+<a href="#" aria-label="InternFeel on Instagram"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/></svg></a>
+<a href="#" aria-label="InternFeel on Facebook"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+<a href="#" aria-label="InternFeel on Threads"><svg class="if-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></a>
+</div>
+<span>© 2026 InternFeel</span>
+</div>
+</div></footer>
+
+</div>
+</body>
+</html>

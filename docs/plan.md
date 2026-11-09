@@ -54,7 +54,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 
 | Topic | Decision |
 | --- | --- |
-| Platform | Fresh WordPress 7.0 on PHP 8.5, hosted on the existing VaporHost cPanel plan; custom theme and plugin; no page builder |
+| Platform | Fresh WordPress 7.1 (7.1.3 or newer) on PHP 8.5, hosted on the existing VaporHost cPanel plan; custom theme and plugin; no page builder. Changed from 7.0 on 26 October 2026: 7.1.3 is the current release and WordPress.org lists 7.0.x as outdated |
 | Build | Entirely through Claude Code; **public** GitHub repo `Surabhi3011/internfeel` (the plan has no SSH, so cPanel can only pull a public repo); no secrets or private details in it |
 | Deadline | Relaunch Monday 9 November 2026 |
 | Budget | Free service tiers until there is traffic |
@@ -82,6 +82,19 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Migration | Posts, comments and photos come across; Surabhi reviews every migrated experience |
 | Beta testers | Students lined up for 5–7 November |
 | Analytics | GA4 (free) |
+| Design | Approved at Gate 1 on 26 October 2026: the InternFeel design system and page designs in `docs/approved-designs/`, which replace the earlier mock-ups |
+| Fonts | Schibsted Grotesk (headings), Atkinson Hyperlegible Next (reading text), IBM Plex Mono (numbers and codes), all self-hosted under the SIL Open Font License; no requests to Google |
+| Footer | On the light teal tint, never charcoal, because the logo has no reversed version |
+| Verified count | Shown on the home page trust strip from launch, starting at 0 |
+| Migrated view counts | Migrated experiences start at 0 views; there is no historical view data |
+| Display name | Free text the student types; left blank, the full name is shown (no auto-generated "First L."). The full name is always printed on certificates |
+| Newsletter | Sign-up band above the footer on every page, posting to a configurable endpoint (`IF_NEWSLETTER_ENDPOINT`); email service still open (section 10) |
+| Launch migration | Production gets staging's reviewed site: on launch day staging's test data is deleted, then its database, uploads and private files are copied to production and the addresses switched (docs/launch.md). Decided 31 October 2026 |
+| Header, signed in | No bell: the Dashboard link carries the unread count (on phones, the Menu button), and the avatar menu drops My experiences, which duplicated Dashboard. Decided 1 November 2026 |
+| Story questions | Revised 1 November 2026: six questions in step 2 (about yourself; application and selection; the work; what delighted you; what was not so great; how it changed you), each with a hint, and the advice question as the Advice field in step 3. The first four are required until Surabhi confirms (section 10). Experiences written before keep the seven launch questions they answered (`_if_story_version`) |
+| Admin sign-in and legal pages | Decided 9 November 2026: admins do not use two-step sign-in (Wordfence login limits stay on). The privacy policy and terms drafts carry no [TO CONFIRM] notes, so they can be published as they are; the business details and a legal review are added later. Backups (UpdraftPlus) are set up after launch |
+| Sign-up and dashboard | Decided 1 November 2026: sign-up asks only for name, email and password (profile later, required before submitting); the dashboard's counters appear once the student has a published experience; updates show five at a time with "Show older updates"; the Comments tab also lists the experiences the student commented on |
+| Certificate verify page | `/verify/{number}` shows the holder's name, published date and status. For an anonymous experience it leaves out the title and organisation, so a certificate number (which runs in sequence) can never link a name to an anonymous post. Confirmed by Surabhi on 30 October 2026 |
 
 ## 5. Feature specifications
 
@@ -93,8 +106,8 @@ The dashboard is one page with four tabs (My experiences, Comments, Invites, Pro
 
 | Feature | Behaviour | Done when |
 | --- | --- | --- |
-| Sign-in and profile | Email and password, or Google, with no verification email. First sign-in asks for name, college, course, graduation year and whether the student is under 18. Display name and LinkedIn are optional. Google users can add a password later. "Forgot password" sends WordPress's reset email. | A new student signs up and completes their profile in under 2 minutes; sign-out works on every page; a reset email reaches a Gmail inbox |
-| Notifications | A bell in the header shows the unread count; the dashboard lists every update: submission approved, changes requested or rejected; proof verified or rejected; new comment; invite used; invite led to a published experience. | Each event creates exactly one notification; opening the list marks them read |
+| Sign-in and profile | Email and password, or Google, with no verification email. Sign-up asks only for the full name, email and password and goes straight to the dashboard. College, course, graduation year and the under-18 question are filled in later from Profile, and are required before submitting an experience; until the under-18 question is answered, ads are non-personalised. Display name and LinkedIn are optional. Google users can add a password later. "Forgot password" sends WordPress's reset email. | A new student signs up in under a minute; sign-out works on every page; a reset email reaches a Gmail inbox |
+| Notifications | The header's Dashboard link (the Menu button on phones) shows the unread count; the dashboard lists every update: submission approved, changes requested or rejected; proof verified or rejected; new comment; invite used; invite led to a published experience. | Each event creates exactly one notification; opening the list marks them read |
 | Multiple submissions | "Add experience" is always available, with no limit. Drafts autosave every 10 seconds. | A student holds several drafts and published experiences at once, each editable separately |
 | Submission form | Step 1, where and what: organisation, programme, type, field, location, dates, paid or unpaid (required), stipend amount (optional). Step 2, the story, using the standard questions. Step 3, ratings (required) and advice. Step 4, anonymity, proof upload, review and submit. | Each step validates its required fields; the preview matches the published page |
 | Verify your experience | Upload PDF, JPG or PNG proof, up to 5 MB, maximum 3 files, stored privately. Status shows Not submitted, Pending, Verified or Rejected, with the reviewer's note. Proof can be added later. | Only the author and admins can open a proof; a verified experience shows a Verified badge |
@@ -130,7 +143,7 @@ Sections from top to bottom:
 | Navigation | Experiences, Programmes, Listicles, About | Same |
 | Search | Compact search on inner pages; hidden on home | Same |
 | Primary button | Submit experience (asks to sign in first) | Submit experience |
-| Account | Log in and Sign up | Notification bell with the unread count; avatar menu: Dashboard, My experiences, Invites, Profile, Log out. Admins also see an Admin link |
+| Account | Log in and Sign up | Dashboard link with the unread count; avatar menu: Dashboard, Invites, Profile, Log out. Admins also see an Admin link |
 | Mobile | Logo, Submit button and a menu icon holding everything else | Same, with account links in the menu |
 
 The header stays fixed on scroll and shrinks to 56 px high.
@@ -267,22 +280,26 @@ gantt
 
 ## 8. Launch checklist
 
+The launch-day steps are in [docs/launch.md](launch.md).
+
+
 - [x] Old site content exported in full (25 October 2026)
 - [x] Full cPanel backup of the old site downloaded and kept offline (25 October 2026)
 - [x] Old site taken offline behind a holding page that returns 503 to search engines; cPanel password changed (25 October 2026)
 - [ ] Old WordPress files (`old-site-quarantine`) deleted after the virus scan; old database deleted after the staging migration is confirmed
 - [ ] Holding `index.html` and `.htaccess` removed from `public_html` before production WordPress is installed
-- [ ] 217 experiences migrated and reviewed; every old post URL loads its rebuilt page
+- [ ] 217 experiences migrated and reviewed (imported to staging 30 October 2026: 216 imported, 2 skipped by design); every old post URL loads its rebuilt page
 - [ ] Search Console checked for traffic to old category and tag URLs
-- [ ] Sign-in, submit, verify, publish, comment, share, certificate and invite flows pass end-to-end tests
+- [x] Sign-in, submit, verify, publish, comment, certificate and invite flows pass end-to-end tests (`tests/e2e/lifecycle.spec.js`, 1 November 2026); share previews checked by hand
 - [ ] Referral credit appears correctly in all four cases
-- [ ] Admin review queue, verification and moderation log working; both admins have two-step sign-in
+- [ ] Admin review queue, verification and moderation log working
 - [ ] Privacy policy, terms of use, content guidelines, cookie consent and ads.txt live
 - [ ] Lighthouse mobile 90 or above on home, listing and experience pages, with ads on
 - [ ] GA4 and Search Console verified; sitemap submitted
 - [ ] cPanel Email Deliverability valid for internfeel.com (SPF and DKIM); a password-reset email reaches Gmail and Outlook inboxes
 - [ ] UpdraftPlus backups running, and one restore tested on staging
 - [ ] At least 10 new, verified experiences from beta students published
+- [ ] Production PHP 8.5 has the extensions staging needed (development.md 5.1 item 4), including dom
 - [ ] Production deploy done from the tested commit; SSL valid
 
 ## 9. Risks
@@ -294,7 +311,7 @@ gantt
 | Shared hosting is slow under load | Medium | Medium | LiteSpeed Cache; move to a VPS if traffic grows |
 | Password-reset emails land in spam | Medium | Medium | Fix Email Deliverability; test during beta; admins can reset passwords by hand; switch to an email service only if needed |
 | Fake sign-ups and bot spam, since emails aren't verified and there's no CAPTCHA at launch | Medium | Medium | Rate limits, a hidden honeypot field, admin review of every experience before publishing; add Turnstile soon after launch, or straight away if spam appears |
-| Security regression on WordPress | Medium | High | Clean install, minimal plugins, Wordfence, two-step sign-in, automatic updates, backups |
+| Security regression on WordPress | Medium | High | Clean install, minimal plugins, Wordfence login limits, automatic updates, backups |
 | AdSense review of the rebuilt site | Low | Medium | Keep the existing account and ads.txt; launch with consent in place |
 | Children's-data rules apply from 13 May 2027 | Certain | High | Parental-consent step on the post-launch roadmap with a fixed deadline |
 | Old content is stale (2014–2016) | Certain | Medium | Show the experience year on cards; prioritise fresh submissions through beta and invites |
@@ -305,3 +322,6 @@ gantt
 2. **Legal details** for the policies: the business's postal address, its legal form (for example sole proprietorship, LLP or private limited), and which person is the grievance officer.
 3. **Sponsored-ad pricing:** to discuss later.
 4. **Past contributors:** whether to invite original interviewees to claim their experiences; decide later.
+5. **Required story questions (Surabhi):** which of the seven standard questions are required, and any minimum length. Until confirmed, the first four are required.
+6. **Newsletter email service (before 5 November):** a free-tier service for the sign-up band. The band stays hidden until its form URL is set as `IF_NEWSLETTER_ENDPOINT` in `wp-config.php`.
+7. **Legal pages (Surabhi, before 9 November):** the drafts of the privacy policy, terms, content and ad guidelines, About and Contact need the business details from item 2, a legal review, and publishing. The privacy policy offers data download and deletion by email; a self-service button in Profile (architecture.md 10) is not built yet.

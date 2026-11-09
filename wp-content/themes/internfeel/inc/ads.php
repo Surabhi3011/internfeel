@@ -37,7 +37,18 @@ const IF_AD_HEIGHTS = array(
 function if_adsense_client(): string {
 	$client = defined( 'IF_ADSENSE_CLIENT' ) ? (string) constant( 'IF_ADSENSE_CLIENT' ) : '';
 
-	return 1 === preg_match( '/^ca-pub-\d{10,20}$/', $client ) ? $client : '';
+	// The sample config's all-zero placeholder must never reach ads.txt or the ad tags.
+	return 1 === preg_match( '/^ca-pub-\d{10,20}$/', $client ) && 1 !== preg_match( '/^ca-pub-0+$/', $client ) ? $client : '';
+}
+
+/**
+ * The GA4 measurement ID from wp-config.php, or an empty string when it is missing, malformed or
+ * still the sample config's G-XXXXXXXXXX placeholder.
+ */
+function if_ga4_id(): string {
+	$id = defined( 'IF_GA4_ID' ) ? (string) constant( 'IF_GA4_ID' ) : '';
+
+	return 1 === preg_match( '/^G-[A-Z0-9]{4,12}$/', $id ) && 1 !== preg_match( '/^G-X+$/', $id ) ? $id : '';
 }
 
 /**
@@ -108,8 +119,7 @@ function if_the_ad( string $place, string $label = '' ): void {
  */
 function if_ads_assets(): void {
 	$client = if_page_allows_ads() ? if_adsense_client() : '';
-	$ga4    = defined( 'IF_GA4_ID' ) ? (string) constant( 'IF_GA4_ID' ) : '';
-	$ga4    = 1 === preg_match( '/^G-[A-Z0-9]{4,12}$/', $ga4 ) ? $ga4 : '';
+	$ga4    = if_ga4_id();
 	if ( '' === $client && '' === $ga4 ) {
 		return;
 	}

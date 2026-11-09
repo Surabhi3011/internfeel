@@ -106,7 +106,6 @@ Front-end JavaScript is plain ES modules with no build step. CSS uses custom pro
 | --- | --- |
 | LiteSpeed Cache | Page and object caching, image optimisation (WebP/AVIF) |
 | Wordfence | Firewall, malware scan, login protection |
-| Two-Factor | Two-step sign-in for administrators |
 | Yoast SEO | Titles, meta descriptions, sitemaps, schema |
 | Nextend Social Login | "Sign in with Google" |
 | CookieYes | Cookie consent; a Google-certified consent platform, needed for AdSense in the EEA and UK |
@@ -420,7 +419,7 @@ The old install was probably compromised, so the new site starts clean and stays
 
 1. **Clean slate.** Fresh WordPress, no files from the old install, new database, new salts, new admin accounts. Once its content is exported, the old install is removed from the hosting account and the cPanel password is changed.
 2. **Least privilege.** Students hold only `read` plus custom capabilities for their own content. The plugin checks ownership on every write.
-3. **Admin protection.** Two-step sign-in, Wordfence login limits, no `admin` username.
+3. **Admin protection.** Wordfence login limits, strong unique passwords, no `admin` username. Two-step sign-in is not used (decided 9 November 2026).
 4. **Private files.** Proofs and certificates live outside the web root and are streamed only after a permission check, with `Content-Disposition: attachment`. Uploads accept only PDF, JPG and PNG, up to 5 MB, maximum 3 files, checked by real MIME type.
 5. **Hardening, in the plugin and wp-config.** `DISALLOW_FILE_EDIT`, XML-RPC off, `/wp/v2/users` closed to the public, author-enumeration redirects blocked, and security headers set: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, and a starter Content-Security-Policy.
 6. **Input and output.** Everything is sanitised on the way in and escaped on the way out. `$wpdb->prepare` is used for all SQL, and nonces protect every form and REST write.

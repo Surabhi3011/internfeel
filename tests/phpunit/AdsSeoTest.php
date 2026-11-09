@@ -124,7 +124,8 @@ class AdsSeoTest extends WP_UnitTestCase {
 
 		$this->assertSame( 'draft', $post->post_status );
 		$this->assertSame( 'template-legal.php', get_page_template_slug( $id ) );
-		$this->assertStringContainsString( 'TO CONFIRM', $post->post_content );
+		$this->assertStringContainsString( 'What we collect', $post->post_content );
+		$this->assertStringNotContainsString( 'TO CONFIRM', $post->post_content );
 
 		wp_update_post(
 			array(

@@ -91,6 +91,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Newsletter | Sign-up band above the footer on every page, posting to a configurable endpoint (`IF_NEWSLETTER_ENDPOINT`); email service still open (section 10) |
 | Header, signed in | No bell: the Dashboard link carries the unread count (on phones, the Menu button), and the avatar menu drops My experiences, which duplicated Dashboard. Decided 1 November 2026 |
 | Story questions | Revised 1 November 2026: six questions in step 2 (about yourself; application and selection; the work; what delighted you; what was not so great; how it changed you), each with a hint, and the advice question as the Advice field in step 3. The first four are required until Surabhi confirms (section 10). Experiences written before keep the seven launch questions they answered (`_if_story_version`) |
+| Admin sign-in and legal pages | Decided 9 November 2026: admins do not use two-step sign-in (Wordfence login limits stay on). The privacy policy and terms drafts carry no [TO CONFIRM] notes, so they can be published as they are; the business details and a legal review are added later. Backups (UpdraftPlus) are set up after launch |
 | Sign-up and dashboard | Decided 1 November 2026: sign-up asks only for name, email and password (profile later, required before submitting); the dashboard's counters appear once the student has a published experience; updates show five at a time with "Show older updates"; the Comments tab also lists the experiences the student commented on |
 | Certificate verify page | `/verify/{number}` shows the holder's name, published date and status. For an anonymous experience it leaves out the title and organisation, so a certificate number (which runs in sequence) can never link a name to an anonymous post. Confirmed by Surabhi on 30 October 2026 |
 
@@ -287,7 +288,7 @@ gantt
 - [ ] Search Console checked for traffic to old category and tag URLs
 - [ ] Sign-in, submit, verify, publish, comment, share, certificate and invite flows pass end-to-end tests
 - [ ] Referral credit appears correctly in all four cases
-- [ ] Admin review queue, verification and moderation log working; both admins have two-step sign-in
+- [ ] Admin review queue, verification and moderation log working
 - [ ] Privacy policy, terms of use, content guidelines, cookie consent and ads.txt live
 - [ ] Lighthouse mobile 90 or above on home, listing and experience pages, with ads on
 - [ ] GA4 and Search Console verified; sitemap submitted
@@ -306,7 +307,7 @@ gantt
 | Shared hosting is slow under load | Medium | Medium | LiteSpeed Cache; move to a VPS if traffic grows |
 | Password-reset emails land in spam | Medium | Medium | Fix Email Deliverability; test during beta; admins can reset passwords by hand; switch to an email service only if needed |
 | Fake sign-ups and bot spam, since emails aren't verified and there's no CAPTCHA at launch | Medium | Medium | Rate limits, a hidden honeypot field, admin review of every experience before publishing; add Turnstile soon after launch, or straight away if spam appears |
-| Security regression on WordPress | Medium | High | Clean install, minimal plugins, Wordfence, two-step sign-in, automatic updates, backups |
+| Security regression on WordPress | Medium | High | Clean install, minimal plugins, Wordfence login limits, automatic updates, backups |
 | AdSense review of the rebuilt site | Low | Medium | Keep the existing account and ads.txt; launch with consent in place |
 | Children's-data rules apply from 13 May 2027 | Certain | High | Parental-consent step on the post-launch roadmap with a fixed deadline |
 | Old content is stale (2014–2016) | Certain | Medium | Show the experience year on cards; prioritise fresh submissions through beta and invites |

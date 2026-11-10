@@ -220,6 +220,13 @@ class AuthTest extends WP_UnitTestCase {
 		$this->assertSame( constant( 'IF_MAIL_FROM' ), apply_filters( 'wp_mail_from', 'wordpress@localhost' ) );
 	}
 
+	public function test_password_reset_email_uses_no_reply_as_envelope_sender(): void {
+		reset_phpmailer_instance();
+		wp_mail( 'student@example.com', 'Subject', 'Body' );
+
+		$this->assertSame( constant( 'IF_MAIL_FROM' ), tests_retrieve_phpmailer_instance()->Sender );
+	}
+
 	public function test_a_chosen_display_name_is_kept(): void {
 		$id = self::factory()->user->create( array( 'role' => Roles::STUDENT ) );
 		wp_set_current_user( $id );

@@ -30,6 +30,21 @@ final class Auth implements Module {
 		add_action( 'template_redirect', array( self::class, 'require_profile' ) );
 		add_filter( 'wp_mail_from', array( self::class, 'mail_from' ) );
 		add_filter( 'wp_mail_from_name', array( self::class, 'mail_from_name' ) );
+		add_action( 'phpmailer_init', array( self::class, 'envelope_sender' ) );
+	}
+
+	/**
+	 * Use the sender address as the envelope sender (Return-Path) too. Without it the server sends
+	 * from its own host name, so SPF and DMARC can't line up with internfeel.com and the host's
+	 * outbound spam filter rejected the password-reset email.
+	 *
+	 * @param \PHPMailer\PHPMailer\PHPMailer $phpmailer The mailer WordPress is about to send with.
+	 */
+	public static function envelope_sender( \PHPMailer\PHPMailer\PHPMailer $phpmailer ): void {
+		$configured = defined( 'IF_MAIL_FROM' ) ? (string) constant( 'IF_MAIL_FROM' ) : '';
+		if ( is_email( $configured ) ) {
+			$phpmailer->Sender = $configured; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- PHPMailer's property.
+		}
 	}
 
 	/**

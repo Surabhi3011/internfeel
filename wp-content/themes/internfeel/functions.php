@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'IF_THEME_VERSION', '0.3.0' );
+define( 'IF_THEME_VERSION', '0.3.1' );
 
 require_once __DIR__ . '/inc/template-tags.php';
 require_once __DIR__ . '/inc/ads.php';

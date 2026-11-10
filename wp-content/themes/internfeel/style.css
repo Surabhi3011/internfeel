@@ -3,7 +3,7 @@ Theme Name:        InternFeel
 Theme URI:         https://internfeel.com
 Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
 Author:            InternFeel
-Version:           0.3.0
+Version:           0.3.1
 Requires at least: 7.1
 Tested up to:      7.1
 Requires PHP:      8.3
@@ -1955,6 +1955,13 @@ a.if-chip {
 
 .if-ad .if-ad__box {
 	min-height: var(--if-ad-h, 250px);
+}
+
+/* The box centres its contents, which shrinks the empty ad tag to 0 px wide; AdSense then has no
+   width to size a responsive ad and leaves it blank. Give the tag the box's full width. */
+.if-ad__box > ins.adsbygoogle {
+	justify-self: stretch;
+	width: 100%;
 }
 
 .if-ad--inline,

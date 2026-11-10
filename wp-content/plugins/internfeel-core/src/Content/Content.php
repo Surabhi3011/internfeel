@@ -34,6 +34,76 @@ final class Content implements Module {
 		add_filter( 'the_author', array( self::class, 'anonymous_feed_author' ) );
 		add_filter( 'get_comment_author', array( self::class, 'anonymous_comment_author' ), 10, 3 );
 		add_filter( 'rest_prepare_comment', array( self::class, 'hide_anonymous_commenter' ), 10, 2 );
+		add_filter( 'the_content', array( self::class, 'fallback_missing_sizes' ), 20 );
+	}
+
+	/**
+	 * Old posts point at resized copies (photo-1024x575.jpg) that the old site's export did not include,
+	 * while the originals are in uploads. Where a resized copy is missing and its original exists,
+	 * show the original instead. The width and height attributes keep the layout the same.
+	 *
+	 * @param string $content Post content.
+	 * @return string
+	 */
+	public static function fallback_missing_sizes( string $content ): string {
+		if ( ! str_contains( $content, '<img' ) ) {
+			return $content;
+		}
+
+		$uploads   = wp_get_upload_dir();
+		$base_path = untrailingslashit( (string) wp_parse_url( $uploads['baseurl'], PHP_URL_PATH ) );
+		$host      = strtolower( (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+		$processor = new \WP_HTML_Tag_Processor( $content );
+		$changed   = false;
+
+		while ( $processor->next_tag( array( 'tag_name' => 'img' ) ) ) {
+			$src = $processor->get_attribute( 'src' );
+			if ( ! is_string( $src ) ) {
+				continue;
+			}
+			$original = self::original_for_missing_size( $src, untrailingslashit( $uploads['basedir'] ), $base_path, $host );
+			if ( null !== $original ) {
+				$processor->set_attribute( 'src', $original );
+				$changed = true;
+			}
+		}
+
+		return $changed ? $processor->get_updated_html() : $content;
+	}
+
+	/**
+	 * The original image's URL when $src is a missing resized copy in this site's uploads, or null.
+	 *
+	 * @param string $src       Image URL from the content.
+	 * @param string $basedir   Uploads folder on disk, without a trailing slash.
+	 * @param string $base_path Uploads URL path, without a trailing slash.
+	 * @param string $host      This site's host name.
+	 * @return string|null
+	 */
+	private static function original_for_missing_size( string $src, string $basedir, string $base_path, string $host ): ?string {
+		$parts = wp_parse_url( $src );
+		if ( ! is_array( $parts ) || empty( $parts['path'] ) ) {
+			return null;
+		}
+		if ( isset( $parts['host'] ) && strtolower( $parts['host'] ) !== $host ) {
+			return null;
+		}
+
+		$path = rawurldecode( $parts['path'] );
+		if ( ! str_starts_with( $path, $base_path . '/' ) ) {
+			return null;
+		}
+		$relative = substr( $path, strlen( $base_path ) + 1 );
+		if ( str_contains( $relative, '..' ) ) {
+			return null;
+		}
+
+		$original = (string) preg_replace( '/-\d+x\d+(\.[a-z0-9]+)$/i', '$1', $relative );
+		if ( $original === $relative || is_readable( $basedir . '/' . $relative ) || ! is_readable( $basedir . '/' . $original ) ) {
+			return null;
+		}
+
+		return (string) preg_replace( '/-\d+x\d+(\.[a-z0-9]+)((?:[?#].*)?)$/i', '$1$2', $src );
 	}
 
 	/**

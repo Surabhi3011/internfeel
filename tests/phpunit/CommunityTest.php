@@ -171,4 +171,18 @@ class CommunityTest extends WP_UnitTestCase {
 		update_post_meta( $list, Lists::ITEMS, $ids );
 		$this->assertSame( array( $second, $this->post ), wp_list_pluck( Lists::posts( $list ), 'ID' ) );
 	}
+
+	public function test_the_blog_lives_at_blog_and_old_list_urls_move_there(): void {
+		$type = get_post_type_object( 'if_list' );
+		$this->assertSame( 'Blog', $type->labels->menu_name );
+		$this->assertSame( 'blog', $type->rewrite['slug'] );
+		$this->assertTrue( post_type_supports( 'if_list', 'thumbnail' ) );
+
+		$this->assertSame( home_url( '/blog/' ), Lists::old_url_target( '/lists/' ) );
+		$this->assertSame( home_url( '/blog/' ), Lists::old_url_target( '/lists' ) );
+		$this->assertSame( home_url( '/blog/top-research-internships/' ), Lists::old_url_target( '/lists/top-research-internships/' ) );
+		$this->assertSame( home_url( '/blog/page/2/' ), Lists::old_url_target( '/lists/page/2/' ) );
+		$this->assertNull( Lists::old_url_target( '/listings/' ) );
+		$this->assertNull( Lists::old_url_target( '/experiences/' ) );
+	}
 }

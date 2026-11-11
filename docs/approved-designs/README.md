@@ -80,7 +80,7 @@ Each page's own `<style>` block holds page-level layout helpers prefixed `pg-`. 
 
 ## Header and footer
 
-**Header, signed out:** logo · Experiences, Programmes, Listicles, About · Log in (ghost) · Sign up (outline) · Submit experience (primary). Inner pages add a compact search (220–260 px) before the buttons; the home page does not, because the hero has the big search.
+**Header, signed out:** logo · Experiences, Programmes, Blog, About · Log in (ghost) · Sign up (outline) · Submit experience (primary). Inner pages add a compact search (220–260 px) before the buttons; the home page does not, because the hero has the big search.
 
 **Header, signed in:** logo · navigation · compact search (inner pages) · Submit experience · bell with unread count · avatar button opening Dashboard, My experiences, Invites, Profile, Log out (and Admin for administrators).
 
@@ -175,7 +175,7 @@ Dompdf needs the fonts embedded with `@font-face` pointing at local files, and s
 Build these from the same parts:
 
 - **Experiences archive and search results** (`/experiences/?…`): the Browse band from the home page at the top, then a results count and sort, then the card grid. Every 8 cards, a card-shaped ad slot labelled Sponsored. "Load more" below. An empty state says what to change ("No experiences match. Remove a filter or try another field.").
-- **Listicle** (`/lists/{slug}/`): heading-1 title, intro at reading width, the cards in the admin's order. One ad slot after the list, as on hub pages.
+- **Blog post** (`/blog/{slug}/`, the listicle until 11 November 2026): breadcrumb, heading-1 title, date and reading time, featured picture, the article at reading width, then any experience cards in the admin's order. One ad slot at the end, as on hub pages. `/blog/` lists posts as bordered items with picture, date, title and excerpt.
 - **Programme hub:** programme and organisation as the title, a key-facts box of summary facts (experiences, average rating, typical stipend band, usual months), the cards, then one ad slot after the list.
 - **Verify a certificate** (`/verify/{no}`, no ads): one bordered card at reading width with a status pill. Valid (teal) shows the name, title, organisation, published date and number. Revoked (danger) shows the revocation date. Not found shows "Check the number on the certificate".
 - **Legal pages** (privacy, terms, content guidelines, ad guidelines; no ads): heading-1 and body text at reading width, with a "Last updated" date.

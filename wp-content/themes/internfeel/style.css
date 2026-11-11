@@ -3,7 +3,7 @@ Theme Name:        InternFeel
 Theme URI:         https://internfeel.com
 Description:       Custom theme for InternFeel: public pages and the student dashboard. Peep before you leap.
 Author:            InternFeel
-Version:           0.3.1
+Version:           0.3.2
 Requires at least: 7.1
 Tested up to:      7.1
 Requires PHP:      8.3
@@ -1807,6 +1807,107 @@ fieldset.if-field legend {
 
 .if-list__item h2,
 .if-list__item p {
+	margin: 0;
+}
+
+/* ---------- Blog (the listicles until 11 November 2026) ---------- */
+
+.if-blog__all {
+	display: grid;
+	gap: var(--if-space-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.if-blog__item {
+	display: grid;
+	gap: var(--if-space-4);
+	padding: 20px 24px;
+	background: var(--if-surface);
+	border: 1px solid var(--if-line);
+	border-radius: var(--if-radius);
+}
+
+.if-blog__text {
+	display: grid;
+	gap: var(--if-space-2);
+	align-content: start;
+}
+
+.if-blog__text h2,
+.if-blog__text p {
+	margin: 0;
+}
+
+.if-blog__thumb img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	border-radius: var(--if-radius);
+}
+
+@media (min-width: 720px) {
+	.if-blog__item:has(.if-blog__thumb) {
+		grid-template-columns: 240px 1fr;
+	}
+}
+
+.if-article > * {
+	max-width: var(--if-reading);
+}
+
+.if-article > .if-article__cards {
+	max-width: none;
+}
+
+.if-article__head {
+	display: grid;
+	gap: var(--if-space-2);
+}
+
+.if-article__head h1,
+.if-article__head p {
+	margin: 0;
+}
+
+.if-article__image {
+	margin: 0;
+}
+
+.if-article__image img,
+.if-article__body img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--if-radius);
+}
+
+.if-article__body h3 {
+	margin: var(--if-space-6) 0 var(--if-space-2);
+	font: 700 19px/26px var(--font-display);
+}
+
+.if-article__body ol,
+.if-article__body blockquote,
+.if-article__body figure {
+	margin: 0 0 var(--if-space-4);
+}
+
+.if-article__body blockquote {
+	padding-left: var(--if-space-4);
+	border-left: 3px solid var(--if-line-strong);
+	color: var(--if-muted);
+}
+
+.if-article__cards {
+	display: grid;
+	gap: var(--if-space-4);
+}
+
+.if-article__cards h2 {
 	margin: 0;
 }
 

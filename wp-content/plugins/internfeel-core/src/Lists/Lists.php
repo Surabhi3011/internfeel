@@ -1,7 +1,8 @@
 <?php
 /**
- * The Lists module: admins build listicles (if_list) by pasting experience links in order, and set
- * where each appears on the home page (plan.md 5.2, architecture.md 4.6).
+ * The Lists module: blog posts (if_list, the listicles until 11 November 2026) can end with experience
+ * cards that admins paste in order, and can be set to appear as a row on the home page (plan.md 5.2,
+ * architecture.md 4.6). Old /lists/ URLs redirect to /blog/.
  *
  * @package InternFeel
  */
@@ -32,13 +33,45 @@ final class Lists implements Module {
 	public static function register(): void {
 		add_action( 'add_meta_boxes_' . Content::LIST_TYPE, array( self::class, 'meta_box' ) );
 		add_action( 'save_post_' . Content::LIST_TYPE, array( self::class, 'save' ), 10, 2 );
+		// Before redirect_canonical (priority 10), which would otherwise guess at the old URLs.
+		add_action( 'template_redirect', array( self::class, 'redirect_old_urls' ), 1 );
+	}
+
+	/**
+	 * The listicles became the Blog on 11 November 2026: send /lists/... to /blog/... permanently.
+	 */
+	public static function redirect_old_urls(): void {
+		if ( ! is_404() ) {
+			return;
+		}
+
+		$path   = (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '', PHP_URL_PATH );
+		$target = self::old_url_target( $path );
+		if ( null !== $target ) {
+			wp_safe_redirect( $target, 301 );
+			exit;
+		}
+	}
+
+	/**
+	 * Where an old /lists/ URL now lives, or null for any other path.
+	 *
+	 * @param string $path Request path, such as /lists/top-research-internships/.
+	 * @return string|null
+	 */
+	public static function old_url_target( string $path ): ?string {
+		if ( 1 !== preg_match( '#^/lists(/[a-z0-9/_-]*)?$#i', $path, $match ) ) {
+			return null;
+		}
+
+		return home_url( '/' . Content::BLOG_SLUG . ( $match[1] ?? '/' ) );
 	}
 
 	/**
 	 * Add the box.
 	 */
 	public static function meta_box(): void {
-		add_meta_box( 'if-list-items', __( 'Experiences in this listicle', 'internfeel' ), array( self::class, 'render' ), Content::LIST_TYPE, 'normal', 'high' );
+		add_meta_box( 'if-list-items', __( 'Experiences to show after this post (optional)', 'internfeel' ), array( self::class, 'render' ), Content::LIST_TYPE, 'normal', 'high' );
 	}
 
 	/**
@@ -52,7 +85,7 @@ final class Lists implements Module {
 		wp_nonce_field( self::NONCE, self::NONCE );
 		?>
 		<p>
-			<label for="if-list-items"><?php esc_html_e( 'Paste one experience link per line, in the order they should appear. Only published experiences are shown.', 'internfeel' ); ?></label>
+			<label for="if-list-items"><?php esc_html_e( 'Optional. Paste one experience link per line, in the order they should appear as cards after the article. Leave empty for a plain article. Only published experiences are shown.', 'internfeel' ); ?></label>
 		</p>
 		<textarea id="if-list-items" name="if_list_items" rows="10" class="large-text code"><?php echo esc_textarea( implode( "\n", $lines ) ); ?></textarea>
 		<?php if ( array() !== $lines ) : ?>

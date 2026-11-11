@@ -22,6 +22,7 @@ final class Content implements Module {
 
 	public const TAXONOMY  = 'if_master';
 	public const LIST_TYPE = 'if_list';
+	public const BLOG_SLUG = 'blog';
 
 	/**
 	 * Add the module's hooks.
@@ -107,7 +108,7 @@ final class Content implements Module {
 	}
 
 	/**
-	 * Register the taxonomy, the listicle post type and the custom statuses.
+	 * Register the taxonomy, the blog post type (if_list) and the custom statuses.
 	 */
 	public static function register_types(): void {
 		register_taxonomy(
@@ -142,20 +143,28 @@ final class Content implements Module {
 		register_post_type(
 			self::LIST_TYPE,
 			array(
+				// Shown as the Blog since 11 November 2026 (plan.md 4): articles for search traffic, which may
+				// still end with a curated set of experience cards. The type name stays if_list so no data moves.
 				'labels'          => array(
-					'name'          => __( 'Listicles', 'internfeel' ),
-					'singular_name' => __( 'Listicle', 'internfeel' ),
-					'add_new_item'  => __( 'Add listicle', 'internfeel' ),
-					'edit_item'     => __( 'Edit listicle', 'internfeel' ),
+					// Also the archive's title tag ("Blog Archive" in Yoast), so it says Blog, not Blog posts.
+					'name'          => __( 'Blog', 'internfeel' ),
+					'singular_name' => __( 'Blog post', 'internfeel' ),
+					'menu_name'     => __( 'Blog', 'internfeel' ),
+					'all_items'     => __( 'All blog posts', 'internfeel' ),
+					'add_new_item'  => __( 'Add blog post', 'internfeel' ),
+					'edit_item'     => __( 'Edit blog post', 'internfeel' ),
+					'view_item'     => __( 'View blog post', 'internfeel' ),
+					'search_items'  => __( 'Search blog posts', 'internfeel' ),
+					'not_found'     => __( 'No blog posts found.', 'internfeel' ),
 				),
 				'public'          => true,
 				'show_in_rest'    => true,
-				'menu_icon'       => 'dashicons-list-view',
+				'menu_icon'       => 'dashicons-welcome-write-blog',
 				'menu_position'   => 6,
-				'supports'        => array( 'title', 'editor', 'excerpt', 'custom-fields' ),
-				'has_archive'     => 'lists',
+				'supports'        => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'custom-fields' ),
+				'has_archive'     => self::BLOG_SLUG,
 				'rewrite'         => array(
-					'slug'       => 'lists',
+					'slug'       => self::BLOG_SLUG,
 					'with_front' => false,
 				),
 				'capability_type' => array( 'if_list', 'if_lists' ),

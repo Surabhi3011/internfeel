@@ -76,7 +76,7 @@ The relaunch keeps the brand ("InternFeel", "peep before you leap"), the logo, t
 | Required fields | Organisation, type, field, year, duration, paid or unpaid, story, ratings; stipend amount optional |
 | Edits | A published experience and a comment can each be edited once |
 | Anonymous posts | Hide only the name, photo and LinkedIn; college, course and every detail stay visible |
-| Listicles | Curated by admins |
+| Listicles and Blog | Curated by admins. Decided 11 November 2026: the listicles section is renamed **Blog** at `/blog/` (old `/lists/` URLs redirect with a 301) and is used for articles written for search traffic. A blog post has a featured picture, date and reading time, and can still end with experience cards and appear as a home-page row. The post type stays `if_list`, so no data moves |
 | Language | English only |
 | Design | Keep the current logo and teal; modern, clean, minimal; designed by Claude |
 | Migration | Posts, comments and photos come across; Surabhi reviews every migrated experience |
@@ -140,7 +140,7 @@ Sections from top to bottom:
 | Element | Logged out | Logged in |
 | --- | --- | --- |
 | Left | Logo, linking home | Same |
-| Navigation | Experiences, Programmes, Listicles, About | Same |
+| Navigation | Experiences, Programmes, Blog, About | Same |
 | Search | Compact search on inner pages; hidden on home | Same |
 | Primary button | Submit experience (asks to sign in first) | Submit experience |
 | Account | Log in and Sign up | Dashboard link with the unread count; avatar menu: Dashboard, Invites, Profile, Log out. Admins also see an Admin link |
@@ -152,7 +152,7 @@ The header stays fixed on scroll and shrinks to 56 px high.
 
 | Column | Links |
 | --- | --- |
-| Explore | Experiences, Programmes, Listicles, Verified experiences |
+| Explore | Experiences, Programmes, Blog, Verified experiences |
 | Contribute | Submit experience, Invite friends, Contributor certificate, Content guidelines |
 | Company | About, Contact, Advertise with us, Report a problem |
 | Legal | Privacy policy, Terms of use, Cookie settings, Verify a certificate |

@@ -23,7 +23,7 @@ $if_columns = array(
 	__( 'Explore', 'internfeel' )    => array(
 		__( 'Experiences', 'internfeel' )          => '/experiences/',
 		__( 'Programmes', 'internfeel' )           => '/org/',
-		__( 'Listicles', 'internfeel' )            => '/lists/',
+		__( 'Blog', 'internfeel' )                 => '/blog/',
 		__( 'Verified experiences', 'internfeel' ) => '/experiences/?verified=1',
 	),
 	__( 'Contribute', 'internfeel' ) => array(

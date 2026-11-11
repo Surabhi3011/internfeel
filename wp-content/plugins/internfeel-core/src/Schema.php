@@ -112,6 +112,10 @@ final class Schema {
 				Pages::refresh_draft( 'privacy-policy', '[TO CONFIRM' );
 				Pages::refresh_draft( 'terms', '[TO CONFIRM' );
 			},
+			// The listicles became the Blog (11 November 2026): /lists/ moved to /blog/.
+			11 => static function (): void {
+				flush_rewrite_rules( false );
+			},
 		);
 	}
 

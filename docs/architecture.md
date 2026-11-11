@@ -70,7 +70,7 @@ A classic PHP theme with hand-written templates and no page builder. Design brie
 | `single.php` | Experience page: key-facts box, story, ratings, referral credit, share buttons, comments, ad slots |
 | `archive.php`, `search.php` | Filtered and searched results, with filters reflected in the URL |
 | `taxonomy-if_master.php` | Organisation and programme hub pages |
-| `single-if_list.php`, `archive-if_list.php` | Listicles |
+| `single-if_list.php`, `archive-if_list.php` | Blog (the listicles until 11 November 2026) |
 | `page-dashboard.php` | Student dashboard with tabs: My experiences, Comments, Invites, Profile |
 | `page-signup.php`, `page-login.php` | Email-and-password sign-up and sign-in, Google button, forgotten-password link |
 | `page-submit.php` | Four-step submission form |
@@ -226,7 +226,7 @@ It stores every admin decision and every reader report. A reader can report the 
 
 | Object | Storage |
 | --- | --- |
-| Listicles | Post type `if_list` (admin only): title, intro, an ordered list of experience IDs, a home-page order |
+| Blog posts (formerly listicles) | Post type `if_list` (admin only): title, article, excerpt, featured picture, an optional ordered list of experience IDs, a home-page order |
 | Certificates | PDF files in the private folder; the record is the experience meta above |
 | Sponsored ads (after relaunch) | Tables `if_advertisers`, `if_ad_campaigns`, `if_ad_events`, as specified in plan.md |
 
@@ -342,7 +342,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 - **Auto-flagging:** an item with 3 reports is hidden from listings until an admin decides.
 - **Reports as built (day 9):** `POST report` (signed in, 20 an hour) takes `experience` or `comment`, an ID and a reason. Each reader reports an item once, checked against the moderation log, and nobody can report their own writing. The third report flags the item: a flagged experience drops out of every listing, and a flagged comment is held. **Review → Reports** lists reported items, flagged first, with each reason. **Keep** clears the reports (and re-approves a held comment); **Remove** moves an experience to Removed (its certificate is revoked) or trashes a comment. Both are logged.
 - **Comments as built:** `PATCH comments/{id}` lets a comment's author edit it once (`_if_edit_count`, `_if_edited_at`; the comment then shows "edited"). Every approved comment by someone other than the experience's author raises one `new_comment` notification.
-- **Listicles as built:** the Listicle edit screen has an "Experiences in this listicle" box. Paste one experience link or ID per line, in order, and set the home page position (0 keeps it off). `/lists/` lists them, and `/lists/{slug}/` shows the cards in order; experiences that aren't published are skipped.
+- **Listicles as built:** the Listicle edit screen has an "Experiences in this listicle" box. Paste one experience link or ID per line, in order, and set the home page position (0 keeps it off). `/lists/` lists them, and `/lists/{slug}/` shows the cards in order; experiences that aren't published are skipped. Since 11 November 2026 this is the **Blog**: wp-admin shows it as Blog, `/blog/` lists posts with their picture, date and excerpt, and `/blog/{slug}/` shows the article, then the cards if any were added. Old `/lists/` URLs redirect to `/blog/`.
 - **As built (day 5):** wp-admin → **Review** has tabs for New submissions, Imported (the migrated posts, kept apart so they don't bury new ones), Proof, Suggestions and Log. Approve, request changes and reject apply to pending experiences; verify and reject proof apply when proof is pending. Requesting changes, rejecting and rejecting proof need a note, which the student sees in their notification. Imported posts have no student, so they can only be approved, rejected or edited. Each decision writes one log row and one notification. Adding a suggestion creates the master-list entry (or matches one with the same name) and links the experience; programmes need their organisation first.
 - **Hooks for later modules:** `if_experience_published` (certificates) fires on approval; `if_experience_verified` fires once when an experience is both published and verified, after `verified_count` goes up (badges, invite credits).
 
@@ -358,7 +358,7 @@ One badge symbol per verified experience, shown next to the student's name on th
 | `/{experience-slug}/` | Experience (the same URLs as the old site) |
 | `/experiences/?field=&type=&org=&year=&paid=&stipend=&verified=` | Filtered list |
 | `/org/{organisation}/`, `/org/{organisation}/{programme}/` | Hub pages |
-| `/lists/{listicle}/` | Listicle |
+| `/blog/{slug}/` | Blog post (`/lists/...` redirects here with a 301) |
 | `/signup/`, `/login/`, `/submit/`, `/dashboard/`, `/join/?ref=CODE`, `/verify/{certificate_no}` | Student flows |
 | `/about/`, `/contact/`, `/privacy-policy/`, `/terms/`, `/content-guidelines/` | Static pages |
 
@@ -450,7 +450,7 @@ The old install was probably compromised, so the new site starts clean and stays
 - **SEO:**
   - The experience title is the H1, with a unique Yoast title and description on every page.
   - Article and Review schema on experience pages.
-  - The XML sitemap lists only experiences, hubs, listicles and static pages.
+  - The XML sitemap lists only experiences, hubs, blog posts and static pages.
   - Dashboard, submit, join and staging pages are `noindex`.
 
 ---

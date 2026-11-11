@@ -14,7 +14,7 @@ $if_unread = is_user_logged_in() && class_exists( '\InternFeel\Notify\Notify' ) 
 $if_nav = array(
 	'/experiences/' => __( 'Experiences', 'internfeel' ),
 	'/org/'         => __( 'Programmes', 'internfeel' ),
-	'/lists/'       => __( 'Listicles', 'internfeel' ),
+	'/blog/'        => __( 'Blog', 'internfeel' ),
 	'/about/'       => __( 'About', 'internfeel' ),
 );
 

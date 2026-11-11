@@ -10,7 +10,7 @@ const pages = [
 	{ name: 'experiences', path: '/experiences/' },
 	{ name: 'experience', path: '/hello-world/' },
 	{ name: 'programmes', path: '/org/' },
-	{ name: 'listicles', path: '/lists/' },
+	{ name: 'blog', path: '/blog/' },
 	{ name: 'verify', path: '/verify/' },
 	{ name: 'verify, not found', path: '/verify/IF-2000-00001/' },
 	{ name: 'join', path: '/join/?ref=NOTACODE' },
